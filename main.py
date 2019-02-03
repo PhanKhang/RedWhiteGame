@@ -1,6 +1,5 @@
 import numpy;
-import copy as cp;
-
+#convert letters to numbers
 letterTonumb = {
     "A": 1,
     "B": 2,
@@ -12,11 +11,12 @@ letterTonumb = {
     "H": 8
 
 }
-
+#convert numbers to leters
 numbToLetter = dict([[v, k] for k, v in letterTonumb.items()])
 
 coordinateToRotation = {}
 
+#Мапа
 gameMap = numpy.zeros((12, 8))
 
 
@@ -24,6 +24,8 @@ gameMap = numpy.zeros((12, 8))
 # beluyKolco - 2
 # krasnyKolco - 3
 # beluyChernuy - 4
+
+#give what is in the first half of the card according to rotation if not found return 10
 def pervayaYacheyka(rotation):
     swithcer = {
         1: 1,
@@ -37,7 +39,7 @@ def pervayaYacheyka(rotation):
     }
     return swithcer.get(rotation, 10);
 
-
+#give what is in the second half of the card according to rotation if not found return 10
 def vtorayYacheyka(rotation):
     swithcer = {
         1: 2,
@@ -51,7 +53,7 @@ def vtorayYacheyka(rotation):
     }
     return swithcer.get(rotation, 10);
 
-
+#put card at postion i j and the rotation
 def place(i, j, rotation):
     gameMap[j][i] = pervayaYacheyka(rotation)
     if rotation % 2 != 0:
@@ -60,28 +62,33 @@ def place(i, j, rotation):
         gameMap[j + 1][i] = vtorayYacheyka(rotation)
     return;
 
+#check if anything is above in case of horizontal
 def lookUpValidator(i1,j1,i2,j2):
     if (gameMap[i1][j1-1] == 0 and gameMap[i2][j2-1] == 0):
         return True;
     return False
+#check if anything is above in case vertical
 def lookUpValidator(i2,j2):
     if (gameMap[i2][j2-1] == 0):
         return True;
     return False
 
+#validator and placer
+#input is string variable move
+#placer can be removed but parser for move is needed
 def validator(move):
     if move[:1].isdigit():
         print("Its a normal move")
-        if int(move[1:2]) % 2 != 0:
+        if int(move[1:2]) % 2 != 0: #orientation check
             print("Card is horizontal")
             i = letterTonumb.get(move[2:3], 10) - 1
             j = int(move[3:]) - 1
             # print("{} {}".format(i, j))
-            if 0 <= i <= 7 and 0 <= j <= 11 and 0 <= i + 1 <= 7:
+            if 0 <= i <= 7 and 0 <= j <= 11 and 0 <= i + 1 <= 7: #border check
                 if gameMap[j][i] == 0 and gameMap[j][i + 1] == 0:
                     print("place is free")
                     if j == 0:  # first line is always supported
-                        place(i, j, int(move[1:2]))
+                        place(i, j, int(move[1:2])) # can be remove it is just to place a card down
                         coordinateToRotation[move[2:]] = int(move[1:2])
                         return True
                     else:
