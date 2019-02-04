@@ -66,7 +66,7 @@ def place(move):
     # возвращай булеан
     # валидатор дёргай отсюда.
     # по хорошему поляну надо тоже передавать методу на вход.
-    validator  = Validator(gameMap, coordinateToRotation, move)
+    validator = Validator(gameMap, coordinateToRotation)
     if move.type == 0:
         if validator.placeValidator(move):
             i = (move.targetCoordinateLet) - 1
@@ -95,7 +95,6 @@ def place(move):
             j = int(move.targetCoordinateNum) - 1
             rotation = int(move.rotation)
             if validator.placeValidatorCoord(i, j, rotation):
-                print("second")
                 coordinateToRotation[numbToLetter.get(i + 1) + str(j + 1)] = rotation;
                 gameMap[j][i] = pervayaYacheyka(rotation)
                 if rotation % 2 != 0:
@@ -202,7 +201,7 @@ def place(move):
 #     return False
 
 
-for k in range(1):
+for k in range(2):
     input_var = input("Enter something: ")
     #
     # пример:

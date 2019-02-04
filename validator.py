@@ -1,8 +1,7 @@
 class Validator:
-    def __init__(self, gameMap, coordinateToRotation, move):
+    def __init__(self, gameMap, coordinateToRotation):
         self.gameMap = gameMap
         self.coordinateToRotation = coordinateToRotation
-        self.moove = move
 
         self.letterTonumb = {
             "A": 1,
@@ -90,16 +89,16 @@ class Validator:
         print(self.numbToLetter.get(i1 + 1) + str(j1 + 1))
         print(self.numbToLetter.get(i2 + 1) + str(j2 + 1))
 
-        rotation = self.coordinateToRotation.get(self, self.numbToLetter.get(i1 + 1) + str(j1 + 1), 10)
+        rotation = self.coordinateToRotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 10)
         if rotation == 10:
-            rotation = self.coordinateToRotation.get(self, self.numbToLetter.get(i2 + 1) + str(j2 + 1), 10)
+            rotation = self.coordinateToRotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 10)
             print(rotation)
         if rotation == 10:
             print(rotation)
             return False;
 
         if rotation % 2 == 0:
-            if i1 == i2 and abs(j1 - j2) == 1 and self.lookUpValidatorVertical(self, i2, j2):
+            if i1 == i2 and abs(j1 - j2) == 1 and self.lookUpValidatorVertical(i2, j2):
                 return True
             else:
                     if abs(i1 - i2) == 1 and j1 == j2 and self.lookUpValidatorHorizontal(i1, j1, i2, j2):
