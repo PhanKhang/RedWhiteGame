@@ -1,4 +1,6 @@
 import numpy;
+from move import Move
+
 #convert letters to numbers
 letterTonumb = {
     "A": 1,
@@ -54,7 +56,14 @@ def vtorayYacheyka(rotation):
     return swithcer.get(rotation, 10);
 
 #put card at postion i j and the rotation
+
+
 def place(i, j, rotation):
+# тут принимай Move объект
+# возвращай булеан
+# валидатор дёргай отсюда.
+# по хорошему поляну надо тоже передавать методу на вход.
+
     gameMap[j][i] = pervayaYacheyka(rotation)
     if rotation % 2 != 0:
         gameMap[j][i + 1] = vtorayYacheyka(rotation)
@@ -76,6 +85,9 @@ def lookUpValidator(i2,j2):
 #validator and placer
 #input is string variable move
 #placer can be removed but parser for move is needed
+
+# эту годзилу надо переписать, уменьшить раза в 3 как минимум, думаю объект с этим поможет
+# сделай его атомарным, тупо валидировать шаг. На вход передавай поляну.
 def validator(move):
     if move[:1].isdigit():
         print("Its a normal move")
@@ -270,6 +282,15 @@ def validator(move):
 
 for k in range(7):
     input_var = input("Enter something: ")
+	# 
+	# пример: 
+	# move = Move(input)
+	# if place(move):
+	#	"ok"
+	# else:
+	#	"invalid move"
+	#....
+	# помимо прочего приделай сюда мейн, так красивей
     if validator(input_var):
         print("good move")
         # i = letterTonumb.get(input_var[2:3]) - 1
