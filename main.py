@@ -1,7 +1,7 @@
 import numpy;
 from move import Move
 
-#convert letters to numbers
+# convert letters to numbers
 letterTonumb = {
     "A": 1,
     "B": 2,
@@ -13,12 +13,12 @@ letterTonumb = {
     "H": 8
 
 }
-#convert numbers to leters
+# convert numbers to letters
 numbToLetter = dict([[v, k] for k, v in letterTonumb.items()])
 
 coordinateToRotation = {}
 
-#Мапа
+# Мапа
 gameMap = numpy.zeros((12, 8))
 
 
@@ -27,7 +27,7 @@ gameMap = numpy.zeros((12, 8))
 # krasnyKolco - 3
 # beluyChernuy - 4
 
-#give what is in the first half of the card according to rotation if not found return 10
+# give what is in the first half of the card according to rotation if not found return 10
 def pervayaYacheyka(rotation):
     swithcer = {
         1: 1,
@@ -41,7 +41,8 @@ def pervayaYacheyka(rotation):
     }
     return swithcer.get(rotation, 10);
 
-#give what is in the second half of the card according to rotation if not found return 10
+
+# give what is in the second half of the card according to rotation if not found return 10
 def vtorayYacheyka(rotation):
     swithcer = {
         1: 2,
@@ -55,248 +56,162 @@ def vtorayYacheyka(rotation):
     }
     return swithcer.get(rotation, 10);
 
-#put card at postion i j and the rotation
+
+# put card at postion i j and the rotation
 
 
-def place(i, j, rotation):
-# тут принимай Move объект
-# возвращай булеан
-# валидатор дёргай отсюда.
-# по хорошему поляну надо тоже передавать методу на вход.
-
-    gameMap[j][i] = pervayaYacheyka(rotation)
-    if rotation % 2 != 0:
-        gameMap[j][i + 1] = vtorayYacheyka(rotation)
+def place(move):
+    # тут принимай Move объект
+    # возвращай булеан
+    # валидатор дёргай отсюда.
+    # по хорошему поляну надо тоже передавать методу на вход.
+    if move.type == 0:
+        if placeValidator(move):
+            i = (move.targetCoordinateLet) - 1
+            j = int(move.targetCoordinateNum) - 1
+            rotation = int(move.rotation)
+            coordinateToRotation[numbToLetter.get(i + 1) + str(j + 1)] = rotation;
+            gameMap[j][i] = pervayaYacheyka(rotation)
+            if rotation % 2 != 0:
+                gameMap[j][i + 1] = vtorayYacheyka(rotation)
+            else:
+                gameMap[j + 1][i] = vtorayYacheyka(rotation)
     else:
-        gameMap[j + 1][i] = vtorayYacheyka(rotation)
-    return;
+        if recycleValidator(move):
+            i1 = (move.sourceCoordinate1Let) - 1
+            j1 = int(move.sourceCoordinate1Num) - 1
 
-#check if anything is above in case of horizontal
-def lookUpValidator(i1,j1,i2,j2):
-    if (gameMap[i1][j1-1] == 0 and gameMap[i2][j2-1] == 0):
-        return True;
-    return False
-#check if anything is above in case vertical
-def lookUpValidator(i2,j2):
-    if (gameMap[i2][j2-1] == 0):
-        return True;
-    return False
+            i2 = (move.sourceCoordinate2Let) - 1
+            j2 = int(move.sourceCoordinate2Num) - 1
+            old_val1 = gameMap[j1][i1]
+            old_val2 = gameMap[j2][i2]
 
-#validator and placer
-#input is string variable move
-#placer can be removed but parser for move is needed
+            gameMap[j1][i1] = 0
+            gameMap[j2][i2] = 0
 
-# эту годзилу надо переписать, уменьшить раза в 3 как минимум, думаю объект с этим поможет
-# сделай его атомарным, тупо валидировать шаг. На вход передавай поляну.
-def validator(move):
-    if move[:1].isdigit():
-        print("Its a normal move")
-        if int(move[1:2]) % 2 != 0: #orientation check
-            print("Card is horizontal")
-            i = letterTonumb.get(move[2:3], 10) - 1
-            j = int(move[3:]) - 1
-            # print("{} {}".format(i, j))
-            if 0 <= i <= 7 and 0 <= j <= 11 and 0 <= i + 1 <= 7: #border check
-                if gameMap[j][i] == 0 and gameMap[j][i + 1] == 0:
-                    print("place is free")
-                    if j == 0:  # first line is always supported
-                        place(i, j, int(move[1:2])) # can be remove it is just to place a card down
-                        coordinateToRotation[move[2:]] = int(move[1:2])
-                        return True
-                    else:
-                        if gameMap[j - 1][i] != 0 and gameMap[- 1][i + 1] != 0:
-                            coordinateToRotation[move[2:]] = int(move[1:2])
-                            place(i, j, int(move[1:2]))
-                            return True;
+            i = (move.targetCoordinateLet) - 1
+            j = int(move.targetCoordinateNum) - 1
+            rotation = int(move.rotation)
+            if placeValidatorCoord(i, j, rotation):
+                print("second")
+                coordinateToRotation[numbToLetter.get(i + 1) + str(j + 1)] = rotation;
+                gameMap[j][i] = pervayaYacheyka(rotation)
+                if rotation % 2 != 0:
+                    gameMap[j][i + 1] = vtorayYacheyka(rotation)
                 else:
-                    print("not free {} and {}".format(gameMap[j][i], gameMap[j][i + 1]))
+                    gameMap[j + 1][i] = vtorayYacheyka(rotation)
+            else:
+                gameMap[j1][i1] = old_val1
+                gameMap[j2][i2] = old_val2
+    return
+
+
+# check if anything is above in case of horizontal
+def lookUpValidatorHorizontal(i1, j1, i2, j2):
+    if gameMap[i1][j1 + 1] == 0 and gameMap[i2][j2 + 1] == 0:
+        return True;
+    return False
+
+
+# check if anything is above in case vertical
+def lookUpValidatorVertical(i2, j2):
+    if gameMap[i2][j2 + 1] == 0:
+        return True;
+    return False
+
+
+# validator and placer
+# input is string variable move
+# placer can be removed but parser for move is needed
+def placeValidator(move):
+    i = (move.targetCoordinateLet) - 1
+    j = int(move.targetCoordinateNum) - 1
+    if int(move.rotation) % 2 != 0:  # orientation check
+        if 0 <= i <= 7 and 0 <= j <= 11 and 0 <= i + 1 <= 7:  # border check
+            if gameMap[j][i] == 0 and gameMap[j][i + 1] == 0:
+                if j == 0:  # first line is always supported
+                    return True
+                else:
+                    if gameMap[j - 1][i] != 0 and gameMap[- 1][i + 1] != 0:  # there is support
+                        return True;
+            else:
+                return False
+    else:
+        if 0 <= i <= 7 and 0 <= j <= 11 and 0 <= j + 1 <= 11:
+            if gameMap[j][i] == 0 and gameMap[j + 1][i] == 0:
+                if j == 0:  # first line is always supported
+                    return True
+                else:
+                    if gameMap[j - 1][i] != 0:
+                        return True
+            else:
+                return False;
+
+
+def placeValidatorCoord(i, j, rotation):
+    if rotation % 2 != 0:  # orientation check
+        if 0 <= i <= 7 and 0 <= j <= 11 and 0 <= i + 1 <= 7:  # border check
+            if gameMap[j][i] == 0 and gameMap[j][i + 1] == 0:
+                if j == 0:  # first line is always supported
+                    return True
+                else:
+                    if gameMap[j - 1][i] != 0 and gameMap[- 1][i + 1] != 0:  # there is support
+                        return True;
+            else:
+                return False
+    else:
+        if 0 <= i <= 7 and 0 <= j <= 11 and 0 <= j + 1 <= 11:
+            if gameMap[j][i] == 0 and gameMap[j + 1][i] == 0:
+                if j == 0:  # first line is always supported
+                    return True
+                else:
+                    if gameMap[j - 1][i] != 0:
+                        return True
+            else:
+                return False;
+
+
+# Проверка целестности карты
+def recycleValidator(move):
+    i1 = (move.sourceCoordinate1Let) - 1
+    j1 = int(move.sourceCoordinate1Num) - 1
+
+    i2 = (move.sourceCoordinate2Let) - 1
+    j2 = int(move.sourceCoordinate2Num) - 1
+
+    print("{} {} - {} {} ".format(i1, j1, i2, j2))
+    print(numbToLetter.get(i1 + 1) + str(j1 + 1))
+    print(numbToLetter.get(i2 + 1) + str(j2 + 1))
+
+    rotation = coordinateToRotation.get(numbToLetter.get(i1 + 1) + str(j1 + 1), 10)
+    if rotation == 10:
+        rotation = coordinateToRotation.get(numbToLetter.get(i2 + 1) + str(j2 + 1), 10)
+        print(rotation)
+    if rotation == 10:
+        print(rotation)
+        return False;
+
+    if rotation % 2 == 0:
+        if i1 == i2 and abs(j1 - j2) == 1 and lookUpValidatorVertical(i2, j2):
+            return True
         else:
-            print("Card is vertical")
-            i = letterTonumb.get(move[2:3]) - 1
-            j = int(move[3:]) - 1
-            # print("{} {}".format(i, j))
-            if 0 <= i <= 7 and 0 <= j <= 11 and 0 <= j + 1 <= 11:
-                if gameMap[j][i] == 0 and gameMap[j + 1][i] == 0:
-                    print("place is free")
-                    if j == 0:  # first line is always supported
-                        coordinateToRotation[move[2:]] = int(move[1:2])
-                        place(i, j, int(move[1:2]))
-                        return True
-                    else:
-                        if gameMap[j - 1][i] != 0:
-                            coordinateToRotation[move[2:]] = int(move[1:2])
-                            place(i, j, int(move[1:2]))
-                            return True
-                else:
-                    print("not free {} and {}".format(gameMap[j][i], gameMap[j + 1][i]))
+            if abs(i1 - i2) == 1 and j1 == j2 and lookUpValidatorHorizontal(i1, j1, i2, j2):
+                return True;
+    return False
 
-    else:
-        print("Might be recycle move")
-        if move[1:3].isdigit() and move[4:6].isdigit():
-            if int(move[4:6]) <= 12:
-                i1 = letterTonumb.get(move[:1], 10) - 1
-                j1 = int(move[1:3]) - 1
-
-                i2 = letterTonumb.get(move[3:4], 10) - 1
-                j2 = int(move[4:6]) - 1
-
-                rotation = coordinateToRotation.get(move[:3], 10)
-                if rotation == 10:
-                    rotation = coordinateToRotation.get(move[3:6], 10)
-                if rotation == 10:
-                    return False;
-                old_val1 = gameMap[j1][i1]
-                old_val2 = gameMap[j2][i2]
-                gameMap[j1][i1] = 0
-                gameMap[j2][i2] = 0
-
-                if rotation % 2 == 0:
-                    if i1 == i2 and abs(j1 - j2) == 1 and lookUpValidator(i2, j2):
-                        if validator("0" + move[6:]):
-                            print("{} {} - {} {} ".format(i1, j1, i2, j2) + move[6:])
-                            return True
-
-                else:
-                    if abs(i1 - i2) == 1 and j1 == j2 and lookUpValidator(i1, j1, i2, j2):
-                        if validator("0" + move[6:]):
-                            print("{} {} - {} {} ".format(i1, j1, i2, j2) + move[6:])
-                            return True
-
-                gameMap[j1][i1] = old_val1
-                gameMap[j2][i2] = old_val2
-                return False
-
-        if move[1:2].isdigit() and move[3:5].isdigit():
-            if int(move[3:5]) <= 12:
-                i1 = letterTonumb.get(move[:1], 10) - 1
-                j1 = int(move[1:2]) - 1
-
-                i2 = letterTonumb.get(move[2:3], 10) - 1
-                j2 = int(move[3:5]) - 1
-
-                rotation = coordinateToRotation.get(move[:2], 10)
-                if rotation == 10:
-                    rotation = coordinateToRotation.get(move[2:5], 10)
-                if rotation == 10:
-                    return False;
-                old_val1 = gameMap[j1][i1]
-                old_val2 = gameMap[j2][i2]
-                gameMap[j1][i1] = 0
-                gameMap[j2][i2] = 0
-
-                if rotation % 2 == 0:
-                    if i1 == i2 and abs(j1 - j2) == 1 and lookUpValidator(i2, j2):
-                        if validator("0" + move[5:]):
-                            print("{} {} - {} {} ".format(i1, j1, i2, j2) + move[5:])
-                            return True
-
-                else:
-                    if abs(i1 - i2) == 1 and j1 == j2 and lookUpValidator(i1, j1, i2, j2):
-                        if validator("0" + move[5:]):
-                            print("{} {} - {} {} ".format(i1, j1, i2, j2) + move[5:])
-                            return True
-
-                gameMap[j1][i1] = old_val1
-                gameMap[j2][i2] = old_val2
-                return False
-
-        if move[1:3].isdigit() and move[4:5].isdigit():
-            i1 = letterTonumb.get(move[:1], 10) - 1
-            j1 = int(move[1:3]) - 1
-
-            i2 = letterTonumb.get(move[3:4], 10) - 1
-            j2 = int(move[4:5]) - 1
-
-            rotation = coordinateToRotation.get(move[:3], 10)
-            print(rotation)
-            if rotation == 10:
-                rotation = coordinateToRotation.get(move[3:5], 10)
-            if rotation == 10:
-                return False;
-            old_val1 = gameMap[j1][i1]
-            old_val2 = gameMap[j2][i2]
-            gameMap[j1][i1] = 0
-            gameMap[j2][i2] = 0
-
-            if rotation % 2 == 0:
-                if i1 == i2 and abs(j1 - j2) == 1 and lookUpValidator(i2, j2):
-                    if validator("0" + move[5:]):
-                        print("{} {} - {} {} ".format(i1, j1, i2, j2) + move[5:])
-                        return True
-
-            else:
-                if abs(i1 - i2) == 1 and j1 == j2 and lookUpValidator(i1, j1, i2, j2):
-                    if validator("0" + move[5:]):
-                        print("{} {} - {} {} ".format(i1, j1, i2, j2) + move[5:])
-                        return True
-
-            gameMap[j1][i1] = old_val1
-            gameMap[j2][i2] = old_val2
-            return False
-
-        if move[1:2].isdigit() and move[3:4].isdigit():
-            i1 = letterTonumb.get(move[:1], 10) - 1
-            j1 = int(move[1:2]) - 1
-
-            i2 = letterTonumb.get(move[2:3], 10) - 1
-            j2 = int(move[3:4]) - 1
-
-            rotation = coordinateToRotation.get(move[:2], 10)
-            if rotation == 10:
-                rotation = coordinateToRotation.get(move[2:4], 10)
-            if rotation == 10:
-                return False;
-
-            old_val1 = gameMap[j1][i1]
-            old_val2 = gameMap[j2][i2]
-            gameMap[j1][i1] = 0
-            gameMap[j2][i2] = 0
-
-            if rotation % 2 == 0:
-                if i1 == i2 and abs(j1 - j2) == 1 and lookUpValidator(i2, j2):
-                    if validator("0" + move[4:]):
-                        print("{} {} - {} {} ".format(i1, j1, i2, j2) + move[4:])
-                        return True
-
-            else:
-                if abs(i1 - i2) == 1 and j1 == j2 and lookUpValidator(i1, j1, i2, j2):
-                    if validator("0" + move[4:]):
-                        print("{} {} - {} {} ".format(i1, j1, i2, j2) + move[4:])
-                        return True
-
-            gameMap[j1][i1] = old_val1
-            gameMap[j2][i2] = old_val2
-            return False
-
-    return False;
-
-
-# input_var = input("Enter something: ")
-# validator(input_var)
-# # print(gameMap)
-# print(numpy.flipud(gameMap))
-# input_var = input("Enter something: ")
-# validator(input_var)
-# # print(gameMap)
-# print(numpy.flipud(gameMap))
 
 for k in range(7):
     input_var = input("Enter something: ")
-	# 
-	# пример: 
-	# move = Move(input)
-	# if place(move):
-	#	"ok"
-	# else:
-	#	"invalid move"
-	#....
-	# помимо прочего приделай сюда мейн, так красивей
-    if validator(input_var):
-        print("good move")
-        # i = letterTonumb.get(input_var[2:3]) - 1
-        # j = int(input_var[3:]) - 1
-        # place(i, j, int(input_var[1:2]))
-    else:
-        print("invalid move")
+    #
+    # пример:
+    # move = Move(input)
+    # if place(move):
+    #	"ok"
+    # else:
+    #	"invalid move"
+    # ....
+    # помимо прочего приделай сюда мейн, так красивей
+    move = Move(input_var)
+    place(move)
     print(numpy.flipud(gameMap))
     print(coordinateToRotation)

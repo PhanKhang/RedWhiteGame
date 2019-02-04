@@ -1,6 +1,18 @@
 class Move:
 	
 	def __init__(self, input):
+
+		letterTonumb = {
+			"A": 1,
+			"B": 2,
+			"C": 3,
+			"D": 4,
+			"E": 5,
+			"F": 6,
+			"G": 7,
+			"H": 8
+
+		}
 				
 		def parseType(input):
 			if input[:1].isdigit():
@@ -21,28 +33,28 @@ class Move:
 		
 		def parseTargetCoordinateLet(input, type):
 			if type == 0:
-				return input[2:3]
-			return input[5:6]
+				return letterTonumb.get(input[2:3])
+			return letterTonumb.get(input[5:6])
 			
 		def parseSourceCoordinate1Num(input, type):
 			if type == 1:
 				return input[1:2]
-			return nill
+			return None
 		
 		def parseSourceCoordinate1Let(input, type):
 			if type == 1:
-				return input[:1]
-			return nill
+				return letterTonumb.get(input[:1])
+			return None
 		
 		def parseSourceCoordinate2Num(input, type):
 			if type == 1:
 				return input[3:4]
-			return nill
+			return None
 		
 		def parseSourceCoordinate2Let(input, type):
 			if type == 1:
-				return input[2:3]
-			return nill
+				return letterTonumb.get(input[2:3])
+			return None
 
 # здесь подразбито на сурс таргет координаты, сурс в свою очередь имеет сурс1 сурс2 на 2 ячейки.		
 
