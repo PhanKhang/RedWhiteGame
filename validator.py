@@ -16,10 +16,8 @@ class Validator:
         }
         self.numbToLetter = dict([[v, k] for k, v in self.letterTonumb.items()])
 
-
-
     def placeValidator(self, move):
-        i = (move.targetCoordinateLet) - 1
+        i = move.targetCoordinateLet - 1
         j = int(move.targetCoordinateNum) - 1
         if int(move.rotation) % 2 != 0:  # orientation check
             if 0 <= i <= 7 and 0 <= j <= 11 and 0 <= i + 1 <= 7:  # border check
@@ -27,10 +25,17 @@ class Validator:
                     if j == 0:  # first line is always supported
                         return True
                     else:
-                        if self.gameMap[j - 1][i] != 0 and self.gameMap[- 1][i + 1] != 0:  # there is support
-                            return True;
+                        if self.gameMap[j - 1][i] != 0 and self.gameMap[j- 1][i + 1] != 0:  # there is support
+                            return True
+                        else:
+                            print("No support")
+                            return False
                 else:
+                    print("Not free")
                     return False
+            else:
+                print("Out of border")
+                return False
         else:
             if 0 <= i <= 7 and 0 <= j <= 11 and 0 <= j + 1 <= 11:
                 if self.gameMap[j][i] == 0 and self.gameMap[j + 1][i] == 0:
@@ -63,9 +68,6 @@ class Validator:
                             return True
                 else:
                     return False;
-
-
-
 
     def lookUpValidatorHorizontal(self, i1, j1, i2, j2):
         if self.gameMap[i1][j1 + 1] == 0 and self.gameMap[i2][j2 + 1] == 0:
@@ -101,57 +103,76 @@ class Validator:
             if i1 == i2 and abs(j1 - j2) == 1 and self.lookUpValidatorVertical(i2, j2):
                 return True
             else:
-                    if abs(i1 - i2) == 1 and j1 == j2 and self.lookUpValidatorHorizontal(i1, j1, i2, j2):
-                        return True;
+                if abs(i1 - i2) == 1 and j1 == j2 and self.lookUpValidatorHorizontal(i1, j1, i2, j2):
+                    return True;
             return False
-	
-    red = [1,3]
-    white = [2,4]
-    dot = [1,4]
-    ring = [2,3]
-	
-    def victoryCheck(self, gameMap):
-        for i in range(9):
-            for j in range(5):
-                if gameMap[i][j] in red and gameMap[i+1][j] in red and gameMap[i+2][j] in red and gameMap[i+3][j] in red:
-                    return "color wins"
-                elif gameMap[i][j] in red and gameMap[i][j+1] in red and gameMap[i][j+2] in red and gameMap[i][j+3] in red:
-                    return "color wins"
-                elif gameMap[i+3][j] in red and gameMap[i+3][j+1] in red and gameMap[i+3][j+2] in red and gameMap[i+3][j+3] in red:
-                    return "color wins"
-                elif gameMap[i][j+3] in red and gameMap[i+1][j+3] in red and gameMap[i+2][j+3] in red and gameMap[i+3][j+3] in red:
-                    return "color wins"
-                elif gameMap[i][j] in red and gameMap[i+1][j+1] in red and gameMap[i+2][j+2] in red and gameMap[i+3][j+3] in red:
-                    return "color wins"
-                elif gameMap[i+3][j] in red and gameMap[i+2][j+1] in red and gameMap[i+1][j+2] in red and gameMap[i][j+3] in red:
-                    return "color wins"
-                
-                elif gameMap[i][j] in white and gameMap[i+1][j] in white and gameMap[i+2][j] in white and gameMap[i+3][j] in white:
-                    return "color wins"
-                elif gameMap[i][j] in white and gameMap[i][j+1] in white and gameMap[i][j+2] in white and gameMap[i][j+3] in white:
-                    return "color wins"
-                elif gameMap[i+3][j] in white and gameMap[i+3][j+1] in white and gameMap[i+3][j+2] in white and gameMap[i+3][j+3] in white:
-                    return "color wins"
-                elif gameMap[i][j+3] in white and gameMap[i+1][j+3] in white and gameMap[i+2][j+3] in white and gameMap[i+3][j+3] in white:
-                    return "color wins"
-                elif gameMap[i][j] in white and gameMap[i+1][j+1] in white and gameMap[i+2][j+2] in white and gameMap[i+3][j+3] in white:
-                    return "color wins"
-                elif gameMap[i+3][j] in white and gameMap[i+2][j+1] in white and gameMap[i+1][j+2] in white and gameMap[i][j+3] in white:
-                    return "color wins"
-                
-                elif gameMap[i][j] in dot and gameMap[i+1][j] in dot and gameMap[i+2][j] in dot and gameMap[i+3][j] in dot:
-                    return "circle wins"
-                elif gameMap[i][j] in dot and gameMap[i][j+1] in dot and gameMap[i][j+2] in dot and gameMap[i][j+3] in dot:
-                    return "circle wins"
-                elif gameMap[i+3][j] in dot and gameMap[i+3][j+1] in dot and gameMap[i+3][j+2] in dot and gameMap[i+3][j+3] in dot:
-                    return "circle wins"
-                elif gameMap[i][j+3] in dot and gameMap[i+1][j+3] in dot and gameMap[i+2][j+3] in dot and gameMap[i+3][j+3] in dot:
-                    return "circle wins"
-                elif gameMap[i][j] in dot and gameMap[i+1][j+1] in dot and gameMap[i+2][j+2] in dot and gameMap[i+3][j+3] in dot:
-                    return "circle wins"
-                elif gameMap[i+3][j] in dot and gameMap[i+2][j+1] in dot and gameMap[i+1][j+2] in dot and gameMap[i][j+3] in dot:
-                    return "circle wins"
-                
-                else:
-                    return "go"
-					
+
+
+red = [1, 3]
+white = [2, 4]
+dot = [1, 4]
+ring = [2, 3]
+
+
+def victoryCheck(self, gameMap):
+    for i in range(9):
+        for j in range(5):
+            if gameMap[i][j] in red and gameMap[i + 1][j] in red and gameMap[i + 2][j] in red and gameMap[i + 3][
+                j] in red:
+                return "color wins"
+            elif gameMap[i][j] in red and gameMap[i][j + 1] in red and gameMap[i][j + 2] in red and gameMap[i][
+                j + 3] in red:
+                return "color wins"
+            elif gameMap[i + 3][j] in red and gameMap[i + 3][j + 1] in red and gameMap[i + 3][j + 2] in red and \
+                    gameMap[i + 3][j + 3] in red:
+                return "color wins"
+            elif gameMap[i][j + 3] in red and gameMap[i + 1][j + 3] in red and gameMap[i + 2][j + 3] in red and \
+                    gameMap[i + 3][j + 3] in red:
+                return "color wins"
+            elif gameMap[i][j] in red and gameMap[i + 1][j + 1] in red and gameMap[i + 2][j + 2] in red and \
+                    gameMap[i + 3][j + 3] in red:
+                return "color wins"
+            elif gameMap[i + 3][j] in red and gameMap[i + 2][j + 1] in red and gameMap[i + 1][j + 2] in red and \
+                    gameMap[i][j + 3] in red:
+                return "color wins"
+
+            elif gameMap[i][j] in white and gameMap[i + 1][j] in white and gameMap[i + 2][j] in white and \
+                    gameMap[i + 3][j] in white:
+                return "color wins"
+            elif gameMap[i][j] in white and gameMap[i][j + 1] in white and gameMap[i][j + 2] in white and gameMap[i][
+                j + 3] in white:
+                return "color wins"
+            elif gameMap[i + 3][j] in white and gameMap[i + 3][j + 1] in white and gameMap[i + 3][j + 2] in white and \
+                    gameMap[i + 3][j + 3] in white:
+                return "color wins"
+            elif gameMap[i][j + 3] in white and gameMap[i + 1][j + 3] in white and gameMap[i + 2][j + 3] in white and \
+                    gameMap[i + 3][j + 3] in white:
+                return "color wins"
+            elif gameMap[i][j] in white and gameMap[i + 1][j + 1] in white and gameMap[i + 2][j + 2] in white and \
+                    gameMap[i + 3][j + 3] in white:
+                return "color wins"
+            elif gameMap[i + 3][j] in white and gameMap[i + 2][j + 1] in white and gameMap[i + 1][j + 2] in white and \
+                    gameMap[i][j + 3] in white:
+                return "color wins"
+
+            elif gameMap[i][j] in dot and gameMap[i + 1][j] in dot and gameMap[i + 2][j] in dot and gameMap[i + 3][
+                j] in dot:
+                return "circle wins"
+            elif gameMap[i][j] in dot and gameMap[i][j + 1] in dot and gameMap[i][j + 2] in dot and gameMap[i][
+                j + 3] in dot:
+                return "circle wins"
+            elif gameMap[i + 3][j] in dot and gameMap[i + 3][j + 1] in dot and gameMap[i + 3][j + 2] in dot and \
+                    gameMap[i + 3][j + 3] in dot:
+                return "circle wins"
+            elif gameMap[i][j + 3] in dot and gameMap[i + 1][j + 3] in dot and gameMap[i + 2][j + 3] in dot and \
+                    gameMap[i + 3][j + 3] in dot:
+                return "circle wins"
+            elif gameMap[i][j] in dot and gameMap[i + 1][j + 1] in dot and gameMap[i + 2][j + 2] in dot and \
+                    gameMap[i + 3][j + 3] in dot:
+                return "circle wins"
+            elif gameMap[i + 3][j] in dot and gameMap[i + 2][j + 1] in dot and gameMap[i + 1][j + 2] in dot and \
+                    gameMap[i][j + 3] in dot:
+                return "circle wins"
+
+            else:
+                return "go"

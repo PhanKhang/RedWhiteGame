@@ -61,10 +61,9 @@ def vtorayYacheyka(rotation):
 
 
 def place(move):
-    validator = Validator(gameMap, coordinateToRotation)
     if move.type == 0:
         if validator.placeValidator(move):
-            i = (move.targetCoordinateLet) - 1
+            i = move.targetCoordinateLet - 1
             j = int(move.targetCoordinateNum) - 1
             rotation = int(move.rotation)
             coordinateToRotation[numbToLetter.get(i + 1) + str(j + 1)] = rotation;
@@ -73,6 +72,8 @@ def place(move):
                 gameMap[j][i + 1] = vtorayYacheyka(rotation)
             else:
                 gameMap[j + 1][i] = vtorayYacheyka(rotation)
+        else:
+            print("wrong")
     else:
         if validator.recycleValidator(move):
             i1 = (move.sourceCoordinate1Let) - 1
@@ -151,8 +152,9 @@ def victoryCheck(gameMap):
             else:
                 return "go"
 
+validator = Validator(gameMap, coordinateToRotation)
 
-for k in range(2):
+for k in range(3):
     input_var = input("Enter something: ")
     move = Move(input_var)
     place(move)
