@@ -56,7 +56,6 @@ class Move:
 				return letterTonumb.get(input[2:3])
 			return None
 
-# здесь подразбито на сурс таргет координаты, сурс в свою очередь имеет сурс1 сурс2 на 2 ячейки.		
 
 		self.rotation = parseRotation(input, self.type)
 		self.targetCoordinateNum = parseTargetCoordinateNum(input, self.type)
