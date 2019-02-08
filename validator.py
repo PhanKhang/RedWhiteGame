@@ -54,7 +54,7 @@ class Validator:
                     if j == 0:  # first line is always supported
                         return True
                     else:
-                        if self.gameMap[j - 1][i] != 0 and self.gameMap[- 1][i + 1] != 0:  # there is support
+                        if self.gameMap[j - 1][i] != 0 and self.gameMap[j - 1][i + 1] != 0:  # there is support
                             return True
                 else:
                     return False
