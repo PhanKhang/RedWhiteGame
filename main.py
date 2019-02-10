@@ -137,6 +137,7 @@ for k in range(1, 60):
     elif choice == 1 and (k - 1) % 2 + 1 == 2:
         print("Turn " + str(k) + " Player 2" + " playing with dots")
 
+    # чекер на написание хода надо не хочется чтобы все ломалос
     while not legal:
         input_var = input()
         # print(input_var)

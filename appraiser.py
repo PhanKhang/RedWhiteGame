@@ -22,6 +22,7 @@ class Appraiser:
     dot = [1, 4]
     ring = [2, 3]
 
+    # оценка влиянии карты на поля
     def appraise(self, move, player):
         i = int(move.targetCoordinateLet) - 1
         j = move.targetCoordinateNum - 1
