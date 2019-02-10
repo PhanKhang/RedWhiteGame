@@ -1,6 +1,7 @@
 import numpy;
 from move import Move
 from validator import Validator
+from appraiser import Appraiser
 
 # convert letters to numbers
 letterToNumb = {
@@ -53,7 +54,7 @@ def vtorayYacheyka(rotation):
         5: 4,
         6: 3,
         7: 3,
-        8: 5
+        8: 4
     }
     return translator.get(rotation, 10);
 
@@ -110,15 +111,27 @@ def place(move):
 # player 1 is colors
 # player 2 is circles
 validator = Validator(gameMap, coordinateToRotation)
-
-
-for k in range(10):
-    input_var = input("Enter something: ")
+appraiser = Appraiser(gameMap)
+red = [1, 3]
+white = [2, 4]
+dot = [1, 4]
+ring = [2, 3]
+legal = False
+for k in range(1, 60):
+    print("Turn " + str(k) + " player " + str(k % 2))
+    # while not legal:
+    input_var = input()
+    # print(input_var)
     move = Move(input_var)
-    place(move)
+    legal = place(move)
+    if not legal:
+        print("illegal move")
+
+    print(numpy.flipud(gameMap))
     result = validator.victoryCheck(k % 2)
     if result != "go":
         print(result)
         break
-    print(numpy.flipud(gameMap))
+    legal = False
+
     # print(coordinateToRotation)

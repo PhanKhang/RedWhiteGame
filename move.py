@@ -14,6 +14,8 @@ class Move:
 
         }
 
+        self.input = input.split(" ")
+
         def parseType(input):
             if input[:1].isdigit():
                 return 0
@@ -23,43 +25,43 @@ class Move:
 
         def parseRotation(input, type):
             if type == 0:
-                return input[1:2]
-            return input[4:5]
+                return int(input[1])
+            return int(input[4])
 
         def parseTargetCoordinateNum(input, type):
             if type == 0:
-                return input[3:4]
-            return input[6:7]
+                return int(input[3])
+            return int(input[6])
 
         def parseTargetCoordinateLet(input, type):
             if type == 0:
-                return letterTonumb.get(input[2:3])
-            return letterTonumb.get(input[5:6])
+                return int(letterTonumb.get(input[2]))
+            return int(letterTonumb.get(input[5]))
 
         def parseSourceCoordinate1Num(input, type):
             if type == 1:
-                return input[1:2]
+                return int(input[1])
             return None
 
         def parseSourceCoordinate1Let(input, type):
             if type == 1:
-                return letterTonumb.get(input[:1])
+                return int(letterTonumb.get(input[0]))
             return None
 
         def parseSourceCoordinate2Num(input, type):
             if type == 1:
-                return input[3:4]
+                return int(input[3])
             return None
 
         def parseSourceCoordinate2Let(input, type):
             if type == 1:
-                return letterTonumb.get(input[2:3])
+                return int(letterTonumb.get(input[2]))
             return None
 
-        self.rotation = parseRotation(input, self.type)
-        self.targetCoordinateNum = parseTargetCoordinateNum(input, self.type)
-        self.targetCoordinateLet = parseTargetCoordinateLet(input, self.type)
-        self.sourceCoordinate1Num = parseSourceCoordinate1Num(input, self.type)
-        self.sourceCoordinate1Let = parseSourceCoordinate1Let(input, self.type)
-        self.sourceCoordinate2Num = parseSourceCoordinate2Num(input, self.type)
-        self.sourceCoordinate2Let = parseSourceCoordinate2Let(input, self.type)
+        self.rotation = parseRotation(self.input, self.type)
+        self.targetCoordinateNum = parseTargetCoordinateNum(self.input, self.type)
+        self.targetCoordinateLet = parseTargetCoordinateLet(self.input, self.type)
+        self.sourceCoordinate1Num = parseSourceCoordinate1Num(self.input, self.type)
+        self.sourceCoordinate1Let = parseSourceCoordinate1Let(self.input, self.type)
+        self.sourceCoordinate2Num = parseSourceCoordinate2Num(self.input, self.type)
+        self.sourceCoordinate2Let = parseSourceCoordinate2Let(self.input, self.type)

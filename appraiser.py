@@ -49,7 +49,7 @@ class Appraiser:
             self.appraise_ring(i1, j1)
 
     def appraise_red(self, i, j):
-        for step in range(4):
+        for step in range(1, 4):
             self.gameMap_red[j + step][i] += price_red
             self.gameMap_red[j - step][i] += price_red
             self.gameMap_red[j][i + step] += price_red
@@ -59,11 +59,116 @@ class Appraiser:
             self.gameMap_red[j - step][i - step] += price_red
             self.gameMap_red[j + step][i - step] += price_red
             self.gameMap_red[j - step][i + step] += price_red
-
         pass
 
+    def isTheMoveBlocking(self, i, j, color_or_dot):
+        if self.isBlockingVertical(i, j, color_or_dot) == 3:
+            print("Vertical is blocked for " +str(i)+" "+str(j))
+        if self.isBlockingVertical(i, j, color_or_dot) == 2:
+            print("Vertical is down blocked for " +str(i)+" "+str(j))
+        if self.isBlockingVertical(i, j, color_or_dot) == 1:
+            print("Vertical is up blocked for " +str(i)+" "+str(j))
+
+        if self.isBlockingHorizontal(i, j, color_or_dot) == 3:
+            print("Horizontal is blocked for "+str(i)+" "+str(j))
+        if self.isBlockingHorizontal(i, j, color_or_dot) == 2:
+            print("Horizontal is left blocked for "+str(i)+" "+str(j))
+        if self.isBlockingHorizontal(i, j, color_or_dot) == 1:
+            print("Horizontal is right blocked for "+str(i)+" "+str(j))
+        # if self.isBlockingLeftDiagonal(i, j, color_or_dot) != 0:
+        #     print("Left Diagonal is blocked")
+        # if self.isBlockingRightDiagonal(i, j, color_or_dot) != 0:
+        #     print("Right Diagonal is blocked")
+        pass
+
+    # return 0 for not blocking from both sides
+    # return 1 for blocking right
+    # return 2 for blocking left
+    # return 3 for blocking left and right
+    def isBlockingVertical(self, i, j, opposite_color_or_dot):
+        free_r = 0
+        free_l = 0
+        for step in range(1, 5):
+            if j + step < 12:
+                if self.gameMap[j + step][i] in opposite_color_or_dot or self.gameMap[j + step][i] == 0:
+                    free_r += 1
+                else:
+                    break
+        for step in range(1, 5):
+            if j - step >= 0:
+                if self.gameMap[j - step][i] in opposite_color_or_dot or self.gameMap[j - step][i] == 0:
+                    free_l += 1
+                else:
+                    break
+        out = 0
+        if free_r < 4:
+            out += 1
+        if free_l < 4:
+            out += 2
+        return out
+
+    def isBlockingHorizontal(self, i, j, opposite_color_or_dot):
+        free_r = 0
+        free_l = 0
+        for step in range(1, 5):
+            if self.gameMap[j][i + step] in opposite_color_or_dot or self.gameMap[j][i + step] == 0:
+                free_r += 1
+            else:
+                break
+        for step in range(1, 5):
+            if self.gameMap[j][i - step] in opposite_color_or_dot or self.gameMap[j][i - step] == 0:
+                free_l += 1
+            else:
+                break
+        out = 0
+        if free_r < 4:
+            out += 1
+        if free_l < 4:
+            out += 2
+        return out
+
+    def isBlockingRightDiagonal(self, i, j, opposite_color_or_dot):
+        free_r = 0
+        free_l = 0
+        for step in range(1, 5):
+            if self.gameMap[j + step][i + step] in opposite_color_or_dot or self.gameMap[j + step][i + step] == 0:
+                free_r += 1
+            else:
+                break
+        for step in range(1, 5):
+            if self.gameMap[j - step][i - step] in opposite_color_or_dot or self.gameMap[j - step][i - step] == 0:
+                free_l += 1
+            else:
+                break
+        out = 0
+        if free_r < 4:
+            out += 1
+        if free_l < 4:
+            out += 2
+        return out
+
+    def isBlockingLeftDiagonal(self, i, j, opposite_color_or_dot):
+        free_r = 0
+        free_l = 0
+        for step in range(1, 5):
+            if self.gameMap[j - step][i + step] in opposite_color_or_dot or self.gameMap[j - step][i + step] == 0:
+                free_r += 1
+            else:
+                break
+        for step in range(1, 5):
+            if self.gameMap[j + step][i - step] in opposite_color_or_dot or self.gameMap[j + step][i - step] == 0:
+                free_l += 1
+            else:
+                break
+        out = 0
+        if free_r < 4:
+            out += 1
+        if free_l < 4:
+            out += 2
+        return out
+
     def appraise_white(self, i, j):
-        for step in range(4):
+        for step in range(1, 4):
             self.gameMap_white[j + step][i] += price_white
             self.gameMap_white[j - step][i] += price_white
             self.gameMap_white[j][i + step] += price_white
@@ -76,7 +181,7 @@ class Appraiser:
         pass
 
     def appraise_dot(self, i, j):
-        for step in range(4):
+        for step in range(1, 4):
             self.gameMap_dot[j + step][i] += price_dot
             self.gameMap_dot[j - step][i] += price_dot
             self.gameMap_dot[j][i + step] += price_dot
@@ -89,7 +194,7 @@ class Appraiser:
         pass
 
     def appraise_ring(self, i, j):
-        for step in range(4):
+        for step in range(1, 4):
             self.gameMap_ring[j + step][i] += price_ring
             self.gameMap_ring[j - step][i] += price_ring
             self.gameMap_ring[j][i + step] += price_ring
