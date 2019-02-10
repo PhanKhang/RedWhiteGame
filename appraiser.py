@@ -27,6 +27,7 @@ class Appraiser:
         j = move.targetCoordinateNum - 1
         i1 = i
         j1 = j
+
         if move.rotation % 2 != 0:
             i1 += 1
         else:
@@ -74,19 +75,6 @@ class Appraiser:
 
         # else:
         #     print("Playing with colors")
-
-    def appraise_red(self, i, j):
-        for step in range(1, 4):
-            self.gameMap_red[j + step][i] += price_red
-            self.gameMap_red[j - step][i] += price_red
-            self.gameMap_red[j][i + step] += price_red
-            self.gameMap_red[j][i - step] += price_red
-
-            self.gameMap_red[j + step][i + step] += price_red
-            self.gameMap_red[j - step][i - step] += price_red
-            self.gameMap_red[j + step][i - step] += price_red
-            self.gameMap_red[j - step][i + step] += price_red
-        pass
 
     def moveBlocking(self, i, j, color_or_dot):
 
@@ -179,6 +167,7 @@ class Appraiser:
         else:
             print("non found")
             return None
+
     # return 0 for not blocking from both sides
     # return 1 for blocking right
     # return 2 for blocking left
@@ -209,15 +198,18 @@ class Appraiser:
         free_r = 0
         free_l = 0
         for step in range(1, 5):
-            if self.gameMap[j][i + step] in opposite_color_or_dot or self.gameMap[j][i + step] == 0:
-                free_r += 1
-            else:
-                break
+            if i + step < 7:
+                if self.gameMap[j][i + step] in opposite_color_or_dot or self.gameMap[j][i + step] == 0:
+                    free_r += 1
+                else:
+                    break
+
         for step in range(1, 5):
-            if self.gameMap[j][i - step] in opposite_color_or_dot or self.gameMap[j][i - step] == 0:
-                free_l += 1
-            else:
-                break
+            if i - step >= 0:
+                if self.gameMap[j][i - step] in opposite_color_or_dot or self.gameMap[j][i - step] == 0:
+                    free_l += 1
+                else:
+                    break
         out = 0
         if free_r < 4:
             out += 1
@@ -229,15 +221,17 @@ class Appraiser:
         free_r = 0
         free_l = 0
         for step in range(1, 5):
-            if self.gameMap[j + step][i + step] in opposite_color_or_dot or self.gameMap[j + step][i + step] == 0:
-                free_r += 1
-            else:
-                break
+            if j + step < 12 and i + step < 8:
+                if self.gameMap[j + step][i + step] in opposite_color_or_dot or self.gameMap[j + step][i + step] == 0:
+                    free_r += 1
+                else:
+                    break
         for step in range(1, 5):
-            if self.gameMap[j - step][i - step] in opposite_color_or_dot or self.gameMap[j - step][i - step] == 0:
-                free_l += 1
-            else:
-                break
+            if j - step >= 0 and i - step >= 0:
+                if self.gameMap[j - step][i - step] in opposite_color_or_dot or self.gameMap[j - step][i - step] == 0:
+                    free_l += 1
+                else:
+                    break
         out = 0
         if free_r < 4:
             out += 1
@@ -249,15 +243,17 @@ class Appraiser:
         free_r = 0
         free_l = 0
         for step in range(1, 5):
-            if self.gameMap[j - step][i + step] in opposite_color_or_dot or self.gameMap[j - step][i + step] == 0:
-                free_r += 1
-            else:
-                break
+            if j - step >= 0 and i + step < 8:
+                if self.gameMap[j - step][i + step] in opposite_color_or_dot or self.gameMap[j - step][i + step] == 0:
+                    free_r += 1
+                else:
+                    break
         for step in range(1, 5):
-            if self.gameMap[j + step][i - step] in opposite_color_or_dot or self.gameMap[j + step][i - step] == 0:
-                free_l += 1
-            else:
-                break
+            if j + step < 12 and i - step >= 0:
+                if self.gameMap[j + step][i - step] in opposite_color_or_dot or self.gameMap[j + step][i - step] == 0:
+                    free_l += 1
+                else:
+                    break
         out = 0
         if free_r < 4:
             out += 1
@@ -265,54 +261,83 @@ class Appraiser:
             out += 2
         return out
 
+    def appraise_red(self, i, j):
+        for step in range(1, 4):
+            if j + step < 12:
+                self.gameMap_red[j + step][i] += price_red
+            if j - step >= 0:
+                self.gameMap_red[j - step][i] += price_red
+            if i + step < 8:
+                self.gameMap_red[j][i + step] += price_red
+            if i - step >= 0:
+                self.gameMap_red[j][i - step] += price_red
+            if j + step < 12 and i + step < 8:
+                self.gameMap_red[j + step][i + step] += price_red
+            if j - step >= 0 and i - step >= 0:
+                self.gameMap_red[j - step][i - step] += price_red
+            if j + step < 12 and i - step >= 0:
+                self.gameMap_red[j + step][i - step] += price_red
+            if j - step >= 0 and i + step < 8:
+                self.gameMap_red[j - step][i + step] += price_red
+        pass
+
     def appraise_white(self, i, j):
         for step in range(1, 4):
-            self.gameMap_white[j + step][i] += price_white
-            self.gameMap_white[j - step][i] += price_white
-            self.gameMap_white[j][i + step] += price_white
-            self.gameMap_white[j][i - step] += price_white
-
-            self.gameMap_white[j + step][i + step] += price_white
-            self.gameMap_white[j - step][i - step] += price_white
-            self.gameMap_white[j + step][i - step] += price_white
-            self.gameMap_white[j - step][i + step] += price_white
+            if j + step < 12:
+                self.gameMap_white[j + step][i] += price_white
+            if j - step >= 0:
+                self.gameMap_white[j - step][i] += price_white
+            if i + step < 8:
+                self.gameMap_white[j][i + step] += price_white
+            if i - step >= 0:
+                self.gameMap_white[j][i - step] += price_white
+            if j + step < 12 and i + step < 8:
+                self.gameMap_white[j + step][i + step] += price_white
+            if j - step >= 0 and i - step >= 0:
+                self.gameMap_white[j - step][i - step] += price_white
+            if j + step < 12 and i - step >= 0:
+                self.gameMap_white[j + step][i - step] += price_white
+            if j - step >= 0 and i + step < 8:
+                self.gameMap_white[j - step][i + step] += price_white
         pass
 
     def appraise_dot(self, i, j):
         for step in range(1, 4):
-            self.gameMap_dot[j + step][i] += price_dot
-            self.gameMap_dot[j - step][i] += price_dot
-            self.gameMap_dot[j][i + step] += price_dot
-            self.gameMap_dot[j][i - step] += price_dot
-
-            self.gameMap_dot[j + step][i + step] += price_dot
-            self.gameMap_dot[j - step][i - step] += price_dot
-            self.gameMap_dot[j + step][i - step] += price_dot
-            self.gameMap_dot[j - step][i + step] += price_dot
+            if j + step < 12:
+                self.gameMap_dot[j + step][i] += price_dot
+            if j - step >= 0:
+                self.gameMap_dot[j - step][i] += price_dot
+            if i + step < 8:
+                self.gameMap_dot[j][i + step] += price_dot
+            if i - step >= 0:
+                self.gameMap_dot[j][i - step] += price_dot
+            if j + step < 12 and i + step < 8:
+                self.gameMap_dot[j + step][i + step] += price_dot
+            if j - step >= 0 and i - step >= 0:
+                self.gameMap_dot[j - step][i - step] += price_dot
+            if j + step < 12 and i - step >= 0:
+                self.gameMap_dot[j + step][i - step] += price_dot
+            if j - step >= 0 and i + step < 8:
+                self.gameMap_dot[j - step][i + step] += price_dot
         pass
 
     def appraise_ring(self, i, j):
         for step in range(1, 4):
-            self.gameMap_ring[j + step][i] += price_ring
-            self.gameMap_ring[j - step][i] += price_ring
-            self.gameMap_ring[j][i + step] += price_ring
-            self.gameMap_ring[j][i - step] += price_ring
-
-            self.gameMap_ring[j + step][i + step] += price_ring
-            self.gameMap_ring[j - step][i - step] += price_ring
-            self.gameMap_ring[j + step][i - step] += price_ring
-            self.gameMap_ring[j - step][i + step] += price_ring
+            if j + step < 12:
+                self.gameMap_ring[j + step][i] += price_ring
+            if j - step >= 0:
+                self.gameMap_ring[j - step][i] += price_ring
+            if i + step < 8:
+                self.gameMap_ring[j][i + step] += price_ring
+            if i - step >= 0:
+                self.gameMap_ring[j][i - step] += price_ring
+            if j + step < 12 and i + step < 8:
+                self.gameMap_ring[j + step][i + step] += price_ring
+            if j - step >= 0 and i - step >= 0:
+                self.gameMap_ring[j - step][i - step] += price_ring
+            if j + step < 12 and i - step >= 0:
+                self.gameMap_ring[j + step][i - step] += price_ring
+            if j - step >= 0 and i + step < 8:
+                self.gameMap_ring[j - step][i + step] += price_ring
         pass
 
-    @property
-    def getRed(self):
-        return self.gameMap_red
-
-    def getWhite(self):
-        return self.gameMap_white
-
-    def getDot(self):
-        return self.gameMap_dot
-
-    def getRing(self):
-        return self.gameMap_ring

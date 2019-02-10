@@ -144,8 +144,16 @@ for k in range(1, 60):
         legal = place(move)
         if not legal:
             print("illegal move")
-
+    appraiser.appraise(move, (k - 1) % 2 + 1)
     print(numpy.flipud(gameMap))
+    print("Dot map")
+    print(numpy.flipud(appraiser.gameMap_dot))
+    print("Ring map")
+    print(numpy.flipud(appraiser.gameMap_ring))
+    print("White map")
+    print(numpy.flipud(appraiser.gameMap_white))
+    print("Red map")
+    print(numpy.flipud(appraiser.gameMap_red))
     result = validator.victoryCheck(k % 2)
     if result != "go":
         print(result)
