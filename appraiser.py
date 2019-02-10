@@ -1,9 +1,11 @@
-import numpy;
+import numpy
 
 price_red = 10
 price_white = 10
 price_dot = 10
 price_ring = 10
+
+price_of_being_blocked = -1000;
 
 
 class Appraiser:
@@ -20,7 +22,7 @@ class Appraiser:
     dot = [1, 4]
     ring = [2, 3]
 
-    def appraise(self, move):
+    def appraise(self, move, player):
         i = int(move.targetCoordinateLet) - 1
         j = move.targetCoordinateNum - 1
         i1 = i
@@ -48,6 +50,31 @@ class Appraiser:
         if self.gameMap[j1][i1] in self.ring:
             self.appraise_ring(i1, j1)
 
+        # if player == 0:
+        #     print("Playing with Dots")
+        if self.gameMap[j][i] in self.dot:
+            self.moveBlocking(i, j, self.ring)
+        else:
+            self.moveBlocking(i, j, self.dot)
+
+        if self.gameMap[j][i] in self.red:
+            self.moveBlocking(i, j, self.white)
+        else:
+            self.moveBlocking(i, j, self.red)
+
+        if self.gameMap[j1][i1] in self.dot:
+            self.moveBlocking(i1, j1, self.ring)
+        else:
+            self.moveBlocking(i1, j1, self.dot)
+
+        if self.gameMap[j1][i1] in self.red:
+            self.moveBlocking(i1, j1, self.white)
+        else:
+            self.moveBlocking(i1, j1, self.red)
+
+        # else:
+        #     print("Playing with colors")
+
     def appraise_red(self, i, j):
         for step in range(1, 4):
             self.gameMap_red[j + step][i] += price_red
@@ -61,26 +88,97 @@ class Appraiser:
             self.gameMap_red[j - step][i + step] += price_red
         pass
 
-    def isTheMoveBlocking(self, i, j, color_or_dot):
+    def moveBlocking(self, i, j, color_or_dot):
+
         if self.isBlockingVertical(i, j, color_or_dot) == 3:
-            print("Vertical is blocked for " +str(i)+" "+str(j))
+            print("Vertical is blocked for " + str(i) + " " + str(j))
+            tmp = self.getCorrectMap(color_or_dot)
+            for step in range(1, 5):
+                if j + step < 12:
+                    tmp[j + step][i] += price_of_being_blocked
+                if j - step >= 0:
+                    tmp[j - step][i] += price_of_being_blocked
         if self.isBlockingVertical(i, j, color_or_dot) == 2:
-            print("Vertical is down blocked for " +str(i)+" "+str(j))
+            print("Vertical is down blocked for " + str(i) + " " + str(j))
+            tmp = self.getCorrectMap(color_or_dot)
+            for step in range(1, 5):
+                if j - step >= 0:
+                    tmp[j - step][i] += price_of_being_blocked
         if self.isBlockingVertical(i, j, color_or_dot) == 1:
-            print("Vertical is up blocked for " +str(i)+" "+str(j))
+            print("Vertical is up blocked for " + str(i) + " " + str(j))
+            tmp = self.getCorrectMap(color_or_dot)
+            for step in range(1, 5):
+                if j + step < 12:
+                    tmp[j + step][i] += price_of_being_blocked
 
         if self.isBlockingHorizontal(i, j, color_or_dot) == 3:
-            print("Horizontal is blocked for "+str(i)+" "+str(j))
+            print("Horizontal is blocked for " + str(i) + " " + str(j))
+            tmp = self.getCorrectMap(color_or_dot)
+            for step in range(1, 5):
+                if i + step < 8:
+                    tmp[j][i + step] += price_of_being_blocked
+                if i - step >= 0:
+                    tmp[j - step][i - step] += price_of_being_blocked
         if self.isBlockingHorizontal(i, j, color_or_dot) == 2:
-            print("Horizontal is left blocked for "+str(i)+" "+str(j))
+            print("Horizontal is left blocked for " + str(i) + " " + str(j))
+            for step in range(1, 5):
+                if i - step >= 0:
+                    tmp[j][i - step] += price_of_being_blocked
         if self.isBlockingHorizontal(i, j, color_or_dot) == 1:
-            print("Horizontal is right blocked for "+str(i)+" "+str(j))
-        # if self.isBlockingLeftDiagonal(i, j, color_or_dot) != 0:
-        #     print("Left Diagonal is blocked")
-        # if self.isBlockingRightDiagonal(i, j, color_or_dot) != 0:
-        #     print("Right Diagonal is blocked")
+            print("Horizontal is right blocked for " + str(i) + " " + str(j))
+            for step in range(1, 5):
+                if i + step >= 0:
+                    tmp[j][i + step] += price_of_being_blocked
+
+        if self.isBlockingLeftDiagonal(i, j, color_or_dot) == 3:
+            print("Left Diagonal is blocked for " + str(i) + " " + str(j))
+            for step in range(1, 5):
+                if j + step < 12 and i - step >= 0:
+                    tmp[j + step][i - step] += price_of_being_blocked
+                if j - step >= 0 and i + step < 8:
+                    tmp[j - step][i + step] += price_of_being_blocked
+        if self.isBlockingLeftDiagonal(i, j, color_or_dot) == 2:
+            print("Left Diagonal is left blocked for " + str(i) + " " + str(j))
+            for step in range(1, 5):
+                if j + step < 12 and i - step >= 0:
+                    tmp[j + step][i - step] += price_of_being_blocked
+        if self.isBlockingLeftDiagonal(i, j, color_or_dot) == 1:
+            print("Left Diagonal is right blocked for " + str(i) + " " + str(j))
+            for step in range(1, 5):
+                if j - step >= 0 and i + step < 8:
+                    tmp[j - step][i + step] += price_of_being_blocked
+
+        if self.isBlockingRightDiagonal(i, j, color_or_dot) == 3:
+            print("Right Diagonal is blocked for " + str(i) + " " + str(j))
+            for step in range(1, 5):
+                if j + step < 12 and i + step < 8:
+                    tmp[j + step][i + step] += price_of_being_blocked
+                if j - step >= 0 and i - step >= 0:
+                    tmp[j - step][i - step] += price_of_being_blocked
+        if self.isBlockingRightDiagonal(i, j, color_or_dot) == 2:
+            print("Right Diagonal is left blocked for " + str(i) + " " + str(j))
+            for step in range(1, 5):
+                if j - step >= 0 and i - step >= 0:
+                    tmp[j - step][i - step] += price_of_being_blocked
+        if self.isBlockingRightDiagonal(i, j, color_or_dot) == 1:
+            print("Right Diagonal is right blocked for " + str(i) + " " + str(j))
+            for step in range(1, 5):
+                if j + step < 12 and i + step < 8:
+                    tmp[j + step][i + step] += price_of_being_blocked
         pass
 
+    def getCorrectMap(self, color_or_dot):
+        if color_or_dot == self.red:
+            return self.gameMap_red
+        elif color_or_dot == self.white:
+            return self.gameMap_white
+        elif color_or_dot == self.dot:
+            return self.gameMap_dot
+        elif color_or_dot == self.ring:
+            return self.gameMap_ring
+        else:
+            print("non found")
+            return None
     # return 0 for not blocking from both sides
     # return 1 for blocking right
     # return 2 for blocking left

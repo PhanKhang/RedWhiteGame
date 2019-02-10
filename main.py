@@ -117,15 +117,33 @@ white = [2, 4]
 dot = [1, 4]
 ring = [2, 3]
 legal = False
+
+choice = int(input("Write 0 for dots and 1 for colors: "))
+if choice == 0:
+    print("Player 1: Dots")
+    print("Player 2: Colors")
+else:
+    print("Player 1: Colors")
+    print("Player 2: Dots")
+
 for k in range(1, 60):
-    print("Turn " + str(k) + " player " + str(k % 2))
-    # while not legal:
-    input_var = input()
-    # print(input_var)
-    move = Move(input_var)
-    legal = place(move)
-    if not legal:
-        print("illegal move")
+    # print("Turn " + str(k) + " Player " + str((k-1) % 2+1))
+    if choice == 0 and (k - 1) % 2 + 1 == 1:
+        print("Turn " + str(k) + " Player 1" + " playing with dots")
+    elif choice == 0 and (k - 1) % 2 + 1 == 2:
+        print("Turn " + str(k) + " Player 2" + " playing with colors")
+    elif choice == 1 and (k - 1) % 2 + 1 == 1:
+        print("Turn " + str(k) + " Player 1" + " playing with colors")
+    elif choice == 1 and (k - 1) % 2 + 1 == 2:
+        print("Turn " + str(k) + " Player 2" + " playing with dots")
+
+    while not legal:
+        input_var = input()
+        # print(input_var)
+        move = Move(input_var)
+        legal = place(move)
+        if not legal:
+            print("illegal move")
 
     print(numpy.flipud(gameMap))
     result = validator.victoryCheck(k % 2)
