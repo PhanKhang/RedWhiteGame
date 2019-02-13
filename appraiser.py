@@ -78,10 +78,10 @@ class Appraiser:
         #     print("Playing with colors")
 
     def moveBlocking(self, i, j, color_or_dot):
+        tmp = self.getCorrectMap(color_or_dot)
 
         if self.isBlockingVertical(i, j, color_or_dot) == 3:
             print("Vertical is blocked for " + str(i) + " " + str(j))
-            tmp = self.getCorrectMap(color_or_dot)
             for step in range(1, 5):
                 if j + step < 12:
                     tmp[j + step][i] += price_of_being_blocked
@@ -89,25 +89,22 @@ class Appraiser:
                     tmp[j - step][i] += price_of_being_blocked
         if self.isBlockingVertical(i, j, color_or_dot) == 2:
             print("Vertical is down blocked for " + str(i) + " " + str(j))
-            tmp = self.getCorrectMap(color_or_dot)
             for step in range(1, 5):
                 if j - step >= 0:
                     tmp[j - step][i] += price_of_being_blocked
         if self.isBlockingVertical(i, j, color_or_dot) == 1:
             print("Vertical is up blocked for " + str(i) + " " + str(j))
-            tmp = self.getCorrectMap(color_or_dot)
             for step in range(1, 5):
                 if j + step < 12:
                     tmp[j + step][i] += price_of_being_blocked
 
         if self.isBlockingHorizontal(i, j, color_or_dot) == 3:
             print("Horizontal is blocked for " + str(i) + " " + str(j))
-            tmp = self.getCorrectMap(color_or_dot)
             for step in range(1, 5):
                 if i + step < 8:
                     tmp[j][i + step] += price_of_being_blocked
                 if i - step >= 0:
-                    tmp[j - step][i - step] += price_of_being_blocked
+                    tmp[j][i - step] += price_of_being_blocked
         if self.isBlockingHorizontal(i, j, color_or_dot) == 2:
             print("Horizontal is left blocked for " + str(i) + " " + str(j))
             for step in range(1, 5):
@@ -116,7 +113,7 @@ class Appraiser:
         if self.isBlockingHorizontal(i, j, color_or_dot) == 1:
             print("Horizontal is right blocked for " + str(i) + " " + str(j))
             for step in range(1, 5):
-                if i + step >= 0:
+                if i + step < 8:
                     tmp[j][i + step] += price_of_being_blocked
 
         if self.isBlockingLeftDiagonal(i, j, color_or_dot) == 3:
@@ -189,9 +186,9 @@ class Appraiser:
                 else:
                     break
         out = 0
-        if free_r < 4:
+        if free_r < 3:
             out += 1
-        if free_l < 4:
+        if free_l < 3:
             out += 2
         return out
 
@@ -212,9 +209,9 @@ class Appraiser:
                 else:
                     break
         out = 0
-        if free_r < 4:
+        if free_r < 3:
             out += 1
-        if free_l < 4:
+        if free_l < 3:
             out += 2
         return out
 
@@ -234,9 +231,9 @@ class Appraiser:
                 else:
                     break
         out = 0
-        if free_r < 4:
+        if free_r < 3:
             out += 1
-        if free_l < 4:
+        if free_l < 3:
             out += 2
         return out
 
@@ -256,9 +253,9 @@ class Appraiser:
                 else:
                     break
         out = 0
-        if free_r < 4:
+        if free_r < 3:
             out += 1
-        if free_l < 4:
+        if free_l < 3:
             out += 2
         return out
 
