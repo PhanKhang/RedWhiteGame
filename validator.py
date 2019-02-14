@@ -77,13 +77,13 @@ class Validator:
                     return False
 
     def lookUpValidatorHorizontal(self, i1, j1, i2, j2):
-        if self.gameMap[i1][j1 + 1] == 0 and self.gameMap[i2][j2 + 1] == 0:
+        if self.gameMap[j1 + 1][i1] == 0 and self.gameMap[j2 + 1][i2] == 0:
             return True
         return False
 
     # check if anything is above in case vertical
     def lookUpValidatorVertical(self, i2, j2):
-        if self.gameMap[i2][j2 + 1] == 0:
+        if self.gameMap[j2 + 1][i2] == 0:
             return True
         return False
 
@@ -94,21 +94,20 @@ class Validator:
         i2 = move.sourceCoordinate2Let - 1
         j2 = int(move.sourceCoordinate2Num) - 1
 
-        rotation = self.coordinateToRotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 10)
-        if rotation == 10:
-            rotation = self.coordinateToRotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 10)
+        rotation = self.coordinateToRotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 0)
+        if rotation == 0:
+            rotation = self.coordinateToRotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
             print(rotation)
-        if rotation == 10:
+        if rotation == 0:
             print(rotation)
             return False
-
-        if rotation % 2 == 0:
+        if int(rotation) % 2 == 0:
             if i1 == i2 and abs(j1 - j2) == 1 and self.lookUpValidatorVertical(i2, j2):
                 return True
-            else:
-                if abs(i1 - i2) == 1 and j1 == j2 and self.lookUpValidatorHorizontal(i1, j1, i2, j2):
-                    return True
-            return False
+        else:
+            if abs(i1 - i2) == 1 and j1 == j2 and self.lookUpValidatorHorizontal(i1, j1, i2, j2):
+                return True
+        return False
 
     red = [1, 3]
     white = [2, 4]

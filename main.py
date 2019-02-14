@@ -80,10 +80,11 @@ def place(move):
     else:
         if validator.recycleValidator(move):
             i1 = move.sourceCoordinate1Let - 1
-            j1 = int(move.sourceCoordinate1Num) - 1
+            j1 = move.sourceCoordinate1Num - 1
 
             i2 = move.sourceCoordinate2Let - 1
-            j2 = int(move.sourceCoordinate2Num) - 1
+            j2 = move.sourceCoordinate2Num - 1
+
             old_val1 = gameMap[j1][i1]
             old_val2 = gameMap[j2][i2]
 
@@ -94,6 +95,10 @@ def place(move):
             j = int(move.targetCoordinateNum) - 1
             rotation = int(move.rotation)
             if validator.placeValidatorCoord(i, j, rotation):
+                # remove the value from dictionary of moves
+                if coordinateToRotation.pop(numbToLetter.get(i1 + 1) + str(j1 + 1), 0) == 0:
+                    coordinateToRotation.pop(numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
+
                 coordinateToRotation[numbToLetter.get(i + 1) + str(j + 1)] = rotation
                 gameMap[j][i] = pervayaYacheyka(rotation)
                 if rotation % 2 != 0:
@@ -145,14 +150,18 @@ for k in range(1, 60):
         legal = place(move)
         if not legal:
             print("illegal move")
-    appraiser.appraise(move, (k - 1) % 2 + 1)
+
+    print("Current Game field")
     print(numpy.flipud(gameMap))
-    print("Dot map")
-    print(numpy.flipud(appraiser.gameMap_dot))
-    print("Ring map")
-    print(numpy.flipud(appraiser.gameMap_ring))
-    print("White map")
-    print(numpy.flipud(appraiser.gameMap_white))
+    print(coordinateToRotation)
+
+    appraiser.appraise(move, (k - 1) % 2 + 1)
+    # print("Dot map")
+    # print(numpy.flipud(appraiser.gameMap_dot))
+    # print("Ring map")
+    # print(numpy.flipud(appraiser.gameMap_ring))
+    # print("White map")
+    # print(numpy.flipud(appraiser.gameMap_white))
     print("Red map")
     print(numpy.flipud(appraiser.gameMap_red))
     result = validator.victoryCheck(k % 2)
