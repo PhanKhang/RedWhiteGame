@@ -1,7 +1,10 @@
+#!/usr/bin/python3
+
 import numpy;
 from move import Move
 from validator import Validator
 from appraiser import Appraiser
+
 
 # convert letters to numbers
 letterToNumb = {
@@ -28,6 +31,17 @@ gameMap = numpy.zeros((12, 8))
 # beluyKolco - 2
 # krasnyKolco - 3
 # beluyChernuy - 4
+row_labels = ['12', '11', '10', '9 ', '8 ', '7 ', '6 ', '5 ', '4 ', '3 ', '2 ', '1 ']
+
+# player 1 is colors
+# player 2 is circles
+validator = Validator(gameMap, coordinateToRotation)
+appraiser = Appraiser(gameMap)
+red = [1, 3]
+white = [2, 4]
+dot = [1, 4]
+ring = [2, 3]
+
 
 # give what is in the first half of the card according to rotation if not found return 10
 def pervayaYacheyka(rotation):
@@ -60,7 +74,7 @@ def vtorayYacheyka(rotation):
 
 
 # put card at position i j and the rotation. keep in mind that coordinates are reversed j before i;
-row_labels = ['12', '11', '10', '9 ', '8 ', '7 ', '6 ', '5 ', '4 ', '3 ', '2 ', '1 ']
+
 
 
 def correctPrinter(gameMap):
@@ -120,66 +134,69 @@ def place(move):
     return
 
 
-# player 1 is colors
-# player 2 is circles
-validator = Validator(gameMap, coordinateToRotation)
-appraiser = Appraiser(gameMap)
-red = [1, 3]
-white = [2, 4]
-dot = [1, 4]
-ring = [2, 3]
-legal = False
-choice = int(input("Write 0 for dots and 1 for colors: "))
-if choice == 0:
-    print("Player 1: Dots")
-    print("Player 2: Colors")
-else:
-    print("Player 1: Colors")
-    print("Player 2: Dots")
 
-for k in range(1, 61):
-    # print("Turn " + str(k) + " Player " + str((k-1) % 2+1))
-    if choice == 0 and (k - 1) % 2 + 1 == 1:
-        print("Turn " + str(k) + " Player 1" + " playing with dots")
-    elif choice == 0 and (k - 1) % 2 + 1 == 2:
-        print("Turn " + str(k) + " Player 2" + " playing with colors")
-    elif choice == 1 and (k - 1) % 2 + 1 == 1:
-        print("Turn " + str(k) + " Player 1" + " playing with colors")
-    elif choice == 1 and (k - 1) % 2 + 1 == 2:
-        print("Turn " + str(k) + " Player 2" + " playing with dots")
-
-    # чекер на написание хода надо не хочется чтобы все ломалос
-    while not legal:
-        input_var = input()
-        # print(input_var)
-        move = Move(input_var)
-        if k <= 24 and move.type == 0:
-            legal = place(move)
-        elif k > 24 and move.type == 1:
-            legal = place(move)
-        if not legal:
-            print("illegal move")
-
-    print("Current Game field")
-    # print(numpy.flipud(gameMap))
-    correctPrinter(gameMap)
-    # print(coordinateToRotation)
-
-    # appraiser.appraise(move, (k - 1) % 2 + 1)
-    # print("Dot map")
-    # print(numpy.flipud(appraiser.gameMap_dot))
-    # print("Ring map")
-    # print(numpy.flipud(appraiser.gameMap_ring))
-    # print("White map")
-    # print(numpy.flipud(appraiser.gameMap_white))
-    # print("Red map")
-    # print(numpy.flipud(appraiser.gameMap_red))
-    # correctPrinter(appraiser.gameMap_red)
-    # appraiser.getNotEmptyFreeSpaces(gameMap, appraiser.gameMap_red)
-    result = validator.victoryCheck(k % 2)
-    if result != "go":
-        print(result)
-        break
+def main():
+    
+    choice = int(input("Write 0 for dots and 1 for colors: "))
+    if choice == 0:
+        print("Player 1: Dots")
+        print("Player 2: Colors")
+    else:
+        print("Player 1: Colors")
+        print("Player 2: Dots")
     legal = False
+    
+    for k in range(1, 61):
+        # print("Turn " + str(k) + " Player " + str((k-1) % 2+1))
+        if choice == 0 and (k - 1) % 2 + 1 == 1:
+            print("Turn " + str(k) + " Player 1" + " playing with dots")
+        elif choice == 0 and (k - 1) % 2 + 1 == 2:
+            print("Turn " + str(k) + " Player 2" + " playing with colors")
+        elif choice == 1 and (k - 1) % 2 + 1 == 1:
+            print("Turn " + str(k) + " Player 1" + " playing with colors")
+        elif choice == 1 and (k - 1) % 2 + 1 == 2:
+            print("Turn " + str(k) + " Player 2" + " playing with dots")
 
-    # print(coordinateToRotation)
+        # чекер на написание хода надо не хочется чтобы все ломалос
+        while not legal:
+            movok = False
+            while not movok:
+                input_var = input()
+                # print(input_var)
+                try:
+                    move = Move(input_var)
+                    movok = True
+                except:
+                    print("unable to parse the move, try again")
+            if k <= 24 and move.type == 0:
+                legal = place(move)
+            elif k > 24 and move.type == 1:
+                legal = place(move)
+            if not legal:
+                print("illegal move, try again")
+
+        print("Current Game field")
+        # print(numpy.flipud(gameMap))
+        correctPrinter(gameMap)
+        # print(coordinateToRotation)
+
+        # appraiser.appraise(move, (k - 1) % 2 + 1)
+        # print("Dot map")
+        # print(numpy.flipud(appraiser.gameMap_dot))
+        # print("Ring map")
+        # print(numpy.flipud(appraiser.gameMap_ring))
+        # print("White map")
+        # print(numpy.flipud(appraiser.gameMap_white))
+        # print("Red map")
+        # print(numpy.flipud(appraiser.gameMap_red))
+        # correctPrinter(appraiser.gameMap_red)
+        # appraiser.getNotEmptyFreeSpaces(gameMap, appraiser.gameMap_red)
+        result = validator.victoryCheck(k % 2)
+        if result != "go":
+            print(result)
+            break
+        legal = False
+
+        # print(coordinateToRotation)
+
+main()
