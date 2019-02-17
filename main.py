@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import numpy
 from move import Move
 from validator import Validator
@@ -193,10 +194,8 @@ def main():
         # print(numpy.flipud(appraiser.gameMap_red))
         correctPrinter(appraiser.gameMap_red)
         appraiser.getNotEmptyFreeSpaces(gameMap, appraiser.gameMap_red)
-
-
-        print("Checking for")
-        print((k+choice) % 2)
+        #
+        #
         result = validator.victoryCheck((k+choice) % 2)
         if result != "go":
             print(result)

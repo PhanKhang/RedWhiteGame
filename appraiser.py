@@ -1,5 +1,4 @@
 import numpy
-from move import Move
 
 price_red = 10
 price_white = 10
