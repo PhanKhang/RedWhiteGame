@@ -1,7 +1,7 @@
 # Heuristic helper, value storage cell.
 
 class Cell:
-    occupier = 0
+    occupied = 0
     redWeight = 0
     whiteWeight = 0
     ringWeight = 0

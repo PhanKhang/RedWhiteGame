@@ -1,10 +1,7 @@
-#!/usr/bin/python3
-
-import numpy;
+import numpy
 from move import Move
 from validator import Validator
 from appraiser import Appraiser
-
 
 # convert letters to numbers
 letterToNumb = {
@@ -25,7 +22,6 @@ coordinateToRotation = {}
 
 # game map
 gameMap = numpy.zeros((12, 8))
-
 
 # krasnyCherny - 1
 # beluyKolco - 2
@@ -76,11 +72,10 @@ def vtorayYacheyka(rotation):
 # put card at position i j and the rotation. keep in mind that coordinates are reversed j before i;
 
 
-
 def correctPrinter(gameMap):
     print("       A    B    C    D    E    F    G    H")
     for row_label, row in zip(row_labels, numpy.flipud(gameMap)):
-        print ('%s [%s]' % (row_label, ' '.join('%04s' % int(i) for i in row)))
+        print('%s [%s]' % (row_label, ' '.join('%04s' % int(i) for i in row)))
 
 
 def place(move):
@@ -134,9 +129,7 @@ def place(move):
     return
 
 
-
 def main():
-    
     choice = int(input("Write 0 for dots and 1 for colors: "))
     if choice == 0:
         print("Player 1: Dots")
@@ -145,7 +138,7 @@ def main():
         print("Player 1: Colors")
         print("Player 2: Dots")
     legal = False
-    
+
     for k in range(1, 61):
         # print("Turn " + str(k) + " Player " + str((k-1) % 2+1))
         if choice == 0 and (k - 1) % 2 + 1 == 1:
@@ -198,5 +191,6 @@ def main():
         legal = False
 
         # print(coordinateToRotation)
+
 
 main()
