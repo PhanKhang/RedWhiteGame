@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8f6e7485-754c-4297-a751-2880f8295c82" name="Default" comment="Primitive heuristic">
+    <list default="true" id="8f6e7485-754c-4297-a751-2880f8295c82" name="Default" comment="Primitive heuristic ver 2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/appraiser.py" beforeDir="false" afterPath="$PROJECT_DIR$/appraiser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/validator.py" beforeDir="false" afterPath="$PROJECT_DIR$/validator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/move.py" beforeDir="false" afterPath="$PROJECT_DIR$/move.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,17 +14,19 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/RedWhiteGame$main.coverage" NAME="main Coverage Results" MODIFIED="1550186921890" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/RedWhiteGame$main.coverage" NAME="main Coverage Results" MODIFIED="1550362016463" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/appraiser.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="151">
-              <caret line="301" column="37" selection-start-line="301" selection-start-column="37" selection-end-line="301" selection-end-column="37" />
+            <state relative-caret-position="134">
+              <caret line="397" column="70" selection-start-line="397" selection-start-column="70" selection-end-line="397" selection-end-column="70" />
               <folding>
-                <marker date="1550186831258" expanded="true" signature="1492:2157" ph="..." />
+                <element signature="e#0#12#0" expanded="true" />
+                <marker date="1550361981788" expanded="true" signature="1713:2321" ph="..." />
+                <marker date="1550361981788" expanded="true" signature="1803:1854" ph="..." />
               </folding>
             </state>
           </provider>
@@ -33,8 +35,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/move.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-309">
-              <caret line="27" selection-start-line="27" selection-end-line="27" />
+            <state relative-caret-position="705">
+              <caret line="47" column="1" selection-start-line="47" selection-start-column="1" selection-end-line="47" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -42,8 +44,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
-              <caret line="163" column="50" lean-forward="true" selection-start-line="158" selection-start-column="6" selection-end-line="163" selection-end-column="50" />
+            <state relative-caret-position="433">
+              <caret line="176" column="43" lean-forward="true" selection-start-line="176" selection-start-column="43" selection-end-line="176" selection-end-column="43" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -54,7 +56,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/validator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="142">
+            <state relative-caret-position="1530">
               <caret line="102" column="18" selection-start-line="102" selection-start-column="18" selection-end-line="102" selection-end-column="18" />
             </state>
           </provider>
@@ -89,8 +91,8 @@
       <list>
         <option value="$PROJECT_DIR$/placer.py" />
         <option value="$PROJECT_DIR$/validators.py" />
-        <option value="$PROJECT_DIR$/move.py" />
         <option value="$PROJECT_DIR$/validator.py" />
+        <option value="$PROJECT_DIR$/move.py" />
         <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/appraiser.py" />
       </list>
@@ -99,7 +101,7 @@
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
     <option name="width" value="1440" />
-    <option name="height" value="822" />
+    <option name="height" value="830" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -107,7 +109,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -123,6 +124,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -237,7 +239,8 @@
       <workItem from="1549745786286" duration="24035000" />
       <workItem from="1549929875834" duration="243000" />
       <workItem from="1550011049551" duration="2229000" />
-      <workItem from="1550182095706" duration="4192000" />
+      <workItem from="1550182095706" duration="11178000" />
+      <workItem from="1550361430584" duration="550000" />
     </task>
     <task id="LOCAL-00001" summary="validator finish but this one also is placer">
       <created>1549166627957</created>
@@ -323,22 +326,29 @@
       <option name="project" value="LOCAL" />
       <updated>1550019250210</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Primitive heuristic ver 2">
+      <created>1550186972548</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1550186972548</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="53182000" />
+    <option name="totallyTimeSpent" value="60718000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="822" extended-state="0" />
+    <frame x="0" y="23" width="1440" height="830" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12374821" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.09298999" />
       <window_info id="Structure" order="1" weight="0.24964234" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.06712329" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.40958905" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3387534" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -353,7 +363,7 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Data View" order="3" />
-      <window_info anchor="right" x="0" y="0" width="430" height="880" id="Documentation" order="4" side_tool="true" visible="true" weight="0.02932761" />
+      <window_info anchor="right" x="0" y="0" width="430" height="880" id="Documentation" order="4" side_tool="true" visible="true" weight="0.021459227" />
       <window_info anchor="right" id="Database" order="5" />
       <window_info anchor="right" id="SciView" order="6" />
     </layout>
@@ -368,7 +378,8 @@
     <MESSAGE value="Vse tut OK" />
     <MESSAGE value="Appraiser added" />
     <MESSAGE value="Primitive heuristic" />
-    <option name="LAST_COMMIT_MESSAGE" value="Primitive heuristic" />
+    <MESSAGE value="Primitive heuristic ver 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="Primitive heuristic ver 2" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">
@@ -387,24 +398,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/validator.py">
+    <entry file="file://$PROJECT_DIR$/move.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="142">
-          <caret line="102" column="18" selection-start-line="102" selection-start-column="18" selection-end-line="102" selection-end-column="18" />
+        <state relative-caret-position="705">
+          <caret line="47" column="1" selection-start-line="47" selection-start-column="1" selection-end-line="47" selection-end-column="1" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/move.py">
+    <entry file="file://$PROJECT_DIR$/validator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-309">
-          <caret line="27" selection-start-line="27" selection-end-line="27" />
+        <state relative-caret-position="1530">
+          <caret line="102" column="18" selection-start-line="102" selection-start-column="18" selection-end-line="102" selection-end-column="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="163" column="50" lean-forward="true" selection-start-line="158" selection-start-column="6" selection-end-line="163" selection-end-column="50" />
+        <state relative-caret-position="433">
+          <caret line="176" column="43" lean-forward="true" selection-start-line="176" selection-start-column="43" selection-end-line="176" selection-end-column="43" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
@@ -413,10 +424,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/appraiser.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="301" column="37" selection-start-line="301" selection-start-column="37" selection-end-line="301" selection-end-column="37" />
+        <state relative-caret-position="134">
+          <caret line="397" column="70" selection-start-line="397" selection-start-column="70" selection-end-line="397" selection-end-column="70" />
           <folding>
-            <marker date="1550186831258" expanded="true" signature="1492:2157" ph="..." />
+            <element signature="e#0#12#0" expanded="true" />
+            <marker date="1550361981788" expanded="true" signature="1713:2321" ph="..." />
+            <marker date="1550361981788" expanded="true" signature="1803:1854" ph="..." />
           </folding>
         </state>
       </provider>

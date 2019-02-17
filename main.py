@@ -60,6 +60,13 @@ def vtorayYacheyka(rotation):
 
 
 # put card at position i j and the rotation. keep in mind that coordinates are reversed j before i;
+row_labels = ['12', '11', '10', '9 ', '8 ', '7 ', '6 ', '5 ', '4 ', '3 ', '2 ', '1 ']
+
+
+def correctPrinter(gameMap):
+    print("       A    B    C    D    E    F    G    H")
+    for row_label, row in zip(row_labels, numpy.flipud(gameMap)):
+        print ('%s [%s]' % (row_label, ' '.join('%04s' % int(i) for i in row)))
 
 
 def place(move):
@@ -122,7 +129,6 @@ white = [2, 4]
 dot = [1, 4]
 ring = [2, 3]
 legal = False
-
 choice = int(input("Write 0 for dots and 1 for colors: "))
 if choice == 0:
     print("Player 1: Dots")
@@ -131,7 +137,7 @@ else:
     print("Player 1: Colors")
     print("Player 2: Dots")
 
-for k in range(1, 60):
+for k in range(1, 61):
     # print("Turn " + str(k) + " Player " + str((k-1) % 2+1))
     if choice == 0 and (k - 1) % 2 + 1 == 1:
         print("Turn " + str(k) + " Player 1" + " playing with dots")
@@ -147,23 +153,29 @@ for k in range(1, 60):
         input_var = input()
         # print(input_var)
         move = Move(input_var)
-        legal = place(move)
+        if k <= 24 and move.type == 0:
+            legal = place(move)
+        elif k > 24 and move.type == 1:
+            legal = place(move)
         if not legal:
             print("illegal move")
 
     print("Current Game field")
-    print(numpy.flipud(gameMap))
-    print(coordinateToRotation)
+    # print(numpy.flipud(gameMap))
+    correctPrinter(gameMap)
+    # print(coordinateToRotation)
 
-    appraiser.appraise(move, (k - 1) % 2 + 1)
+    # appraiser.appraise(move, (k - 1) % 2 + 1)
     # print("Dot map")
     # print(numpy.flipud(appraiser.gameMap_dot))
     # print("Ring map")
     # print(numpy.flipud(appraiser.gameMap_ring))
     # print("White map")
     # print(numpy.flipud(appraiser.gameMap_white))
-    print("Red map")
-    print(numpy.flipud(appraiser.gameMap_red))
+    # print("Red map")
+    # print(numpy.flipud(appraiser.gameMap_red))
+    # correctPrinter(appraiser.gameMap_red)
+    # appraiser.getNotEmptyFreeSpaces(gameMap, appraiser.gameMap_red)
     result = validator.victoryCheck(k % 2)
     if result != "go":
         print(result)

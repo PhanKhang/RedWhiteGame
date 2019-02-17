@@ -1,11 +1,26 @@
 import numpy
+from move import Move
 
 price_red = 10
 price_white = 10
 price_dot = 10
 price_ring = 10
-
+0
 price_of_being_blocked = -1000;
+
+letterToNumb = {
+    "A": 1,
+    "B": 2,
+    "C": 3,
+    "D": 4,
+    "E": 5,
+    "F": 6,
+    "G": 7,
+    "H": 8
+
+}
+# convert numbers to letters
+numbToLetter = dict([[v, k] for k, v in letterToNumb.items()])
 
 
 class Appraiser:
@@ -36,8 +51,8 @@ class Appraiser:
 
         if self.gameMap[j][i] in self.red:
             self.appraise_red(i, j)
-        # if self.gameMap[j][i] in self.white:
-        #     self.appraise_white(i, j)
+        if self.gameMap[j][i] in self.white:
+            self.appraise_white(i, j)
         # if self.gameMap[j][i] in self.dot:
         #     self.appraise_dot(i, j)
         # if self.gameMap[j][i] in self.ring:
@@ -45,8 +60,8 @@ class Appraiser:
         #
         if self.gameMap[j1][i1] in self.red:
             self.appraise_red(i1, j1)
-        # if self.gameMap[j1][i1] in self.white:
-        #     self.appraise_white(i1, j1)
+        if self.gameMap[j1][i1] in self.white:
+            self.appraise_white(i1, j1)
         # if self.gameMap[j1][i1] in self.dot:
         #     self.appraise_dot(i1, j1)
         # if self.gameMap[j1][i1] in self.ring:
@@ -54,25 +69,25 @@ class Appraiser:
         #
         # # if player == 0:
         # #     print("Playing with Dots")
-        # if self.gameMap[j][i] in self.dot:
-        #     self.moveBlocking(i, j, self.ring)
-        # else:
-        #     self.moveBlocking(i, j, self.dot)
-        #
-        # if self.gameMap[j][i] in self.red:
-        #     self.moveBlocking(i, j, self.white)
-        # else:
-        #     self.moveBlocking(i, j, self.red)
-        #
-        # if self.gameMap[j1][i1] in self.dot:
-        #     self.moveBlocking(i1, j1, self.ring)
-        # else:
-        #     self.moveBlocking(i1, j1, self.dot)
-        #
-        # if self.gameMap[j1][i1] in self.red:
-        #     self.moveBlocking(i1, j1, self.white)
-        # else:
-        #     self.moveBlocking(i1, j1, self.red)
+        if self.gameMap[j][i] in self.dot:
+            self.moveBlocking(i, j, self.ring)
+        else:
+            self.moveBlocking(i, j, self.dot)
+
+        if self.gameMap[j][i] in self.red:
+            self.moveBlocking(i, j, self.white)
+        else:
+            self.moveBlocking(i, j, self.red)
+
+        if self.gameMap[j1][i1] in self.dot:
+            self.moveBlocking(i1, j1, self.ring)
+        else:
+            self.moveBlocking(i1, j1, self.dot)
+
+        if self.gameMap[j1][i1] in self.red:
+            self.moveBlocking(i1, j1, self.white)
+        else:
+            self.moveBlocking(i1, j1, self.red)
         #
         # # else:
         # #     print("Playing with colors")
@@ -89,7 +104,7 @@ class Appraiser:
     def isVerticalWindowFree(self, i, j, self_color):
         for step in range(4):
             if step + j < 12:
-                if self.gameMap[j+step][i] in self_color and self.gameMap[j+step][i] != 0:
+                if not (self.gameMap[j+step][i] in self_color or self.gameMap[j+step][i] == 0):
                     return False
             else:
                 return False
@@ -98,7 +113,7 @@ class Appraiser:
     def isUpHorizontalWindowFree(self, i, j, self_color):
         for step in range(4):
             if step + j < 12 and step + i < 8:
-                if self.gameMap[j+step][i+step] in self_color and self.gameMap[j+step][i+step] != 0:
+                if not (self.gameMap[j+step][i+step] in self_color or self.gameMap[j+step][i+step] == 0):
                     return False
             else:
                 return False
@@ -107,7 +122,7 @@ class Appraiser:
     def isDownHorizontalWindowFree(self, i, j, self_color):
         for step in range(4):
             if j - step >= 0 and step + i < 8:
-                if self.gameMap[j-step][i+step] in self_color and self.gameMap[j-step][i+step] != 0:
+                if not (self.gameMap[j-step][i+step] in self_color or self.gameMap[j-step][i+step] == 0):
                     return False
             else:
                 return False
@@ -301,6 +316,21 @@ class Appraiser:
                 if self.isHorizontalWindowFree(i-step, j, self.red):
                     for k in range (4):
                         self.gameMap_red[j][i-step+k] += price_red
+        for step in range(4):
+            if j - step >= 0:
+                if self.isVerticalWindowFree(i, j-step, self.red):
+                    for k in range (4):
+                        self.gameMap_red[j-step+k][i] += price_red
+        for step in range(4):
+            if i - step >= 0 and j + step < 12:
+                if self.isDownHorizontalWindowFree(i-step, j+step, self.red):
+                    for k in range (4):
+                        self.gameMap_red[j+step-k][i-step+k] += price_red
+        for step in range(4):
+            if j - step >= 0 and i - step >= 0:
+                if self.isUpHorizontalWindowFree(i-step, j-step, self.red):
+                    for k in range (4):
+                        self.gameMap_red[j-step+k][i-step+k] += price_red
         # for step in range(1, 4):
             # if j + step < 12:
             #     self.gameMap_red[j + step][i] += price_red
@@ -321,62 +351,130 @@ class Appraiser:
         pass
 
     def appraise_white(self, i, j):
-        for step in range(1, 4):
-            if j + step < 12:
-                self.gameMap_white[j + step][i] += price_white
-            if j - step >= 0:
-                self.gameMap_white[j - step][i] += price_white
-            if i + step < 8:
-                self.gameMap_white[j][i + step] += price_white
+        for step in range(4):
             if i - step >= 0:
-                self.gameMap_white[j][i - step] += price_white
-            if j + step < 12 and i + step < 8:
-                self.gameMap_white[j + step][i + step] += price_white
+                if self.isHorizontalWindowFree(i-step, j, self.white):
+                    for k in range (4):
+                        self.gameMap_white[j][i-step+k] += price_white
+        for step in range(4):
+            if j - step >= 0:
+                if self.isVerticalWindowFree(i, j-step, self.white):
+                    for k in range (4):
+                        self.gameMap_white[j-step+k][i] += price_white
+        for step in range(4):
+            if i - step >= 0 and j + step < 12:
+                if self.isDownHorizontalWindowFree(i-step, j+step, self.white):
+                    for k in range (4):
+                        self.gameMap_white[j+step-k][i-step+k] += price_white
+        for step in range(4):
             if j - step >= 0 and i - step >= 0:
-                self.gameMap_white[j - step][i - step] += price_white
-            if j + step < 12 and i - step >= 0:
-                self.gameMap_white[j + step][i - step] += price_white
-            if j - step >= 0 and i + step < 8:
-                self.gameMap_white[j - step][i + step] += price_white
-        pass
+                if self.isUpHorizontalWindowFree(i-step, j-step, self.white):
+                    for k in range (4):
+                        self.gameMap_white[j-step+k][i-step+k] += price_white
+        # for step in range(1, 4):
+        #     if j + step < 12:
+        #         self.gameMap_white[j + step][i] += price_white
+        #     if j - step >= 0:
+        #         self.gameMap_white[j - step][i] += price_white
+        #     if i + step < 8:
+        #         self.gameMap_white[j][i + step] += price_white
+        #     if i - step >= 0:
+        #         self.gameMap_white[j][i - step] += price_white
+        #     if j + step < 12 and i + step < 8:
+        #         self.gameMap_white[j + step][i + step] += price_white
+        #     if j - step >= 0 and i - step >= 0:
+        #         self.gameMap_white[j - step][i - step] += price_white
+        #     if j + step < 12 and i - step >= 0:
+        #         self.gameMap_white[j + step][i - step] += price_white
+        #     if j - step >= 0 and i + step < 8:
+        #         self.gameMap_white[j - step][i + step] += price_white
+        # pass
 
     def appraise_dot(self, i, j):
-        for step in range(1, 4):
-            if j + step < 12:
-                self.gameMap_dot[j + step][i] += price_dot
-            if j - step >= 0:
-                self.gameMap_dot[j - step][i] += price_dot
-            if i + step < 8:
-                self.gameMap_dot[j][i + step] += price_dot
+        for step in range(4):
             if i - step >= 0:
-                self.gameMap_dot[j][i - step] += price_dot
-            if j + step < 12 and i + step < 8:
-                self.gameMap_dot[j + step][i + step] += price_dot
+                if self.isHorizontalWindowFree(i - step, j, self.dot):
+                    for k in range(4):
+                        self.gameMap_dot[j][i - step + k] += price_dot
+        for step in range(4):
+            if j - step >= 0:
+                if self.isVerticalWindowFree(i, j - step, self.dot):
+                    for k in range(4):
+                        self.gameMap_dot[j - step + k][i] += price_dot
+        for step in range(4):
+            if i - step >= 0 and j + step < 12:
+                if self.isDownHorizontalWindowFree(i - step, j + step, self.dot):
+                    for k in range(4):
+                        self.gameMap_dot[j + step - k][i - step + k] += price_dot
+        for step in range(4):
             if j - step >= 0 and i - step >= 0:
-                self.gameMap_dot[j - step][i - step] += price_dot
-            if j + step < 12 and i - step >= 0:
-                self.gameMap_dot[j + step][i - step] += price_dot
-            if j - step >= 0 and i + step < 8:
-                self.gameMap_dot[j - step][i + step] += price_dot
+                if self.isUpHorizontalWindowFree(i - step, j - step, self.dot):
+                    for k in range(4):
+                        self.gameMap_dot[j - step + k][i - step + k] += price_dot
+        # for step in range(1, 4):
+        #     if j + step < 12:
+        #         self.gameMap_dot[j + step][i] += price_dot
+        #     if j - step >= 0:
+        #         self.gameMap_dot[j - step][i] += price_dot
+        #     if i + step < 8:
+        #         self.gameMap_dot[j][i + step] += price_dot
+        #     if i - step >= 0:
+        #         self.gameMap_dot[j][i - step] += price_dot
+        #     if j + step < 12 and i + step < 8:
+        #         self.gameMap_dot[j + step][i + step] += price_dot
+        #     if j - step >= 0 and i - step >= 0:
+        #         self.gameMap_dot[j - step][i - step] += price_dot
+        #     if j + step < 12 and i - step >= 0:
+        #         self.gameMap_dot[j + step][i - step] += price_dot
+        #     if j - step >= 0 and i + step < 8:
+        #         self.gameMap_dot[j - step][i + step] += price_dot
         pass
 
     def appraise_ring(self, i, j):
-        for step in range(1, 4):
-            if j + step < 12:
-                self.gameMap_ring[j + step][i] += price_ring
-            if j - step >= 0:
-                self.gameMap_ring[j - step][i] += price_ring
-            if i + step < 8:
-                self.gameMap_ring[j][i + step] += price_ring
+        for step in range(4):
             if i - step >= 0:
-                self.gameMap_ring[j][i - step] += price_ring
-            if j + step < 12 and i + step < 8:
-                self.gameMap_ring[j + step][i + step] += price_ring
-            if j - step >= 0 and i - step >= 0:
-                self.gameMap_ring[j - step][i - step] += price_ring
-            if j + step < 12 and i - step >= 0:
-                self.gameMap_ring[j + step][i - step] += price_ring
-            if j - step >= 0 and i + step < 8:
-                self.gameMap_ring[j - step][i + step] += price_ring
-        pass
+                if self.isHorizontalWindowFree(i - step, j, self.ring):
+                    for k in range(4):
+                        self.gameMap_ring[j][i - step + k] += price_ring
 
+        for step in range(4):
+            if j - step >= 0:
+                if self.isVerticalWindowFree(i, j - step, self.ring):
+                    for k in range(4):
+                        self.gameMap_ring[j - step + k][i] += price_ring
+        for step in range(4):
+            if i - step >= 0 and j + step < 12:
+                if self.isDownHorizontalWindowFree(i - step, j + step, self.ring):
+                    for k in range(4):
+                        self.gameMap_ring[j + step - k][i - step + k] += price_ring
+        for step in range(4):
+            if j - step >= 0 and i - step >= 0:
+                if self.isUpHorizontalWindowFree(i - step, j - step, self.ring):
+                    for k in range(4):
+                        self.gameMap_ring[j - step + k][i - step + k] += price_ring
+        pass
+        # for step in range(1, 4):
+        #     if j + step < 12:
+        #         self.gameMap_ring[j + step][i] += price_ring
+        #     if j - step >= 0:
+        #         self.gameMap_ring[j - step][i] += price_ring
+        #     if i + step < 8:
+        #         self.gameMap_ring[j][i + step] += price_ring
+        #     if i - step >= 0:
+        #         self.gameMap_ring[j][i - step] += price_ring
+        #     if j + step < 12 and i + step < 8:
+        #         self.gameMap_ring[j + step][i + step] += price_ring
+        #     if j - step >= 0 and i - step >= 0:
+        #         self.gameMap_ring[j - step][i - step] += price_ring
+        #     if j + step < 12 and i - step >= 0:
+        #         self.gameMap_ring[j + step][i - step] += price_ring
+        #     if j - step >= 0 and i + step < 8:
+        #         self.gameMap_ring[j - step][i + step] += price_ring
+        # pass
+
+    def getNotEmptyFreeSpaces(self, gameMap, colorMap):
+        print("Free spaces: ")
+        for i in range(8):
+            for j in range(12):
+                if colorMap[j][i] > 0 and gameMap[j][i] == 0:
+                    print(numbToLetter.get(i+1)+str(j+1)+": "+str(colorMap[j][i]))
