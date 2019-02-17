@@ -16,7 +16,10 @@ class Validator:
         }
         self.numbToLetter = dict([[v, k] for k, v in self.letterToNumb.items()])
 
-    # check if move is viable
+    # Checks:
+    # 1) if card within the board's boundaries
+    # 2) if there is a ground for card
+    
     def placeValidator(self, move):
         i = move.targetCoordinateLet - 1
         j = int(move.targetCoordinateNum) - 1
@@ -56,6 +59,7 @@ class Validator:
                 return False
 
     # the same as place validator but coordinate version
+    #???
     def placeValidatorCoord(self, i, j, rotation):
         if rotation % 2 != 0:  # orientation check
             if 0 <= i <= 7 and 0 <= j <= 11 and 0 <= i + 1 <= 7:  # border check
@@ -78,19 +82,22 @@ class Validator:
                 else:
                     return False
 
-    # check if anything is above the chosen piece
+    # Checks if horizontal card is not piled.
     def lookUpValidatorHorizontal(self, i1, j1, i2, j2):
         if self.gameMap[j1 + 1][i1] == 0 and self.gameMap[j2 + 1][i2] == 0:
             return True
         return False
 
-    # check if anything is above in case vertical
+    # Checks if vertical card is not piled.
+    
     def lookUpValidatorVertical(self, i2, j2):
         if self.gameMap[j2 + 1][i2] == 0:
             return True
         return False
 
-    # check recycle move
+    # Checks recycle move:
+    # 1) checks card integrity by coordinates
+    # 2) ???
     def recycleValidator(self, move):
         i1 = move.sourceCoordinate1Let - 1
         j1 = int(move.sourceCoordinate1Num) - 1
@@ -120,6 +127,8 @@ class Validator:
     white = [2, 4]
     dot = [1, 4]
     ring = [2, 3]
+    
+    # Checks if there is a row of 4 cells of the same type on the game map. Horizontal, vertical and both diagonals.
 
     def victoryCheck(self, player):
         if player == 0:
