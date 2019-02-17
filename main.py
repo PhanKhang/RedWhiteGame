@@ -130,7 +130,7 @@ def place(move):
 
 
 def main():
-    choice = int(input("Write 0 for dots and 1 for colors: "))
+    choice = int(input("Write 0 for dots and a for colors: "))
     if choice == 0:
         print("Player 1: Dots")
         print("Player 2: Colors")
@@ -173,24 +173,35 @@ def main():
         correctPrinter(gameMap)
         # print(coordinateToRotation)
 
-        # appraiser.appraise(move, (k - 1) % 2 + 1)
-        # print("Dot map")
+        appraiser.appraise(move, (k - 1) % 2 + 1)
+        print("Dot map")
         # print(numpy.flipud(appraiser.gameMap_dot))
-        # print("Ring map")
+        correctPrinter(appraiser.gameMap_dot)
+        appraiser.getNotEmptyFreeSpaces(gameMap, appraiser.gameMap_dot)
+
+        print("Ring map")
         # print(numpy.flipud(appraiser.gameMap_ring))
-        # print("White map")
+        correctPrinter(appraiser.gameMap_ring)
+        appraiser.getNotEmptyFreeSpaces(gameMap, appraiser.gameMap_ring)
+
+        print("White map")
         # print(numpy.flipud(appraiser.gameMap_white))
-        # print("Red map")
+        correctPrinter(appraiser.gameMap_white)
+        appraiser.getNotEmptyFreeSpaces(gameMap, appraiser.gameMap_white)
+
+        print("Red map")
         # print(numpy.flipud(appraiser.gameMap_red))
-        # correctPrinter(appraiser.gameMap_red)
-        # appraiser.getNotEmptyFreeSpaces(gameMap, appraiser.gameMap_red)
-        result = validator.victoryCheck(k % 2)
+        correctPrinter(appraiser.gameMap_red)
+        appraiser.getNotEmptyFreeSpaces(gameMap, appraiser.gameMap_red)
+
+
+        print("Checking for")
+        print((k+choice) % 2)
+        result = validator.victoryCheck((k+choice) % 2)
         if result != "go":
             print(result)
             break
         legal = False
-
-        # print(coordinateToRotation)
 
 
 main()

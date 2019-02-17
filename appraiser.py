@@ -53,45 +53,39 @@ class Appraiser:
             self.appraise_red(i, j)
         if self.gameMap[j][i] in self.white:
             self.appraise_white(i, j)
-        # if self.gameMap[j][i] in self.dot:
-        #     self.appraise_dot(i, j)
-        # if self.gameMap[j][i] in self.ring:
-        #     self.appraise_ring(i, j)
-        #
+        if self.gameMap[j][i] in self.dot:
+            self.appraise_dot(i, j)
+        if self.gameMap[j][i] in self.ring:
+            self.appraise_ring(i, j)
+
         if self.gameMap[j1][i1] in self.red:
             self.appraise_red(i1, j1)
         if self.gameMap[j1][i1] in self.white:
             self.appraise_white(i1, j1)
-        # if self.gameMap[j1][i1] in self.dot:
-        #     self.appraise_dot(i1, j1)
-        # if self.gameMap[j1][i1] in self.ring:
-        #     self.appraise_ring(i1, j1)
-        #
-        # # if player == 0:
-        # #     print("Playing with Dots")
-        if self.gameMap[j][i] in self.dot:
-            self.moveBlocking(i, j, self.ring)
-        else:
-            self.moveBlocking(i, j, self.dot)
-
-        if self.gameMap[j][i] in self.red:
-            self.moveBlocking(i, j, self.white)
-        else:
-            self.moveBlocking(i, j, self.red)
-
         if self.gameMap[j1][i1] in self.dot:
-            self.moveBlocking(i1, j1, self.ring)
-        else:
-            self.moveBlocking(i1, j1, self.dot)
+            self.appraise_dot(i1, j1)
+        if self.gameMap[j1][i1] in self.ring:
+            self.appraise_ring(i1, j1)
 
-        if self.gameMap[j1][i1] in self.red:
-            self.moveBlocking(i1, j1, self.white)
-        else:
-            self.moveBlocking(i1, j1, self.red)
+        # if self.gameMap[j][i] in self.dot:
+        #     self.moveBlocking(i, j, self.ring)
+        # else:
+        #     self.moveBlocking(i, j, self.dot)
         #
-        # # else:
-        # #     print("Playing with colors")
-
+        # if self.gameMap[j][i] in self.red:
+        #     self.moveBlocking(i, j, self.white)
+        # else:
+        #     self.moveBlocking(i, j, self.red)
+        #
+        # if self.gameMap[j1][i1] in self.dot:
+        #     self.moveBlocking(i1, j1, self.ring)
+        # else:
+        #     self.moveBlocking(i1, j1, self.dot)
+        #
+        # if self.gameMap[j1][i1] in self.red:
+        #     self.moveBlocking(i1, j1, self.white)
+        # else:
+        #     self.moveBlocking(i1, j1, self.red)
     def isHorizontalWindowFree(self, i, j, self_color):
         for step in range(5):
             if step + i < 8:
