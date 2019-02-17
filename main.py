@@ -174,26 +174,26 @@ def main():
         correctPrinter(gameMap)
         # print(coordinateToRotation)
 
-        appraiser.appraise(move, (k - 1) % 2 + 1)
+        appraiser.appraise(move)
         print("Dot map")
         # print(numpy.flipud(appraiser.gameMap_dot))
         correctPrinter(appraiser.gameMap_dot)
-        appraiser.getNotEmptyFreeSpaces(gameMap, appraiser.gameMap_dot)
+        appraiser.getAvailableMoves(appraiser.gameMap_dot)
 
         print("Ring map")
         # print(numpy.flipud(appraiser.gameMap_ring))
         correctPrinter(appraiser.gameMap_ring)
-        appraiser.getNotEmptyFreeSpaces(gameMap, appraiser.gameMap_ring)
+        appraiser.getAvailableMoves(appraiser.gameMap_ring)
 
         print("White map")
         # print(numpy.flipud(appraiser.gameMap_white))
         correctPrinter(appraiser.gameMap_white)
-        appraiser.getNotEmptyFreeSpaces(gameMap, appraiser.gameMap_white)
+        appraiser.getAvailableMoves(appraiser.gameMap_white)
 
         print("Red map")
         # print(numpy.flipud(appraiser.gameMap_red))
         correctPrinter(appraiser.gameMap_red)
-        appraiser.getNotEmptyFreeSpaces(gameMap, appraiser.gameMap_red)
+        appraiser.getAvailableMoves(appraiser.gameMap_red)
         #
         #
         result = validator.victoryCheck((k+choice) % 2)
