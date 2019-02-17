@@ -77,7 +77,7 @@ class Validator:
 
     # Checks recycle move:
     # 1) checks card integrity by coordinates
-    # 2) ???
+    # 2) checks if there is no other cards above the given one
     def recycleValidator(self, move):
         i1 = move.sourceCoordinate1Let - 1
         j1 = int(move.sourceCoordinate1Num) - 1
