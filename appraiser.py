@@ -486,7 +486,7 @@ class Appraiser:
                     print(numbToLetter.get(i+1)+str(j+1)+": "+str(colorMap[j][i]))
 
     def isTargeted(self, i, j):
-        if (self.gameMap[j-1][i] != 0 or self.gameMap[j-2][i] != 0 or j == 0 or j-1  == 0) and self.gameMap[j+1][i] == 0:
+        if (self.gameMap[j-1][i] != 0 or self.gameMap[j-2][i] != 0 or j == 0 or j-1 == 0) and self.gameMap[j+1][i] == 0:
             return True
         else:
             return False

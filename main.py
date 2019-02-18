@@ -196,7 +196,7 @@ def main():
         appraiser.getAvailableMoves(appraiser.gameMap_red)
         #
         #
-        result = validator.victoryCheck((k+choice) % 2)
+        result = validator.victoryCheck((k + choice) % 2)
         if result != "go":
             print(result)
             break

@@ -111,123 +111,128 @@ class Validator:
     # Checks if there is a row of 4 cells of the same type on the game map. Horizontal, vertical and both diagonals.
     def victoryCheck(self, player):
         if player == 0:
-            for i in range(8):
-                for j in range(4):
-                    if self.gameMap[i][j] in self.red and self.gameMap[i + 1][j] in self.red and self.gameMap[i + 2][
-                        j] in self.red and self.gameMap[i + 3][j] in self.red:
-                        return "color wins"
-                    if self.gameMap[i][j] in self.red and self.gameMap[i][j + 1] in self.red and self.gameMap[i][
-                        j + 2] in self.red and self.gameMap[i][j + 3] in self.red:
-                        return "color wins"
-                    if self.gameMap[i][j] in self.white and self.gameMap[i + 1][j + 1] in self.white and \
-                            self.gameMap[i + 2][j + 2] in self.white and self.gameMap[i + 3][j + 3] in self.white:
-                        return "color wins"
-                    if self.gameMap[i + 3][j] in self.white and self.gameMap[i + 2][j + 1] in self.white and \
-                            self.gameMap[i + 1][j + 2] in self.white and self.gameMap[i][j + 3] in self.white:
-                        return "color wins"
-                    if self.gameMap[i][j] in self.red and self.gameMap[i + 1][j + 1] in self.red and \
-                            self.gameMap[i + 2][j + 2] in self.red and self.gameMap[i + 3][j + 3] in self.red:
-                        return "color wins"
-                    if self.gameMap[i + 3][j] in self.red and self.gameMap[i + 2][j + 1] in self.red and \
-                            self.gameMap[i + 1][j + 2] in self.red and \
-                            self.gameMap[i][j + 3] in self.red:
-                        return "color wins"
-                    if self.gameMap[i][j] in self.white and self.gameMap[i + 1][j] in self.white and \
-                            self.gameMap[i + 2][
-                                j] in self.white and self.gameMap[i + 3][j] in self.white:
-                        return "color wins"
-                    if self.gameMap[i][j] in self.white and self.gameMap[i][j + 1] in self.white and self.gameMap[i][
-                        j + 2] in self.white and self.gameMap[i][j + 3] in self.white:
-                        return "color wins"
+            for i in range(12):
+                for j in range(8):
+                    if i <= 8:
+                        if self.gameMap[i][j] in self.red and self.gameMap[i + 1][j] in self.red and \
+                                self.gameMap[i + 2][j] in self.red and self.gameMap[i + 3][j] in self.red:
+                            return "color wins"
+                        if self.gameMap[i][j] in self.white and self.gameMap[i + 1][j] in self.white and \
+                                self.gameMap[i + 2][j] in self.white and self.gameMap[i + 3][j] in self.white:
+                            return "color wins"
 
-                    if self.gameMap[i][j] in self.dot and self.gameMap[i + 1][j] in self.dot and self.gameMap[i + 2][
-                        j] in self.dot and \
-                            self.gameMap[i + 3][j] in self.dot:
-                        return "circle wins"
-                    if self.gameMap[i][j] in self.dot and self.gameMap[i][j + 1] in self.dot and self.gameMap[i][
-                        j + 2] in self.dot and \
-                            self.gameMap[i][j + 3] in self.dot:
-                        return "circle wins"
-                    if self.gameMap[i][j] in self.ring and self.gameMap[i + 1][j] in self.ring and self.gameMap[i + 2][
-                        j] in self.ring and self.gameMap[i + 3][j] in self.ring:
-                        return "circle wins"
-                    if self.gameMap[i][j] in self.ring and self.gameMap[i][j + 1] in self.ring and self.gameMap[i][
-                        j + 2] in self.ring and self.gameMap[i][j + 3] in self.ring:
-                        return "circle wins"
-                    if self.gameMap[i][j] in self.dot and self.gameMap[i + 1][j + 1] in self.dot and \
-                            self.gameMap[i + 2][j + 2] in self.dot and \
-                            self.gameMap[i + 3][j + 3] in self.dot:
-                        return "circle wins"
-                    if self.gameMap[i + 3][j] in self.dot and self.gameMap[i + 2][j + 1] in self.dot and \
-                            self.gameMap[i + 1][j + 2] in self.dot and \
-                            self.gameMap[i][j + 3] in self.dot:
-                        return "circle wins"
-                    if self.gameMap[i][j] in self.ring and self.gameMap[i + 1][j + 1] in self.ring and \
-                            self.gameMap[i + 2][
-                                j + 2] in self.ring and self.gameMap[i + 3][j + 3] in self.ring:
-                        return "circle wins"
-                    if self.gameMap[i + 3][j] in self.ring and self.gameMap[i + 2][j + 1] in self.ring and \
-                            self.gameMap[i + 1][
-                                j + 2] in self.ring and self.gameMap[i][j + 3] in self.ring:
-                        return "circle wins"
+                        if self.gameMap[i][j] in self.dot and self.gameMap[i + 1][j] in self.dot and \
+                                self.gameMap[i + 2][j] in self.dot and self.gameMap[i + 3][j] in self.dot:
+                            return "circle wins"
+                        if self.gameMap[i][j] in self.ring and self.gameMap[i + 1][j] in self.ring and \
+                                self.gameMap[i + 2][j] in self.ring and self.gameMap[i + 3][j] in self.ring:
+                            return "circle wins"
+
+                    if j <= 4:
+                        if self.gameMap[i][j] in self.red and self.gameMap[i][j + 1] in self.red and \
+                                self.gameMap[i][j + 2] in self.red and self.gameMap[i][j + 3] in self.red:
+                            return "color wins"
+                        if self.gameMap[i][j] in self.white and self.gameMap[i][j + 1] in self.white and \
+                                self.gameMap[i][j + 2] in self.white and self.gameMap[i][j + 3] in self.white:
+                            return "color wins"
+
+                        if self.gameMap[i][j] in self.dot and self.gameMap[i][j + 1] in self.dot and \
+                                self.gameMap[i][j + 2] in self.dot and self.gameMap[i][j + 3] in self.dot:
+                            return "circle wins"
+                        if self.gameMap[i][j] in self.ring and self.gameMap[i][j + 1] in self.ring and \
+                                self.gameMap[i][j + 2] in self.ring and self.gameMap[i][j + 3] in self.ring:
+                            return "circle wins"
+
+                    if j <= 4 and i <= 8:
+                        if self.gameMap[i][j] in self.white and self.gameMap[i + 1][j + 1] in self.white and \
+                                self.gameMap[i + 2][j + 2] in self.white and self.gameMap[i + 3][j + 3] in self.white:
+                            return "color wins"
+                        if self.gameMap[i + 3][j] in self.white and self.gameMap[i + 2][j + 1] in self.white and \
+                                self.gameMap[i + 1][j + 2] in self.white and self.gameMap[i][j + 3] in self.white:
+                            return "color wins"
+                        if self.gameMap[i + 3][j] in self.white and self.gameMap[i + 2][j + 1] in self.white and \
+                                self.gameMap[i + 1][j + 2] in self.white and self.gameMap[i][j + 3] in self.white:
+                            return "color wins"
+                        if self.gameMap[i][j] in self.red and self.gameMap[i + 1][j + 1] in self.red and \
+                                self.gameMap[i + 2][j + 2] in self.red and self.gameMap[i + 3][j + 3] in self.red:
+                            return "color wins"
+                        if self.gameMap[i + 3][j] in self.red and self.gameMap[i + 2][j + 1] in self.red and \
+                                self.gameMap[i + 1][j + 2] in self.red and self.gameMap[i][j + 3] in self.red:
+                            return "color wins"
+
+                        if self.gameMap[i][j] in self.dot and self.gameMap[i + 1][j + 1] in self.dot and \
+                                self.gameMap[i + 2][j + 2] in self.dot and self.gameMap[i + 3][j + 3] in self.dot:
+                            return "circle wins"
+                        if self.gameMap[i + 3][j] in self.dot and self.gameMap[i + 2][j + 1] in self.dot and \
+                                self.gameMap[i + 1][j + 2] in self.dot and self.gameMap[i][j + 3] in self.dot:
+                            return "circle wins"
+                        if self.gameMap[i][j] in self.ring and self.gameMap[i + 1][j + 1] in self.ring and \
+                                self.gameMap[i + 2][j + 2] in self.ring and self.gameMap[i + 3][j + 3] in self.ring:
+                            return "circle wins"
+                        if self.gameMap[i + 3][j] in self.ring and self.gameMap[i + 2][j + 1] in self.ring and \
+                                self.gameMap[i + 1][j + 2] in self.ring and self.gameMap[i][j + 3] in self.ring:
+                            return "circle wins"
             return "go"
         else:
-            for i in range(8):
-                for j in range(4):
-                    if self.gameMap[i][j] in self.dot and self.gameMap[i + 1][j] in self.dot and self.gameMap[i + 2][
-                        j] in self.dot and \
-                            self.gameMap[i + 3][j] in self.dot:
-                        return "circle wins"
-                    if self.gameMap[i][j] in self.dot and self.gameMap[i][j + 1] in self.dot and self.gameMap[i][
-                        j + 2] in self.dot and \
-                            self.gameMap[i][j + 3] in self.dot:
-                        return "circle wins"
-                    if self.gameMap[i][j] in self.ring and self.gameMap[i + 1][j] in self.ring and self.gameMap[i + 2][
-                        j] in self.ring and self.gameMap[i + 3][j] in self.ring:
-                        return "circle wins"
-                    if self.gameMap[i][j] in self.ring and self.gameMap[i][j + 1] in self.ring and self.gameMap[i][
-                        j + 2] in self.ring and self.gameMap[i][j + 3] in self.ring:
-                        return "circle wins"
-                    if self.gameMap[i][j] in self.dot and self.gameMap[i + 1][j + 1] in self.dot and \
-                            self.gameMap[i + 2][j + 2] in self.dot and \
-                            self.gameMap[i + 3][j + 3] in self.dot:
-                        return "circle wins"
-                    if self.gameMap[i + 3][j] in self.dot and self.gameMap[i + 2][j + 1] in self.dot and \
-                            self.gameMap[i + 1][j + 2] in self.dot and \
-                            self.gameMap[i][j + 3] in self.dot:
-                        return "circle wins"
-                    if self.gameMap[i][j] in self.ring and self.gameMap[i + 1][j + 1] in self.ring and \
-                            self.gameMap[i + 2][
-                                j + 2] in self.ring and self.gameMap[i + 3][j + 3] in self.ring:
-                        return "circle wins"
-                    if self.gameMap[i + 3][j] in self.ring and self.gameMap[i + 2][j + 1] in self.ring and \
-                            self.gameMap[i + 1][
-                                j + 2] in self.ring and self.gameMap[i][j + 3] in self.ring:
-                        return "circle wins"
-                    if self.gameMap[i][j] in self.red and self.gameMap[i + 1][j] in self.red and self.gameMap[i + 2][
-                        j] in self.red and self.gameMap[i + 3][j] in self.red:
-                        return "color wins"
-                    if self.gameMap[i][j] in self.red and self.gameMap[i][j + 1] in self.red and self.gameMap[i][
-                        j + 2] in self.red and self.gameMap[i][j + 3] in self.red:
-                        return "color wins"
-                    if self.gameMap[i][j] in self.white and self.gameMap[i + 1][j + 1] in self.white and \
-                            self.gameMap[i + 2][j + 2] in self.white and self.gameMap[i + 3][j + 3] in self.white:
-                        return "color wins"
-                    if self.gameMap[i + 3][j] in self.white and self.gameMap[i + 2][j + 1] in self.white and \
-                            self.gameMap[i + 1][j + 2] in self.white and self.gameMap[i][j + 3] in self.white:
-                        return "color wins"
-                    if self.gameMap[i][j] in self.red and self.gameMap[i + 1][j + 1] in self.red and \
-                            self.gameMap[i + 2][j + 2] in self.red and self.gameMap[i + 3][j + 3] in self.red:
-                        return "color wins"
-                    if self.gameMap[i + 3][j] in self.red and self.gameMap[i + 2][j + 1] in self.red and \
-                            self.gameMap[i + 1][j + 2] in self.red and \
-                            self.gameMap[i][j + 3] in self.red:
-                        return "color wins"
-                    if self.gameMap[i][j] in self.white and self.gameMap[i + 1][j] in self.white and \
-                            self.gameMap[i + 2][
-                                j] in self.white and self.gameMap[i + 3][j] in self.white:
-                        return "color wins"
-                    if self.gameMap[i][j] in self.white and self.gameMap[i][j + 1] in self.white and self.gameMap[i][
-                        j + 2] in self.white and self.gameMap[i][j + 3] in self.white:
-                        return "color wins"
+            for i in range(12):
+                for j in range(8):
+                    if i <= 8:
+                        if self.gameMap[i][j] in self.dot and self.gameMap[i + 1][j] in self.dot and \
+                                self.gameMap[i + 2][j] in self.dot and self.gameMap[i + 3][j] in self.dot:
+                            return "circle wins"
+                        if self.gameMap[i][j] in self.ring and self.gameMap[i + 1][j] in self.ring and \
+                                self.gameMap[i + 2][j] in self.ring and self.gameMap[i + 3][j] in self.ring:
+                            return "circle wins"
+
+                        if self.gameMap[i][j] in self.red and self.gameMap[i + 1][j] in self.red and \
+                                self.gameMap[i + 2][j] in self.red and self.gameMap[i + 3][j] in self.red:
+                            return "color wins"
+                        if self.gameMap[i][j] in self.white and self.gameMap[i + 1][j] in self.white and \
+                                self.gameMap[i + 2][j] in self.white and self.gameMap[i + 3][j] in self.white:
+                            return "color wins"
+
+                    if j <= 4:
+                        if self.gameMap[i][j] in self.dot and self.gameMap[i][j + 1] in self.dot and \
+                                self.gameMap[i][j + 2] in self.dot and self.gameMap[i][j + 3] in self.dot:
+                            return "circle wins"
+                        if self.gameMap[i][j] in self.ring and self.gameMap[i][j + 1] in self.ring and \
+                                self.gameMap[i][j + 2] in self.ring and self.gameMap[i][j + 3] in self.ring:
+                            return "circle wins"
+
+                        if self.gameMap[i][j] in self.red and self.gameMap[i][j + 1] in self.red and \
+                                self.gameMap[i][j + 2] in self.red and self.gameMap[i][j + 3] in self.red:
+                            return "color wins"
+                        if self.gameMap[i][j] in self.white and self.gameMap[i][j + 1] in self.white and \
+                                self.gameMap[i][j + 2] in self.white and self.gameMap[i][j + 3] in self.white:
+                            return "color wins"
+
+                    if j <= 4 and i <= 8:
+                        if self.gameMap[i][j] in self.dot and self.gameMap[i + 1][j + 1] in self.dot and \
+                                self.gameMap[i + 2][j + 2] in self.dot and self.gameMap[i + 3][j + 3] in self.dot:
+                            return "circle wins"
+                        if self.gameMap[i + 3][j] in self.dot and self.gameMap[i + 2][j + 1] in self.dot and \
+                                self.gameMap[i + 1][j + 2] in self.dot and self.gameMap[i][j + 3] in self.dot:
+                            return "circle wins"
+                        if self.gameMap[i][j] in self.ring and self.gameMap[i + 1][j + 1] in self.ring and \
+                                self.gameMap[i + 2][j + 2] in self.ring and self.gameMap[i + 3][j + 3] in self.ring:
+                            return "circle wins"
+                        if self.gameMap[i + 3][j] in self.ring and self.gameMap[i + 2][j + 1] in self.ring and \
+                                self.gameMap[i + 1][j + 2] in self.ring and self.gameMap[i][j + 3] in self.ring:
+                            return "circle wins"
+
+                        if self.gameMap[i][j] in self.white and self.gameMap[i + 1][j + 1] in self.white and \
+                                self.gameMap[i + 2][j + 2] in self.white and self.gameMap[i + 3][j + 3] in self.white:
+                            return "color wins"
+                        if self.gameMap[i + 3][j] in self.white and self.gameMap[i + 2][j + 1] in self.white and \
+                                self.gameMap[i + 1][j + 2] in self.white and self.gameMap[i][j + 3] in self.white:
+                            return "color wins"
+                        if self.gameMap[i + 3][j] in self.white and self.gameMap[i + 2][j + 1] in self.white and \
+                                self.gameMap[i + 1][j + 2] in self.white and self.gameMap[i][j + 3] in self.white:
+                            return "color wins"
+                        if self.gameMap[i][j] in self.red and self.gameMap[i + 1][j + 1] in self.red and \
+                                self.gameMap[i + 2][j + 2] in self.red and self.gameMap[i + 3][j + 3] in self.red:
+                            return "color wins"
+                        if self.gameMap[i + 3][j] in self.red and self.gameMap[i + 2][j + 1] in self.red and \
+                                self.gameMap[i + 1][j + 2] in self.red and self.gameMap[i][j + 3] in self.red:
+                            return "color wins"
             return "go"
