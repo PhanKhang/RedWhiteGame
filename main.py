@@ -203,4 +203,15 @@ def main():
         legal = False
 
 
+
+# print(u"\u25EF")
+# print(u"\u25CF")
+# TGREEN =  '\033[32m' # Green Text
+# print (TGREEN + "This is some green text!")
+# TWHITE = '\033[37m'
+#
+# print (TGREEN + "It doens't reset!" , TWHITE)
+# ENDC = '\033[m' # reset to the defaults
+#
+# print (TGREEN + u"\u25CF" , ENDC)
 main()

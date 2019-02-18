@@ -479,11 +479,14 @@ class Appraiser:
 
     # returns coordinate with non zero weight and free on the gameMap
     def getAvailableMoves(self, colorMap):
+        aveMoves = {}
         print("Free spaces: ")
         for i in range(8):
             for j in range(12):
                 if colorMap[j][i] > 0 and self.gameMap[j][i] == 0 and self.isTargeted(i, j):
                     print(numbToLetter.get(i+1)+str(j+1)+": "+str(colorMap[j][i]))
+                    aveMoves[numbToLetter.get(i+1)+str(j+1)] = colorMap[j][i]
+        return aveMoves
 
     def isTargeted(self, i, j):
         if (self.gameMap[j-1][i] != 0 or self.gameMap[j-2][i] != 0 or j == 0 or j-1 == 0) and self.gameMap[j+1][i] == 0:
