@@ -1,3 +1,4 @@
+import re
 class Move:
     # будет ли жто работать при координатах которые больше 9? у нас это возможно
 
@@ -14,8 +15,17 @@ class Move:
             "H": 8
 
         }
+        def validateFormat(input):
+            pattern = re.compile("(^[A-H]\s([1-9]|[1][0-2])\s[A-H]\s([1-9]|[1][0-2])\s[1-8]\s[A-H]\s([1-9]|[1][0-2])|^[0]\s[1-8]\s[A-H]\s([1-9]|[1][0-2]))$")
+            if not pattern.match(input):
+                raise Exception("Invalid input")
+            
+        
+        validateFormat(input)
 
         self.input = input.split(" ")
+        
+        
 
         def parseType(input):
             if input[:1].isdigit():
