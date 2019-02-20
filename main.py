@@ -40,7 +40,7 @@ dot = [1, 4]
 ring = [2, 3]
 
 
-# give what is in the first half of the card according to rotation if not found return 10
+# give what is in the first half of the card according to rotation if not found return 0
 def pervayaYacheyka(rotation):
     translator = {
         1: 1,
@@ -52,10 +52,10 @@ def pervayaYacheyka(rotation):
         7: 4,
         8: 3
     }
-    return translator.get(rotation, 10);
+    return translator.get(rotation, 0);
 
 
-# give what is in the second half of the card according to rotation if not found return 10
+# give what is in the second half of the card according to rotation if not found return 0
 def vtorayYacheyka(rotation):
     translator = {
         1: 2,
@@ -67,16 +67,72 @@ def vtorayYacheyka(rotation):
         7: 3,
         8: 4
     }
-    return translator.get(rotation, 10);
+    return translator.get(rotation, 0);
 
 
 # put card at position i j and the rotation. keep in mind that coordinates are reversed j before i;
+def getCard(i):
+    whiteB = '\033[0;37;40m'
+    redB = '\033[0;37;41m'
+    dot = u" \u25CF"
+    ring = u" \u25EF"
+    if i == 1 :
+        return redB + dot
+    if i == 2 :
+        return whiteB + ring
+    if i == 3 :
+        return redB + ring
+    if i == 4 :
+        return whiteB + dot
+    return " 0"
+
+
+def getCardL(i):
+    whiteB = "W"
+    redB = "R"
+    dot = "D"
+    ring = "C"
+    if i == 1 :
+        return redB + dot
+    if i == 2 :
+        return whiteB + ring
+    if i == 3 :
+        return redB + ring
+    if i == 4 :
+        return whiteB + dot
+    return " 0"
 
 
 def correctPrinter(gameMap):
     print("       A    B    C    D    E    F    G    H")
     for row_label, row in zip(row_labels, numpy.flipud(gameMap)):
         print('%s [%s]' % (row_label, ' '.join('%04s' % int(i) for i in row)))
+
+
+def correctPrinterMapL(gameMap):
+    ENDC = '\033[2m'
+    print("     A  B  C  D  E  F  G  H")
+    for j in range(11, -1, -1):
+        s = str(j+1)+"\t"
+        for i in range(8):
+            s += getCardL(gameMap[j][i])
+            s += " "
+            s += ENDC
+        print(s, ENDC)
+    print("     A  B  C  D  E  F  G  H")
+
+
+def correctPrinterMap(gameMap):
+    ENDC = '\033[2m'
+    print("     A  B  C  D  E  F  G  H")
+    for j in range(11, -1, -1):
+        s = str(j+1)+"\t"
+        for i in range(8):
+            s += getCard(gameMap[j][i])
+            s += " "
+            s += ENDC
+        print(s, ENDC)
+    print("     A  B  C  D  E  F  G  H")
 
 
 def place(move):
@@ -87,7 +143,7 @@ def place(move):
             rotation = int(move.rotation)
             coordinateToRotation[numbToLetter.get(i + 1) + str(j + 1)] = rotation;
             gameMap[j][i] = pervayaYacheyka(rotation)
-            if rotation % 2 != 0:
+            if rotation % 2 != 0 and rotation != 0:
                 gameMap[j][i + 1] = vtorayYacheyka(rotation)
             else:
                 gameMap[j + 1][i] = vtorayYacheyka(rotation)
@@ -111,7 +167,7 @@ def place(move):
             i = move.targetCoordinateLet - 1
             j = int(move.targetCoordinateNum) - 1
             rotation = int(move.rotation)
-            if validator.placeValidatorCoord(i, j, rotation):
+            if validator.placeValidator(move):
                 # remove the value from dictionary of moves
                 if coordinateToRotation.pop(numbToLetter.get(i1 + 1) + str(j1 + 1), 0) == 0:
                     coordinateToRotation.pop(numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
@@ -131,7 +187,7 @@ def place(move):
 
 
 def main():
-    choice = int(input("Write 0 for dots and a for colors: "))
+    choice = int(input("Write 0 for dots and 1 a for colors: "))
     if choice == 0:
         print("Player 1: Dots")
         print("Player 2: Colors")
@@ -171,47 +227,30 @@ def main():
 
         print("Current Game field")
         # print(numpy.flipud(gameMap))
-        correctPrinter(gameMap)
+        correctPrinterMap(gameMap)
         # print(coordinateToRotation)
-
         appraiser.appraise(move)
-        print("Dot map")
-        # print(numpy.flipud(appraiser.gameMap_dot))
-        correctPrinter(appraiser.gameMap_dot)
-        appraiser.getAvailableMoves(appraiser.gameMap_dot)
-
-        print("Ring map")
-        # print(numpy.flipud(appraiser.gameMap_ring))
-        correctPrinter(appraiser.gameMap_ring)
-        appraiser.getAvailableMoves(appraiser.gameMap_ring)
+        print("Red map")
+        print(appraiser.getAvailableMoves(appraiser.getRedMap()))
+        correctPrinter(appraiser.getRedMap())
 
         print("White map")
-        # print(numpy.flipud(appraiser.gameMap_white))
-        correctPrinter(appraiser.gameMap_white)
-        appraiser.getAvailableMoves(appraiser.gameMap_white)
+        print(appraiser.getAvailableMoves(appraiser.getRingMap()))
+        correctPrinter(appraiser.getRingMap())
 
-        print("Red map")
-        # print(numpy.flipud(appraiser.gameMap_red))
-        correctPrinter(appraiser.gameMap_red)
-        appraiser.getAvailableMoves(appraiser.gameMap_red)
-        #
-        #
+        print("White map")
+        print(appraiser.getAvailableMoves(appraiser.getWhiteMap()))
+        correctPrinter(appraiser.getWhiteMap())
+
+        print("Dot map")
+        print(appraiser.getAvailableMoves(appraiser.getDotMap()))
+        correctPrinter(appraiser.getDotMap())
+
         result = validator.victoryCheck((k + choice) % 2)
+
         if result != "go":
             print(result)
             break
         legal = False
 
-
-
-# print(u"\u25EF")
-# print(u"\u25CF")
-# TGREEN =  '\033[32m' # Green Text
-# print (TGREEN + "This is some green text!")
-# TWHITE = '\033[37m'
-#
-# print (TGREEN + "It doens't reset!" , TWHITE)
-# ENDC = '\033[m' # reset to the defaults
-#
-# print (TGREEN + u"\u25CF" , ENDC)
 main()

@@ -1,11 +1,11 @@
 import numpy
+from numpy.core._multiarray_umath import ndarray
 
-price_red = 10
-price_white = 10
-price_dot = 10
-price_ring = 10
-0
-price_of_being_blocked = -1000;
+from cell import Cell
+
+price: int = 10
+
+priceing_blocked = -1000;
 
 letterToNumb = {
     "A": 1,
@@ -26,15 +26,14 @@ class Appraiser:
     def __init__(self, gameMap):
         self.gameMap = gameMap
 
-    gameMap_red = numpy.zeros((12, 8))
-    gameMap_white = numpy.zeros((12, 8))
-    gameMap_dot = numpy.zeros((12, 8))
-    gameMap_ring = numpy.zeros((12, 8))
+    valueMap = [[Cell() for j in range(8)] for i in range(12)]
 
     red = [1, 3]
     white = [2, 4]
     dot = [1, 4]
     ring = [2, 3]
+
+    targetList = []
 
     # appraise how how card will affect gameMap
     def appraise(self, move):
@@ -43,10 +42,19 @@ class Appraiser:
         i1 = i
         j1 = j
 
+
+
         if move.rotation % 2 != 0:
             i1 += 1
         else:
             j1 += 1
+
+        self.valueMap[j][i].occupied = 1
+        self.valueMap[j1][i1].occupied = 1
+
+        if move.type == 1:
+            self.valueMap[move.sourceCoordinate1Num - 1][move.sourceCoordinate1Let - 1].occupied = 0
+            self.valueMap[move.sourceCoordinate2Num - 1][move.sourceCoordinate2Let - 1].occupied = 0
 
         if self.gameMap[j][i] in self.red:
             self.appraise_red(i, j)
@@ -66,14 +74,20 @@ class Appraiser:
         if self.gameMap[j1][i1] in self.ring:
             self.appraise_ring(i1, j1)
 
+        self.targetList.clear()
+        for j in range(12):
+            for i in range(8):
+                if self.isTargeted(i, j) and  self.valueMap[j][i].occupied == 0:
+                    self.targetList.append(self.valueMap[j][i])
+
     # look for next 4 fields to see if there is possibility of creating 4 in a row
     def isHorizontalWindowFree(self, i, j, self_color):
         rate = 0
-        for step in range(5):
+        for step in range(4):
             if step + i < 8:
-                if not (self.gameMap[j][i+step] in self_color or self.gameMap[j][i+step] == 0):
+                if not (self.gameMap[j][i + step] in self_color or self.gameMap[j][i + step] == 0):
                     return 0
-                elif self.gameMap[j][i+step] in self_color:
+                elif self.gameMap[j][i + step] in self_color:
                     rate += 1
             else:
                 return 0
@@ -83,11 +97,11 @@ class Appraiser:
 
     def isVerticalWindowFree(self, i, j, self_color):
         rate = 0
-        for step in range(5):
+        for step in range(4):
             if step + j < 12:
-                if not (self.gameMap[j+step][i] in self_color or self.gameMap[j+step][i] == 0):
+                if not (self.gameMap[j + step][i] in self_color or self.gameMap[j + step][i] == 0):
                     return 0
-                elif self.gameMap[j+step][i] in self_color:
+                elif self.gameMap[j + step][i] in self_color:
                     rate += 1
             else:
                 return 0
@@ -97,11 +111,11 @@ class Appraiser:
 
     def isUpHorizontalWindowFree(self, i, j, self_color):
         rate = 0
-        for step in range(5):
+        for step in range(4):
             if step + j < 12 and step + i < 8:
-                if not (self.gameMap[j+step][i+step] in self_color or self.gameMap[j+step][i+step] == 0):
+                if not (self.gameMap[j + step][i + step] in self_color or self.gameMap[j + step][i + step] == 0):
                     return 0
-                elif self.gameMap[j+step][i+step] in self_color:
+                elif self.gameMap[j + step][i + step] in self_color:
                     rate += 1
             else:
                 return 0
@@ -111,11 +125,11 @@ class Appraiser:
 
     def isDownHorizontalWindowFree(self, i, j, self_color):
         rate = 0
-        for step in range(5):
+        for step in range(4):
             if j - step >= 0 and step + i < 8:
-                if not (self.gameMap[j-step][i+step] in self_color or self.gameMap[j-step][i+step] == 0):
+                if not (self.gameMap[j - step][i + step] in self_color or self.gameMap[j - step][i + step] == 0):
                     return 0
-                elif self.gameMap[j-step][i+step] in self_color:
+                elif self.gameMap[j - step][i + step] in self_color:
                     rate += 1
             else:
                 return 0
@@ -131,73 +145,73 @@ class Appraiser:
     #         print("Vertical is blocked for " + str(i) + " " + str(j))
     #         for step in range(1, 5):
     #             if j + step < 12:
-    #                 tmp[j + step][i] += price_of_being_blocked
+    #                 tmp[j + step][i] += priceing_blocked
     #             if j - step >= 0:
-    #                 tmp[j - step][i] += price_of_being_blocked
+    #                 tmp[j - step][i] += priceing_blocked
     #     if self.isBlockingVertical(i, j, color_or_dot) == 2:
     #         print("Vertical is down blocked for " + str(i) + " " + str(j))
     #         for step in range(1, 5):
     #             if j - step >= 0:
-    #                 tmp[j - step][i] += price_of_being_blocked
+    #                 tmp[j - step][i] += priceing_blocked
     #     if self.isBlockingVertical(i, j, color_or_dot) == 1:
     #         print("Vertical is up blocked for " + str(i) + " " + str(j))
     #         for step in range(1, 5):
     #             if j + step < 12:
-    #                 tmp[j + step][i] += price_of_being_blocked
+    #                 tmp[j + step][i] += priceing_blocked
     #
     #     if self.isBlockingHorizontal(i, j, color_or_dot) == 3:
     #         print("Horizontal is blocked for " + str(i) + " " + str(j))
     #         for step in range(1, 5):
     #             if i + step < 8:
-    #                 tmp[j][i + step] += price_of_being_blocked
+    #                 tmp[j][i + step] += priceing_blocked
     #             if i - step >= 0:
-    #                 tmp[j][i - step] += price_of_being_blocked
+    #                 tmp[j][i - step] += priceing_blocked
     #     if self.isBlockingHorizontal(i, j, color_or_dot) == 2:
     #         print("Horizontal is left blocked for " + str(i) + " " + str(j))
     #         for step in range(1, 5):
     #             if i - step >= 0:
-    #                 tmp[j][i - step] += price_of_being_blocked
+    #                 tmp[j][i - step] += priceing_blocked
     #     if self.isBlockingHorizontal(i, j, color_or_dot) == 1:
     #         print("Horizontal is right blocked for " + str(i) + " " + str(j))
     #         for step in range(1, 5):
     #             if i + step < 8:
-    #                 tmp[j][i + step] += price_of_being_blocked
+    #                 tmp[j][i + step] += priceing_blocked
     #
     #     if self.isBlockingLeftDiagonal(i, j, color_or_dot) == 3:
     #         print("Left Diagonal is blocked for " + str(i) + " " + str(j))
     #         for step in range(1, 5):
     #             if j + step < 12 and i - step >= 0:
-    #                 tmp[j + step][i - step] += price_of_being_blocked
+    #                 tmp[j + step][i - step] += priceing_blocked
     #             if j - step >= 0 and i + step < 8:
-    #                 tmp[j - step][i + step] += price_of_being_blocked
+    #                 tmp[j - step][i + step] += priceing_blocked
     #     if self.isBlockingLeftDiagonal(i, j, color_or_dot) == 2:
     #         print("Left Diagonal is left blocked for " + str(i) + " " + str(j))
     #         for step in range(1, 5):
     #             if j + step < 12 and i - step >= 0:
-    #                 tmp[j + step][i - step] += price_of_being_blocked
+    #                 tmp[j + step][i - step] += priceing_blocked
     #     if self.isBlockingLeftDiagonal(i, j, color_or_dot) == 1:
     #         print("Left Diagonal is right blocked for " + str(i) + " " + str(j))
     #         for step in range(1, 5):
     #             if j - step >= 0 and i + step < 8:
-    #                 tmp[j - step][i + step] += price_of_being_blocked
+    #                 tmp[j - step][i + step] += priceing_blocked
     #
     #     if self.isBlockingRightDiagonal(i, j, color_or_dot) == 3:
     #         print("Right Diagonal is blocked for " + str(i) + " " + str(j))
     #         for step in range(1, 5):
     #             if j + step < 12 and i + step < 8:
-    #                 tmp[j + step][i + step] += price_of_being_blocked
+    #                 tmp[j + step][i + step] += priceing_blocked
     #             if j - step >= 0 and i - step >= 0:
-    #                 tmp[j - step][i - step] += price_of_being_blocked
+    #                 tmp[j - step][i - step] += priceing_blocked
     #     if self.isBlockingRightDiagonal(i, j, color_or_dot) == 2:
     #         print("Right Diagonal is left blocked for " + str(i) + " " + str(j))
     #         for step in range(1, 5):
     #             if j - step >= 0 and i - step >= 0:
-    #                 tmp[j - step][i - step] += price_of_being_blocked
+    #                 tmp[j - step][i - step] += priceing_blocked
     #     if self.isBlockingRightDiagonal(i, j, color_or_dot) == 1:
     #         print("Right Diagonal is right blocked for " + str(i) + " " + str(j))
     #         for step in range(1, 5):
     #             if j + step < 12 and i + step < 8:
-    #                 tmp[j + step][i + step] += price_of_being_blocked
+    #                 tmp[j + step][i + step] += priceing_blocked
     #     pass
     #
     # def getCorrectMap(self, color_or_dot):
@@ -311,185 +325,215 @@ class Appraiser:
     def appraise_red(self, i, j):
         for step in range(4):
             if i - step >= 0:
-                rate = self.isHorizontalWindowFree(i-step, j, self.red)
+                rate = self.isHorizontalWindowFree(i - step, j, self.red)
                 if rate > 0:
-                    for k in range (4):
-                        self.gameMap_red[j][i-step+k] += price_red * rate
+                    for k in range(4):
+                        self.valueMap[j][i - step + k].redWeight += price * rate
         for step in range(4):
             if j - step >= 0:
-                rate = self.isVerticalWindowFree(i, j-step, self.red)
+                rate = self.isVerticalWindowFree(i, j - step, self.red)
                 if rate > 0:
-                    for k in range (4):
-                        self.gameMap_red[j-step+k][i] += price_red * rate
+                    for k in range(4):
+                        self.valueMap[j - step + k][i].redWeight += price * rate
         for step in range(4):
             if i - step >= 0 and j + step < 12:
-                rate = self.isDownHorizontalWindowFree(i-step, j+step, self.red)
+                rate = self.isDownHorizontalWindowFree(i - step, j + step, self.red)
                 if rate > 0:
-                    for k in range (4):
-                        self.gameMap_red[j+step-k][i-step+k] += price_red * rate
+                    for k in range(4):
+                        self.valueMap[j + step - k][i - step + k].redWeight += price * rate
         for step in range(4):
             if j - step >= 0 and i - step >= 0:
-                rate = self.isUpHorizontalWindowFree(i-step, j-step, self.red)
+                rate = self.isUpHorizontalWindowFree(i - step, j - step, self.red)
                 if rate > 0:
-                    for k in range (4):
-                        self.gameMap_red[j-step+k][i-step+k] += price_red * rate
+                    for k in range(4):
+                        self.valueMap[j - step + k][i - step + k].redWeight += price * rate
         # for step in range(1, 4):
         #     if j + step < 12:
-        #         self.gameMap_red[j + step][i] += price_red
-        #     if j - step >= 0:
-        #         self.gameMap_red[j - step][i] += price_red
-        #     if i + step < 8:
-        #         self.gameMap_red[j][i + step] += price_red
-        #     if i - step >= 0:
-        #         self.gameMap_red[j][i - step] += price_red
-        #     if j + step < 12 and i + step < 8:
-        #         self.gameMap_red[j + step][i + step] += price_red
-        #     if j - step >= 0 and i - step >= 0:
-        #         self.gameMap_red[j - step][i - step] += price_red
-        #     if j + step < 12 and i - step >= 0:
-        #         self.gameMap_red[j + step][i - step] += price_red
-        #     if j - step >= 0 and i + step < 8:
-        #         self.gameMap_red[j - step][i + step] += price_red
-        pass
+        #         self.gameMap_red[j + step][i] += price        #     if j - step >= 0:
+        #         self.gameMap_red[j - step][i] += price        #     if i + step < 8:
+        #         self.gameMap_red[j][i + step] += price        #     if i - step >= 0:
+        #         self.gameMap_red[j][i - step] += price        #     if j + step < 12 and i + step < 8:
+        #         self.gameMap_red[j + step][i + step] += price        #     if j - step >= 0 and i - step >= 0:
+        #         self.gameMap_red[j - step][i - step] += price        #     if j + step < 12 and i - step >= 0:
+        #         self.gameMap_red[j + step][i - step] += price        #     if j - step >= 0 and i + step < 8:
+        #         self.gameMap_red[j - step][i + step] += price        pass
 
     def appraise_white(self, i, j):
         for step in range(4):
             if i - step >= 0:
-                rate = self.isHorizontalWindowFree(i-step, j, self.white)
+                rate = self.isHorizontalWindowFree(i - step, j, self.white)
                 if rate > 0:
-                    for k in range (4):
-                        self.gameMap_white[j][i-step+k] += price_white * rate
+                    for k in range(4):
+                        self.valueMap[j][i - step + k].whiteWeight += price * rate
         for step in range(4):
             if j - step >= 0:
-                rate = self.isVerticalWindowFree(i, j-step, self.white)
+                rate = self.isVerticalWindowFree(i, j - step, self.white)
                 if rate > 0:
-                    for k in range (4):
-                        self.gameMap_white[j-step+k][i] += price_white * rate
+                    for k in range(4):
+                        self.valueMap[j - step + k][i].whiteWeight += price * rate
         for step in range(4):
             if i - step >= 0 and j + step < 12:
-                rate = self.isDownHorizontalWindowFree(i-step, j+step, self.white)
+                rate = self.isDownHorizontalWindowFree(i - step, j + step, self.white)
                 if rate > 0:
-                    for k in range (4):
-                        self.gameMap_white[j+step-k][i-step+k] += price_white * rate
+                    for k in range(4):
+                        self.valueMap[j + step - k][i - step + k].whiteWeight += price * rate
         for step in range(4):
             if j - step >= 0 and i - step >= 0:
-                rate = self.isUpHorizontalWindowFree(i-step, j-step, self.white)
+                rate = self.isUpHorizontalWindowFree(i - step, j - step, self.white)
                 if rate > 0:
-                    for k in range (4):
-                        self.gameMap_white[j-step+k][i-step+k] += price_white * rate
+                    for k in range(4):
+                        self.valueMap[j - step + k][i - step + k].whiteWeight += price * rate
         # for step in range(1, 4):
         #     if j + step < 12:
-        #         self.gameMap_white[j + step][i] += price_white
+        #         self.gameMap_white[j + step][i] += price
         #     if j - step >= 0:
-        #         self.gameMap_white[j - step][i] += price_white
+        #         self.gameMap_white[j - step][i] += price
         #     if i + step < 8:
-        #         self.gameMap_white[j][i + step] += price_white
+        #         self.gameMap_white[j][i + step] += price
         #     if i - step >= 0:
-        #         self.gameMap_white[j][i - step] += price_white
+        #         self.gameMap_white[j][i - step] += price
         #     if j + step < 12 and i + step < 8:
-        #         self.gameMap_white[j + step][i + step] += price_white
+        #         self.gameMap_white[j + step][i + step] += price
         #     if j - step >= 0 and i - step >= 0:
-        #         self.gameMap_white[j - step][i - step] += price_white
+        #         self.gameMap_white[j - step][i - step] += price
         #     if j + step < 12 and i - step >= 0:
-        #         self.gameMap_white[j + step][i - step] += price_white
+        #         self.gameMap_white[j + step][i - step] += price
         #     if j - step >= 0 and i + step < 8:
-        #         self.gameMap_white[j - step][i + step] += price_white
+        #         self.gameMap_white[j - step][i + step] += price
         pass
 
     def appraise_dot(self, i, j):
         for step in range(4):
             if i - step >= 0:
-                if self.isHorizontalWindowFree(i - step, j, self.dot):
+                rate = self.isHorizontalWindowFree(i - step, j, self.dot)
+                if rate > 0:
                     for k in range(4):
-                        self.gameMap_dot[j][i - step + k] += price_dot
+                        self.valueMap[j][i - step + k].dotWeight += price * rate
         for step in range(4):
             if j - step >= 0:
-                if self.isVerticalWindowFree(i, j - step, self.dot):
+                rate = self.isVerticalWindowFree(i, j - step, self.dot)
+                if rate > 0:
                     for k in range(4):
-                        self.gameMap_dot[j - step + k][i] += price_dot
+                        self.valueMap[j - step + k][i].dotWeight += price * rate
         for step in range(4):
             if i - step >= 0 and j + step < 12:
-                if self.isDownHorizontalWindowFree(i - step, j + step, self.dot):
+                rate = self.isDownHorizontalWindowFree(i - step, j + step, self.dot)
+                if rate > 0:
                     for k in range(4):
-                        self.gameMap_dot[j + step - k][i - step + k] += price_dot
+                        self.valueMap[j + step - k][i - step + k].dotWeight += price * rate
         for step in range(4):
             if j - step >= 0 and i - step >= 0:
-                if self.isUpHorizontalWindowFree(i - step, j - step, self.dot):
+                rate = self.isUpHorizontalWindowFree(i - step, j - step, self.dot)
+                if rate > 0:
                     for k in range(4):
-                        self.gameMap_dot[j - step + k][i - step + k] += price_dot
+                        self.valueMap[j - step + k][i - step + k].dotWeight += price * rate
         # for step in range(1, 4):
         #     if j + step < 12:
-        #         self.gameMap_dot[j + step][i] += price_dot
-        #     if j - step >= 0:
-        #         self.gameMap_dot[j - step][i] += price_dot
-        #     if i + step < 8:
-        #         self.gameMap_dot[j][i + step] += price_dot
-        #     if i - step >= 0:
-        #         self.gameMap_dot[j][i - step] += price_dot
-        #     if j + step < 12 and i + step < 8:
-        #         self.gameMap_dot[j + step][i + step] += price_dot
-        #     if j - step >= 0 and i - step >= 0:
-        #         self.gameMap_dot[j - step][i - step] += price_dot
-        #     if j + step < 12 and i - step >= 0:
-        #         self.gameMap_dot[j + step][i - step] += price_dot
-        #     if j - step >= 0 and i + step < 8:
-        #         self.gameMap_dot[j - step][i + step] += price_dot
-        pass
+        #         self.gameMap_dot[j + step][i] += price        #     if j - step >= 0:
+        #         self.gameMap_dot[j - step][i] += price        #     if i + step < 8:
+        #         self.gameMap_dot[j][i + step] += price        #     if i - step >= 0:
+        #         self.gameMap_dot[j][i - step] += price        #     if j + step < 12 and i + step < 8:
+        #         self.gameMap_dot[j + step][i + step] += price        #     if j - step >= 0 and i - step >= 0:
+        #         self.gameMap_dot[j - step][i - step] += price        #     if j + step < 12 and i - step >= 0:
+        #         self.gameMap_dot[j + step][i - step] += price        #     if j - step >= 0 and i + step < 8:
+        #         self.gameMap_dot[j - step][i + step] += price        pass
 
     def appraise_ring(self, i, j):
         for step in range(4):
             if i - step >= 0:
-                if self.isHorizontalWindowFree(i - step, j, self.ring):
+                rate = self.isHorizontalWindowFree(i - step, j, self.ring)
+                if rate > 0:
                     for k in range(4):
-                        self.gameMap_ring[j][i - step + k] += price_ring
-
+                        # self.gameMap_ring[j][i - step + k] += price
+                        self.valueMap[j][i - step + k].ringWeight += price * rate
         for step in range(4):
             if j - step >= 0:
-                if self.isVerticalWindowFree(i, j - step, self.ring):
+                rate = self.isVerticalWindowFree(i, j - step, self.ring)
+                if rate > 0:
                     for k in range(4):
-                        self.gameMap_ring[j - step + k][i] += price_ring
+                        # self.gameMap_ring[j - step + k][i] += price
+                        self.valueMap[j - step + k][i].ringWeight += price * rate
         for step in range(4):
             if i - step >= 0 and j + step < 12:
-                if self.isDownHorizontalWindowFree(i - step, j + step, self.ring):
+                rate = self.isDownHorizontalWindowFree(i - step, j + step, self.ring)
+                if rate > 0:
                     for k in range(4):
-                        self.gameMap_ring[j + step - k][i - step + k] += price_ring
+                        # self.gameMap_ring[j + step - k][i - step + k] += price
+                        self.valueMap[j + step - k][i - step + k].ringWeight += price * rate
         for step in range(4):
             if j - step >= 0 and i - step >= 0:
-                if self.isUpHorizontalWindowFree(i - step, j - step, self.ring):
+                rate = self.isUpHorizontalWindowFree(i - step, j - step, self.ring)
+                if rate > 0:
                     for k in range(4):
-                        self.gameMap_ring[j - step + k][i - step + k] += price_ring
+                        # self.gameMap_ring[j - step + k][i - step + k] += price
+                        self.valueMap[j - step + k][i - step + k].ringWeight += price * rate
         # for step in range(1, 4):
         #     if j + step < 12:
-        #         self.gameMap_ring[j + step][i] += price_ring
+        #         self.gameMap_ring[j + step][i] += price
         #     if j - step >= 0:
-        #         self.gameMap_ring[j - step][i] += price_ring
+        #         self.gameMap_ring[j - step][i] += price
         #     if i + step < 8:
-        #         self.gameMap_ring[j][i + step] += price_ring
+        #         self.gameMap_ring[j][i + step] += price
         #     if i - step >= 0:
-        #         self.gameMap_ring[j][i - step] += price_ring
+        #         self.gameMap_ring[j][i - step] += price
         #     if j + step < 12 and i + step < 8:
-        #         self.gameMap_ring[j + step][i + step] += price_ring
+        #         self.gameMap_ring[j + step][i + step] += price
         #     if j - step >= 0 and i - step >= 0:
-        #         self.gameMap_ring[j - step][i - step] += price_ring
+        #         self.gameMap_ring[j - step][i - step] += price
         #     if j + step < 12 and i - step >= 0:
-        #         self.gameMap_ring[j + step][i - step] += price_ring
+        #         self.gameMap_ring[j + step][i - step] += price
         #     if j - step >= 0 and i + step < 8:
-        #         self.gameMap_ring[j - step][i + step] += price_ring
+        #         self.gameMap_ring[j - step][i + step] += price
         pass
 
     # returns coordinate with non zero weight and free on the gameMap
     def getAvailableMoves(self, colorMap):
         aveMoves = {}
-        print("Free spaces: ")
+        maxMoves = {}
+        max = 0
         for i in range(8):
             for j in range(12):
                 if colorMap[j][i] > 0 and self.gameMap[j][i] == 0 and self.isTargeted(i, j):
-                    print(numbToLetter.get(i+1)+str(j+1)+": "+str(colorMap[j][i]))
-                    aveMoves[numbToLetter.get(i+1)+str(j+1)] = colorMap[j][i]
-        return aveMoves
+                    # print(numbToLetter.get(i+1)+str(j+1)+": "+str(colorMap[j][i]))
+                    aveMoves[numbToLetter.get(i + 1) + str(j + 1)] = colorMap[j][i]
+                    if colorMap[j][i] > max:
+                        max = colorMap[j][i]
+
+        for m in aveMoves.keys():
+            if abs(aveMoves.get(m) - max) <= price:
+                maxMoves[m] = aveMoves.get(m)
+        return maxMoves
 
     def isTargeted(self, i, j):
-        if (self.gameMap[j-1][i] != 0 or self.gameMap[j-2][i] != 0 or j == 0 or j-1 == 0) and self.gameMap[j+1][i] == 0:
+        if self.gameMap[j - 1][i] != 0 or self.gameMap[j - 2][i] != 0 or j == 0 or j - 1 == 0:
             return True
         else:
             return False
+
+    def getRedMap(self):
+        Matrix = numpy.zeros((12, 8))
+        for j in range(12):
+            for i in range(8):
+                Matrix[j][i] = self.valueMap[j][i].redWeight
+        return Matrix
+
+    def getWhiteMap(self):
+        Matrix = numpy.zeros((12, 8))
+        for j in range(12):
+            for i in range(8):
+                Matrix[j][i] = self.valueMap[j][i].whiteWeight
+        return Matrix
+
+    def getDotMap(self):
+        Matrix = numpy.zeros((12, 8))
+        for j in range(12):
+            for i in range(8):
+                Matrix[j][i] = self.valueMap[j][i].dotWeight
+        return Matrix
+
+    def getRingMap(self):
+        Matrix = numpy.zeros((12, 8))
+        for j in range(12):
+            for i in range(8):
+                Matrix[j][i] = self.valueMap[j][i].ringWeight
+        return Matrix

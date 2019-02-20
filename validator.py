@@ -16,12 +16,16 @@ class Validator:
         }
         self.numbToLetter = dict([[v, k] for k, v in self.letterToNumb.items()])
 
+    lastMove = None
+
     # parse the move and check if the card can be placed
     def placeValidator(self, move):
         i = move.targetCoordinateLet - 1
         j = int(move.targetCoordinateNum) - 1
         rotation = move.rotation
-        return self.placeValidatorCoord(i, j, rotation)
+        if self.placeValidatorCoord(i, j, rotation):
+            self.lastMove = move
+            return True
 
     # Checks:
     # 1) if card within the board's boundaries
@@ -75,31 +79,44 @@ class Validator:
             return True
         return False
 
+    def isNotLastMove(self, move):
+        i1 = move.sourceCoordinate1Let
+        j1 = int(move.sourceCoordinate1Num)
+        i2 = move.sourceCoordinate2Let
+        j2 = int(move.sourceCoordinate2Num)
+
+        if (i1 == self.lastMove.targetCoordinateLet and j1 == self.lastMove.targetCoordinateNum) or \
+                (i2 == self.lastMove.targetCoordinateLet and j2 == self.lastMove.targetCoordinateNum):
+            print("This was the last move")
+            return False
+        return True
+
     # Checks recycle move:
     # 1) checks card integrity by coordinates
     # 2) checks if there is no other cards above the given one
     def recycleValidator(self, move):
-        i1 = move.sourceCoordinate1Let - 1
-        j1 = int(move.sourceCoordinate1Num) - 1
+        if self.isNotLastMove(move):
+            i1 = move.sourceCoordinate1Let - 1
+            j1 = int(move.sourceCoordinate1Num) - 1
 
-        i2 = move.sourceCoordinate2Let - 1
-        j2 = int(move.sourceCoordinate2Num) - 1
+            i2 = move.sourceCoordinate2Let - 1
+            j2 = int(move.sourceCoordinate2Num) - 1
 
-        # get the sored rotation of the card to validate the card integrity holds
-        rotation = self.coordinateToRotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 0)
-        if rotation == 0:
-            rotation = self.coordinateToRotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
-            print(rotation)
-        if rotation == 0:
-            print(rotation)
-            return False
-        # find if 2 coordinates are of the same card
-        if int(rotation) % 2 == 0:
-            if i1 == i2 and abs(j1 - j2) == 1 and self.lookUpValidatorVertical(i2, j2):
-                return True
-        else:
-            if abs(i1 - i2) == 1 and j1 == j2 and self.lookUpValidatorHorizontal(i1, j1, i2, j2):
-                return True
+            # get the sored rotation of the card to validate the card integrity holds
+            rotation = self.coordinateToRotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 0)
+            if rotation == 0:
+                rotation = self.coordinateToRotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
+                print(rotation)
+            if rotation == 0:
+                print(rotation)
+                return False
+            # find if 2 coordinates are of the same card
+            if int(rotation) % 2 == 0:
+                if i1 == i2 and abs(j1 - j2) == 1 and self.lookUpValidatorVertical(i2, j2):
+                    return True
+            else:
+                if abs(i1 - i2) == 1 and j1 == j2 and self.lookUpValidatorHorizontal(i1, j1, i2, j2):
+                    return True
         return False
 
     # correspondence of value to card
