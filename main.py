@@ -7,7 +7,6 @@ from placer import Placer
 
 # game map
 gameMap = numpy.zeros((12, 8))
-coordinateToRotation = {}
 # krasnyCherny - 1
 # beluyKolco - 2
 # krasnyKolco - 3
@@ -24,38 +23,6 @@ white = [2, 4]
 dot = [1, 4]
 ring = [2, 3]
 
-
-# # give what is in the first half of the card according to rotation if not found return 0
-# def pervayaYacheyka(rotation):
-#     translator = {
-#         1: 1,
-#         2: 2,
-#         3: 2,
-#         4: 1,
-#         5: 3,
-#         6: 4,
-#         7: 4,
-#         8: 3
-#     }
-#     return translator.get(rotation, 0);
-#
-#
-# # give what is in the second half of the card according to rotation if not found return 0
-# def vtorayYacheyka(rotation):
-#     translator = {
-#         1: 2,
-#         2: 1,
-#         3: 1,
-#         4: 2,
-#         5: 4,
-#         6: 3,
-#         7: 3,
-#         8: 4
-#     }
-#     return translator.get(rotation, 0);
-
-
-# put card at position i j and the rotation. keep in mind that coordinates are reversed j before i;
 def getCard(i):
     whiteB = '\033[0;37;40m'
     redB = '\033[0;37;41m'
@@ -153,33 +120,32 @@ def main():
                 except:
                     print("unable to parse the move, try again")
             if k <= 24 and move.type == 0:
-                legal = placer.place(move,validator,gameMap,coordinateToRotation)
+                legal = placer.place(move,validator,gameMap)
             elif k > 24 and move.type == 1:
-                legal = placer.place(move,validator,gameMap,coordinateToRotation)
+                legal = placer.place(move, validator, gameMap)
             if not legal:
                 print("illegal move, try again")
 
         print("Current Game field")
         correctPrinterMap(gameMap) # change to correctPrinterMapL for letter output
-        print(coordinateToRotation)
+        print(validator.coordinateToRotation)
 
+        appraiser.appraise(move)
+        print("Red map")
+        print(appraiser.getAvailableMoves(appraiser.getRedMap()))
+        correctPrinter(appraiser.getRedMap())
 
-        # appraiser.appraise(move)
-        # print("Red map")
-        # print(appraiser.getAvailableMoves(appraiser.getRedMap()))
-        # correctPrinter(appraiser.getRedMap())
-        #
-        # print("White map")
-        # print(appraiser.getAvailableMoves(appraiser.getWhiteMap()))
-        # correctPrinter(appraiser.getWhiteMap())
-        #
-        # print("Ring map")
-        # print(appraiser.getAvailableMoves(appraiser.getRingMap()))
-        # correctPrinter(appraiser.getRingMap())
-        #
-        # print("Dot map")
-        # print(appraiser.getAvailableMoves(appraiser.getDotMap()))
-        # correctPrinter(appraiser.getDotMap())
+        print("White map")
+        print(appraiser.getAvailableMoves(appraiser.getWhiteMap()))
+        correctPrinter(appraiser.getWhiteMap())
+
+        print("Ring map")
+        print(appraiser.getAvailableMoves(appraiser.getRingMap()))
+        correctPrinter(appraiser.getRingMap())
+
+        print("Dot map")
+        print(appraiser.getAvailableMoves(appraiser.getDotMap()))
+        correctPrinter(appraiser.getDotMap())
 
         result = validator.victoryCheck((k + choice) % 2)
 

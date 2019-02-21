@@ -40,8 +40,6 @@ class Appraiser:
         i1 = i
         j1 = j
 
-
-
         if move.rotation % 2 != 0:
             i1 += 1
         else:
@@ -75,7 +73,7 @@ class Appraiser:
         self.targetList.clear()
         for j in range(12):
             for i in range(8):
-                if self.isTargeted(i, j) and  self.valueMap[j][i].occupied == 0:
+                if self.isTargeted(i, j) and self.valueMap[j][i].occupied == 0:
                     self.targetList.append(self.valueMap[j][i])
 
     # look for next 4 fields to see if there is possibility of creating 4 in a row
@@ -485,9 +483,8 @@ class Appraiser:
         pass
 
     # returns coordinate with non zero weight and free on the gameMap
-    def getAvailableMoves(self, colorMap):
+    def getAvailableMoves(self, colorMap, maxMoves):
         aveMoves = {}
-        maxMoves = {}
         max = 0
         for i in range(8):
             for j in range(12):
@@ -500,7 +497,7 @@ class Appraiser:
         for m in aveMoves.keys():
             if abs(aveMoves.get(m) - max) <= price:
                 maxMoves[m] = aveMoves.get(m)
-        return maxMoves
+        return max
 
     def isTargeted(self, i, j):
         if self.gameMap[j - 1][i] != 0 or self.gameMap[j - 2][i] != 0 or j == 0 or j - 1 == 0:
@@ -535,3 +532,39 @@ class Appraiser:
             for i in range(8):
                 Matrix[j][i] = self.valueMap[j][i].ringWeight
         return Matrix
+
+    def getScoreDots(self):
+        tmp = {}
+        return max(self.getAvailableMoves(self.getDotMap(), tmp),
+                   self.getAvailableMoves(self.getRingMap(), tmp)) - self.getAvgColors()
+
+    def getScoreColors(self):
+        tmp = {}
+        return max(self.getAvailableMoves(self.getRedMap(), tmp),
+                   self.getAvailableMoves(self.getWhiteMap(), tmp)) - self.getAvgDots()
+
+    def getAvgColors(self):
+        count = 0
+        sumWeights = 0
+        for i in range(8):
+            for j in range(12):
+                if self.valueMap[j][i].redWeight != 0:
+                    count += 1
+                    sumWeights += self.valueMap[j][i].redWeight
+                if self.valueMap[j][i].whiteWeight != 0:
+                    count += 1
+                    sumWeights += self.valueMap[j][i].whiteWeight
+        return count / sumWeights
+
+    def getAvgDots(self):
+        count = 0
+        sumWeights = 0
+        for i in range(8):
+            for j in range(12):
+                if self.valueMap[j][i].ringWeight != 0:
+                    count += 1
+                    sumWeights += self.valueMap[j][i].ringWeight
+                if self.valueMap[j][i].dotWeight != 0:
+                    count += 1
+                    sumWeights += self.valueMap[j][i].dotWeight
+        return count / sumWeights

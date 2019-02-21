@@ -108,7 +108,8 @@ class Treenode:
                             if self.validator.recycleValidator(recycleMove):
                                 newGameMap = copy.copy(self.gameMap)
                                 newValueMap = copy.copy(self.valueMap)
-                                Placer.place(move, newGameMap)
+                                newValidator = copy.copy(self.validator)
+                                Placer.place(move, newValidator, gameMap)
                                 # here we place nasty valueMap updater method call, which updates newValueMap based on the newGameMap
                                 childNode = Treenode(depth - 1, newValueMap, newGameMap)
                                 self.children.append(childNode)

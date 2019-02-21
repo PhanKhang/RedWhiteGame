@@ -1,6 +1,7 @@
 class Validator:
     def __init__(self, gameMap):
         self.gameMap = gameMap
+        self.coordinateToRotation = {}
 
         self.letterToNumb = {
             "A": 1,
@@ -16,6 +17,9 @@ class Validator:
         self.numbToLetter = dict([[v, k] for k, v in self.letterToNumb.items()])
 
     lastMove = None
+
+    def getListOfItems(self):
+        return self.coordinateToRotation
 
     # parse the move and check if the card can be placed
     def placeValidator(self, move):
@@ -93,7 +97,7 @@ class Validator:
     # Checks recycle move:
     # 1) checks card integrity by coordinates
     # 2) checks if there is no other cards above the given one
-    def recycleValidator(self, move, coordinate_to_rotation):
+    def recycleValidator(self, move):
         if self.isNotLastMove(move):
             i1 = move.sourceCoordinate1Let - 1
             j1 = int(move.sourceCoordinate1Num) - 1
@@ -102,9 +106,9 @@ class Validator:
             j2 = int(move.sourceCoordinate2Num) - 1
 
             # get the sored rotation of the card to validate the card integrity holds
-            rotation = coordinate_to_rotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 0)
+            rotation = self.coordinateToRotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 0)
             if rotation == 0:
-                rotation = coordinate_to_rotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
+                rotation = self.coordinateToRotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
                 print(rotation)
             if rotation == 0:
                 print(rotation)
