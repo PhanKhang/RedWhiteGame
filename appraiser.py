@@ -1,6 +1,4 @@
 import numpy
-from numpy.core._multiarray_umath import ndarray
-
 from cell import Cell
 
 price: int = 10
