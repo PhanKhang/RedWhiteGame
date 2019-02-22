@@ -116,9 +116,15 @@ class Validator:
             # find if 2 coordinates are of the same card
             if int(rotation) % 2 == 0:
                 if i1 == i2 and abs(j1 - j2) == 1 and self.lookUpValidatorVertical(i2, j2):
-                    return True
+                    if i1 == (move.targetCoordinateLet-1) and j1 == (move.targetCoordinateNum-1) \
+                            and rotation == move.rotation:
+                        return False
+                return True
             else:
                 if abs(i1 - i2) == 1 and j1 == j2 and self.lookUpValidatorHorizontal(i1, j1, i2, j2):
+                    if i1 == (move.targetCoordinateLet-1) and j1 == (move.targetCoordinateNum-1) \
+                            and rotation == move.rotation:
+                        return False
                     return True
         return False
 

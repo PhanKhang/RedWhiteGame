@@ -129,22 +129,22 @@ def main():
         print("Current Game field")
         correctPrinterMap(gameMap) # change to correctPrinterMapL for letter output
         print(validator.coordinateToRotation)
-
+        tmp = {}
         appraiser.appraise(move)
         print("Red map")
-        print(appraiser.getAvailableMoves(appraiser.getRedMap()))
+        print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
         correctPrinter(appraiser.getRedMap())
 
         print("White map")
-        print(appraiser.getAvailableMoves(appraiser.getWhiteMap()))
+        print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
         correctPrinter(appraiser.getWhiteMap())
 
         print("Ring map")
-        print(appraiser.getAvailableMoves(appraiser.getRingMap()))
+        print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
         correctPrinter(appraiser.getRingMap())
 
         print("Dot map")
-        print(appraiser.getAvailableMoves(appraiser.getDotMap()))
+        print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
         correctPrinter(appraiser.getDotMap())
 
         result = validator.victoryCheck((k + choice) % 2)
