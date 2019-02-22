@@ -5,13 +5,14 @@ import copy
 
 
 class Treenode:
-    def __init__(self, depth, valueMap, gameMap, moveNum):
+    def __init__(self, depth, valueMap, gameMap, moveNum, validator, party):
         self.depth = depth
         self.gameMap = gameMap
         self.valueMap = valueMap
         self.children = []
         self.moveNum = moveNum
-        self.validator = Validator(self.gameMap)
+        self.validator = validator
+        self.party = party
 
         numbToLetter = {
             1: "A",
@@ -50,13 +51,13 @@ class Treenode:
                         result.append(i + ":" + j + ";" + i + ":" + (j + 1))
                         size += 2
                     if 0 < i < 12 and gameMap[i][j] != 0 and gameMap[i + 1][j] == 0:
-                        result.append(i + ":" + j + ";" + (i - 1) + ":" + j)
+                        result.append((i-1) + ":" + j + ";" + i + ":" + j)
                         size += 1
                         if j < 8 and gameMap[i][j + 1] != 0 and gameMap[i + 1][j + 1] == 0:
                             result.append(i + ":" + j + ";" + i + ":" + (j + 1))
                             size += 1
                     if i == 12 and gameMap[i][j] != 0:
-                        result.append(i + ":" + j + ";" + (i - 1) + ":" + j)
+                        result.append((i-1) + ":" + j + ";" + i + ":" + j)
                         size += 1
                         if j < 8 and gameMap[i][j + 1] != 0:
                             result.append(i + ":" + j + ";" + i + ":" + (j + 1))
@@ -81,7 +82,7 @@ class Treenode:
 
         # here we detect if it's a goal state
         # would reuse victoryCheck, but need to refactor it a bit
-        self.goalState = self.validator.victoryCheck("dunno yet")
+        self.goalState = self.validator.victoryCheck(party)
 
         def populateChildren(targets, recycles):
             for coordinate in targets:
@@ -92,10 +93,11 @@ class Treenode:
                     if self.validator.placeValidator(move):
                         newGameMap = copy.copy(self.gameMap)
                         newValueMap = copy.copy(self.valueMap)
+                        newValidator = copy.copy(self.validator)
                         Placer.place(move, newGameMap)
                         # here we place nasty valueMap updater method call, which updates newValueMap based on the
                         # newGameMap
-                        childNode = Treenode(depth - 1, newValueMap, newGameMap)
+                        childNode = Treenode(depth - 1, newValueMap, newGameMap, self.party, validator)
                         self.children.append(childNode)
                     if self.moveNum > 24:
                         for recycle in self.recycles:
