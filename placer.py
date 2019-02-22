@@ -90,6 +90,9 @@ class Placer:
                         game_map[j][i + 1] = secondCell(rotation)
                     else:
                         game_map[j + 1][i] = secondCell(rotation)
+
+                    if game_map[j1][i1] == old_val1 and game_map[j2][i2] == old_val2:
+                        return False
                     return True
                 else:
                     game_map[j1][i1] = old_val1
