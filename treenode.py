@@ -3,6 +3,17 @@ from move import Move
 from placer import Placer
 import copy
 
+numbToLetter = {
+            1: "A",
+            2: "B",
+            3: "C",
+            4: "D",
+            5: "E",
+            6: "F",
+            7: "G",
+            8: "H"
+        }
+
 
 class Treenode:
     def __init__(self, depth, valueMap, gameMap, moveNum, validator, party):
@@ -14,17 +25,7 @@ class Treenode:
         self.validator = validator
         self.party = party
 
-        numbToLetter = {
-            1: "A",
-            2: "B",
-            3: "C",
-            4: "D",
-            5: "E",
-            6: "F",
-            7: "G",
-            8: "H"
 
-        }
 
         def getTargets(gameMap, valueMap):
             result = []
@@ -105,14 +106,15 @@ class Treenode:
                             j1 = recycle.split(";")[0].split(":")[1]
                             i2 = recycle.split(";")[1].split(":")[0]
                             j2 = recycle.split(";")[1].split(":")[1]
-                            recycleMove = Move(numbToLetter(j1) + ' ' + i1 + ' ' + numbToLetter(
-                                j2) + ' ' + i2 + ' ' + position + ' ' + +numbToLetter.get(j) + ' ' + i)
+                            recycleMove = Move(numbToLetter.get(j1) + ' ' + i1 + ' ' + numbToLetter.get(j2) + ' ' + i2
+                                               + ' ' + position + ' ' + +numbToLetter.get(j) + ' ' + i)
                             if self.validator.recycleValidator(recycleMove):
                                 newGameMap = copy.copy(self.gameMap)
                                 newValueMap = copy.copy(self.valueMap)
                                 newValidator = copy.copy(self.validator)
                                 Placer.place(move, newValidator, gameMap)
-                                # here we place nasty valueMap updater method call, which updates newValueMap based on the newGameMap
+                                # here we place nasty valueMap updater method call, which updates newValueMap based
+                                # on the newGameMap
                                 childNode = Treenode(depth - 1, newValueMap, newGameMap)
                                 self.children.append(childNode)
 
