@@ -1,18 +1,19 @@
 from validator import Validator
 from move import Move
 from placer import Placer
+from appraiser import Appraiser
 import copy
 
 numbToLetter = {
-            1: "A",
-            2: "B",
-            3: "C",
-            4: "D",
-            5: "E",
-            6: "F",
-            7: "G",
-            8: "H"
-        }
+    1: "A",
+    2: "B",
+    3: "C",
+    4: "D",
+    5: "E",
+    6: "F",
+    7: "G",
+    8: "H"
+}
 
 
 class Treenode:
@@ -24,8 +25,6 @@ class Treenode:
         self.moveNum = moveNum
         self.validator = validator
         self.party = party
-
-
 
         def getTargets(gameMap, valueMap):
             result = []
@@ -52,13 +51,13 @@ class Treenode:
                         result.append(i + ":" + j + ";" + i + ":" + (j + 1))
                         size += 2
                     if 0 < i < 12 and gameMap[i][j] != 0 and gameMap[i + 1][j] == 0:
-                        result.append((i-1) + ":" + j + ";" + i + ":" + j)
+                        result.append((i - 1) + ":" + j + ";" + i + ":" + j)
                         size += 1
                         if j < 8 and gameMap[i][j + 1] != 0 and gameMap[i + 1][j + 1] == 0:
                             result.append(i + ":" + j + ";" + i + ":" + (j + 1))
                             size += 1
                     if i == 12 and gameMap[i][j] != 0:
-                        result.append((i-1) + ":" + j + ";" + i + ":" + j)
+                        result.append((i - 1) + ":" + j + ";" + i + ":" + j)
                         size += 1
                         if j < 8 and gameMap[i][j + 1] != 0:
                             result.append(i + ":" + j + ";" + i + ":" + (j + 1))
@@ -74,10 +73,10 @@ class Treenode:
         # here we place move heuristic weight (as discussed OUR MAX- ENEMY MAX)
         # which represents h()
         def getOwnWeight(valueMap):
-            # black magic
-            return 0
-
-        pass
+            if party == 0:  # maybe 1 stays for dots?
+                return Appraiser().getScoreColors(valueMap, self.gameMap)
+            else:
+                return Appraiser().getScoreDots(valueMap, self.gameMap)
 
         self.weight = getOwnWeight(self.valueMap)
 
@@ -92,13 +91,16 @@ class Treenode:
                 for position in range(8):
                     move = Move('0 ' + position + ' ' + numbToLetter.get(j) + ' ' + i)
                     if self.validator.placeValidator(move):
+
+                        Appraiser().appraise(move, self.gameMap, self.valueMap)
+
                         newGameMap = copy.copy(self.gameMap)
                         newValueMap = copy.copy(self.valueMap)
                         newValidator = copy.copy(self.validator)
                         Placer.place(move, newGameMap)
                         # here we place nasty valueMap updater method call, which updates newValueMap based on the
                         # newGameMap
-                        childNode = Treenode(depth - 1, newValueMap, newGameMap, self.party, validator)
+                        childNode = Treenode(depth - 1, newValueMap, newGameMap, self.party, newValidator)
                         self.children.append(childNode)
                     if self.moveNum > 24:
                         for recycle in self.recycles:
@@ -115,7 +117,7 @@ class Treenode:
                                 Placer.place(move, newValidator, gameMap)
                                 # here we place nasty valueMap updater method call, which updates newValueMap based
                                 # on the newGameMap
-                                childNode = Treenode(depth - 1, newValueMap, newGameMap)
+                                childNode = Treenode(depth - 1, newValueMap, newGameMap, self.party, newValidator)
                                 self.children.append(childNode)
 
         if self.depth > 0 and self.goalState == 0:
