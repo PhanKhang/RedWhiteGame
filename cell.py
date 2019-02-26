@@ -6,3 +6,4 @@ class Cell:
     ringWeight: int = 0
     dotWeight: int = 0
     target: int = 0
+    totalWeight: int = 0

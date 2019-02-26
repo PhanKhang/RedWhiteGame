@@ -18,6 +18,8 @@ class Move:
 
         }
 
+        self.rawMove = input
+
         def validateFormat(input):
             pattern = re.compile(
                 "(^[A-H]\s([1-9]|[1][0-2])\s[A-H]\s([1-9]|[1][0-2])\s[1-8]\s[A-H]\s([1-9]|[1][0-2])|"

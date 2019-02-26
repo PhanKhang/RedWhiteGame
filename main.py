@@ -4,6 +4,9 @@ from move import Move
 from validator import Validator
 from appraiser import Appraiser
 from placer import Placer
+from cell import Cell
+from treenode import Treenode
+
 
 # game map
 gameMap = numpy.zeros((12, 8))
@@ -86,6 +89,34 @@ def correctPrinterMap(gameMap):
         print(s, ENDC)
     print("     A  B  C  D  E  F  G  H")
 
+def alphabeta(node, depth, a, b, maxP):
+    if depth == 0 or node.state == 1:
+        return node.weight
+    if maxP:
+        node.weight = -9999999
+        newchildren = []
+        for childnode in node.children:
+            node.weight = max(node.weight, alphabeta(childnode, depth -1, a, b, False))
+            a = max(a, node.value)
+            newchildren.append(childnode)
+            if a >= b:
+                print("prune!")
+                node.children = newchildren
+                break
+        return node.weight
+    else:
+        node.weight = 9999999
+        newchildren = []
+        for childnode in node.children:
+            node.weight = min(node.weight, alphabeta(childnode, depth -1, a, b, True))
+            b = min(b, node.weight)
+            newchildren.append(childnode)
+            if a >= b:
+                print("prune!")
+                node.children = newchildren
+                break
+        return node.weight
+
 
 def main():
     choice = int(input("Write 0 for dots and 1 a for colors: "))
@@ -96,6 +127,7 @@ def main():
         print("Player 1: Colors")
         print("Player 2: Dots")
     legal = False
+    valueMap = [[Cell() for j in range(8)] for i in range(12)]
 
     for k in range(1, 61):
         # print("Turn " + str(k) + " Player " + str((k-1) % 2+1))
@@ -108,10 +140,12 @@ def main():
         elif choice == 1 and (k - 1) % 2 + 1 == 2:
             print("Turn " + str(k) + " Player 2" + " playing with dots")
 
-        # чекер на написание хода надо не хочется чтобы все ломалос
         while not legal:
             movok = False
             while not movok:
+                treenode = Treenode(4, valueMap, gameMap, k, validator, (k+choice) % 2)
+                alphabeta(treenode, 4,  -9999999, 9999999, True)
+                print("Recommended move: " + treenode.getMove())
                 input_var = input()
                 # print(input_var)
                 try:

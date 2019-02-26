@@ -25,6 +25,7 @@ class Treenode:
         self.moveNum = moveNum
         self.validator = validator
         self.party = party
+        self.rawMove = ''
 
         def getTargets(gameMap, valueMap):
             result = []
@@ -89,7 +90,8 @@ class Treenode:
                 i = coordinate.split(":")[0]
                 j = coordinate.split(":")[1]
                 for position in range(8):
-                    move = Move('0 ' + position + ' ' + numbToLetter.get(j) + ' ' + i)
+                    moveString = '0 ' + position + ' ' + numbToLetter.get(j) + ' ' + i
+                    move = Move(moveString)
                     if self.validator.placeValidator(move):
 
                         Appraiser().appraise(move, self.gameMap, self.valueMap)
@@ -101,6 +103,7 @@ class Treenode:
                         # here we place nasty valueMap updater method call, which updates newValueMap based on the
                         # newGameMap
                         childNode = Treenode(depth - 1, newValueMap, newGameMap, self.party, newValidator)
+                        childNode.rawMove = moveString
                         self.children.append(childNode)
                     if self.moveNum > 24:
                         for recycle in self.recycles:
@@ -108,8 +111,8 @@ class Treenode:
                             j1 = recycle.split(";")[0].split(":")[1]
                             i2 = recycle.split(";")[1].split(":")[0]
                             j2 = recycle.split(";")[1].split(":")[1]
-                            recycleMove = Move(numbToLetter.get(j1) + ' ' + i1 + ' ' + numbToLetter.get(j2) + ' ' + i2
-                                               + ' ' + position + ' ' + +numbToLetter.get(j) + ' ' + i)
+                            rMoveString = numbToLetter.get(j1) + ' ' + i1 + ' ' + numbToLetter.get(j2) + ' ' + i2 + ' ' + position + ' ' + +numbToLetter.get(j) + ' ' + i
+                            recycleMove = Move(rMoveString)
                             if self.validator.recycleValidator(recycleMove):
                                 newGameMap = copy.copy(self.gameMap)
                                 newValueMap = copy.copy(self.valueMap)
@@ -118,7 +121,16 @@ class Treenode:
                                 # here we place nasty valueMap updater method call, which updates newValueMap based
                                 # on the newGameMap
                                 childNode = Treenode(depth - 1, newValueMap, newGameMap, self.party, newValidator)
+                                childNode.rawMove = rMoveString
                                 self.children.append(childNode)
 
         if self.depth > 0 and self.goalState == 0:
             populateChildren(self.targets)
+
+    def getMove(self):
+        nextMove = self.children[0]
+        for node in self.children:
+            if nextMove.weight < node.weight:
+                nextMove = node
+        return nextMove.rawMove
+
