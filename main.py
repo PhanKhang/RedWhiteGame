@@ -90,7 +90,7 @@ def correctPrinterMap(gameMap):
     print("     A  B  C  D  E  F  G  H")
 
 def alphabeta(node, depth, a, b, maxP):
-    if depth == 0 or node.state == 1:
+    if depth == 0 or node.goalState == 1:
         return node.weight
     if maxP:
         node.weight = -9999999
@@ -143,9 +143,9 @@ def main():
         while not legal:
             movok = False
             while not movok:
-                # treenode = Treenode(4, valueMap, gameMap, k, validator, (k+choice) % 2)
-                # alphabeta(treenode, 4,  -9999999, 9999999, True)
-                # print("Recommended move: " + treenode.getMove())
+                treenode = Treenode(4, valueMap, gameMap, k, validator, (k+choice) % 2)
+                alphabeta(treenode, 4,  -9999999, 9999999, True)
+                print("Recommended move: " + treenode.getMove())
                 input_var = input()
                 # print(input_var)
                 try:
