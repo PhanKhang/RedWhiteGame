@@ -19,7 +19,7 @@ row_labels = ['12', '11', '10', '9 ', '8 ', '7 ', '6 ', '5 ', '4 ', '3 ', '2 ', 
 # player 1 is colors
 # player 2 is circles
 validator = Validator(gameMap)
-appraiser = Appraiser(gameMap)
+appraiser = Appraiser()
 placer = Placer()
 red = [1, 3]
 white = [2, 4]
@@ -143,9 +143,9 @@ def main():
         while not legal:
             movok = False
             while not movok:
-                treenode = Treenode(4, valueMap, gameMap, k, validator, (k+choice) % 2)
-                alphabeta(treenode, 4,  -9999999, 9999999, True)
-                print("Recommended move: " + treenode.getMove())
+                # treenode = Treenode(4, valueMap, gameMap, k, validator, (k+choice) % 2)
+                # alphabeta(treenode, 4,  -9999999, 9999999, True)
+                # print("Recommended move: " + treenode.getMove())
                 input_var = input()
                 # print(input_var)
                 try:
@@ -163,14 +163,14 @@ def main():
         print("Current Game field")
         correctPrinterMap(gameMap) # change to correctPrinterMapL for letter output
         # print(validator.coordinateToRotation)
-        appraiser.appraise(move)
+        appraiser.appraise(move, valueMap, gameMap)
 
         if (k + choice) % 2 == 0:
             print("Score for Colors: ")
-            print(appraiser.getScoreColors())
+            print(appraiser.getScoreColors(valueMap, gameMap))
         else:
             print("Score for Dots: ")
-            print(appraiser.getScoreDots())
+            print(appraiser.getScoreDots(valueMap, gameMap))
 
         # tmp = {}
         # print("Red map")

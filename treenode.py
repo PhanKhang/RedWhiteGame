@@ -94,7 +94,7 @@ class Treenode:
                     move = Move(moveString)
                     if self.validator.placeValidator(move):
 
-                        Appraiser().appraise(move, self.gameMap, self.valueMap)
+                        Appraiser().appraise(move, 0, )
 
                         newGameMap = copy.copy(self.gameMap)
                         newValueMap = copy.copy(self.valueMap)
