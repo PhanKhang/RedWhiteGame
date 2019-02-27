@@ -129,6 +129,7 @@ def main():
         print("Player 2: Dots")
     legal = False
     valueMap = [[Cell() for j in range(8)] for i in range(12)]
+    Appraiser().setInitialValue(valueMap)
 
     for k in range(1, 61):
         # print("Turn " + str(k) + " Player " + str((k-1) % 2+1))

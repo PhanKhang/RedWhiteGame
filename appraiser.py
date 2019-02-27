@@ -570,3 +570,14 @@ class Appraiser:
         if count == 0:
             return 0
         return sumWeights / count
+
+    def setInitialValue(self, valueMap):
+        valueMap[0][3].redWeight = 1
+        valueMap[0][3].whiteWeight = 1
+        valueMap[0][3].dotWeight = 1
+        valueMap[0][3].ringWeight = 1
+
+        valueMap[0][4].redWeight = 1
+        valueMap[0][4].whiteWeight = 1
+        valueMap[0][4].dotWeight = 1
+        valueMap[0][4].ringWeight = 1
