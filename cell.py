@@ -8,6 +8,6 @@ class Cell:
     target: int = 0
     totalWeight: int = 0
 
-
-    def update(self):
+    def getWeight(self):
         self.totalWeight = (self.dotWeight + self.redWeight + self.ringWeight + self.whiteWeight)/4
+        return self.totalWeight

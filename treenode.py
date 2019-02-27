@@ -33,7 +33,7 @@ class Treenode:
             for i in range(12):
                 for j in range(8):
                     if (gameMap[i][j] == 0 and gameMap[i - 1][j] != 0) or (i == 0 and gameMap[i][j] == 0):
-                        if (valueMap[i][j].totalWeight != 0 and self.moveNum > 1) or (moveNum == 1):
+                        if (valueMap[i][j].getWeight() != 0 and self.moveNum > 1) or (moveNum == 1):
                             result.append(str(i) + ":" + str(j))
                             size += 1
                         if size == 8:
