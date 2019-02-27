@@ -89,15 +89,16 @@ def correctPrinterMap(gameMap):
         print(s, ENDC)
     print("     A  B  C  D  E  F  G  H")
 
+
 def alphabeta(node, depth, a, b, maxP):
-    if depth == 0 or node.goalState == 1:
+    if depth == 0 or node.goalState != 'go':
         return node.weight
     if maxP:
         node.weight = -9999999
         newchildren = []
         for childnode in node.children:
             node.weight = max(node.weight, alphabeta(childnode, depth -1, a, b, False))
-            a = max(a, node.value)
+            a = max(a, node.weight)
             newchildren.append(childnode)
             if a >= b:
                 print("prune!")
