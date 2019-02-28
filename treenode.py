@@ -3,6 +3,7 @@ from move import Move
 from placer import Placer
 from appraiser import Appraiser
 import copy
+import numpy
 
 numbToLetter = {
     0: "A",
@@ -46,8 +47,11 @@ class Treenode:
             for i in range(12):
                 for j in range(7):
                     if (i == 0 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
-                            gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] == 0 and gameMap[i - 1][
-                        j + 1] == 0):
+                            gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] == 0 and
+                            gameMap[i - 1][j + 1] == 0):
+                        if (i == 1 and j == 1):
+                            print("gotcha")
+                            print(numpy.flipud(gameMap))
                         if valueMap[i][j].getWeight() != 0 or valueMap[i][j + 1] != 0:
                             result.append(str(i) + ":" + str(j))
                             size += 1
