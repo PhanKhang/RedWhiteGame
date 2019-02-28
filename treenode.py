@@ -32,7 +32,7 @@ class Treenode:
             size = 0
             for i in range(11):
                 for j in range(8):
-                    if (i == 0 and gameMap[i][j] == 0) or (gameMap[i][j] == 0 and gameMap[i-1][j] != 0):
+                    if (i == 0 and gameMap[i][j] == 0) or (gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
                         if valueMap[i][j].getWeight() != 0:
                             result.append(str(i) + ":" + str(j))
                             size += 1
@@ -45,8 +45,10 @@ class Treenode:
             size = 0
             for i in range(12):
                 for j in range(7):
-                    if(i==0 and gameMap[i][j] == 0 and gameMap[i][j+1] == 0) or (gameMap[i][j]==0 and gameMap[i][j+1]==0 and gameMap[i-1][j]==0 and gameMap[i-1][j+1]==0):
-                        if valueMap[i][j].getWeight()!=0 or valueMap[i][j+1]!=0:
+                    if (i == 0 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
+                            gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] == 0 and gameMap[i - 1][
+                        j + 1] == 0):
+                        if valueMap[i][j].getWeight() != 0 or valueMap[i][j + 1] != 0:
                             result.append(str(i) + ":" + str(j))
                             size += 1
                         if size == 4:
@@ -104,7 +106,7 @@ class Treenode:
             print(moveString)
             if self.validator.placeValidator(move, gameMap):
                 newGameMap = copy.copy(self.gameMap)
-                newValueMap = copy.copy(self.valueMap)
+                newValueMap = copy.deepcopy(self.valueMap)
                 newValidator = copy.copy(self.validator)
 
                 Placer().place(move, newValidator, newGameMap)
@@ -114,13 +116,12 @@ class Treenode:
                 childNode.rawMove = moveString
                 self.children.append(childNode)
 
-
         def populateChildren(vtargets, htargets, recycles):
             for coordinate in vtargets:
                 i = coordinate.split(":")[0]
                 j = coordinate.split(":")[1]
                 for position in [2, 6, 4, 8]:
-                    moveString = '0 ' + str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i)+1)
+                    moveString = '0 ' + str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1)
                     childcreator(moveString)
 
             for coordinate in htargets:
@@ -129,7 +130,6 @@ class Treenode:
                 for position in [1, 3, 5, 7]:
                     moveString = '0 ' + str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1)
                     childcreator(moveString)
-
 
         if self.depth > 0 and self.goalState == 'go':
             populateChildren(self.vtargets, self.htargets, self.recycles)
@@ -140,4 +140,3 @@ class Treenode:
             if nextMove.weight < node.weight:
                 nextMove = node
         return nextMove.rawMove
-

@@ -148,7 +148,7 @@ def main():
             while not movok:
                 newValueMap = copy.copy(valueMap)
                 newGameMap = copy.copy(gameMap)
-                treenode = Treenode(2, newValueMap, newGameMap, k, validator, (k+choice) % 2)
+                treenode = Treenode(4, newValueMap, newGameMap, k, validator, (k+choice) % 2)
                 alphabeta(treenode, 2,  -9999999, 9999999, True)
                 print("Recommended move: " + treenode.getMove())
                 input_var = input()
