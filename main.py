@@ -145,8 +145,8 @@ def main():
         while not legal:
             movok = False
             while not movok:
-                treenode = Treenode(4, valueMap, gameMap, k, validator, (k+choice) % 2)
-                alphabeta(treenode, 4,  -9999999, 9999999, True)
+                treenode = Treenode(2, valueMap, gameMap, k, validator, (k+choice) % 2)
+                alphabeta(treenode, 2,  -9999999, 9999999, True)
                 print("Recommended move: " + treenode.getMove())
                 input_var = input()
                 # print(input_var)

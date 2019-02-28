@@ -27,20 +27,34 @@ class Treenode:
         self.party = party
         self.rawMove = ''
 
-        def getTargets(gameMap, valueMap):
+        def getVerticalTargets(gameMap, valueMap):
             result = []
             size = 0
-            for i in range(12):
+            for i in range(11):
                 for j in range(8):
-                    if (gameMap[i][j] == 0 and gameMap[i - 1][j] != 0) or (i == 0 and gameMap[i][j] == 0):
-                        if (valueMap[i][j].getWeight() != 0 and self.moveNum > 1) or (moveNum == 1):
+                    if (i == 0 and gameMap[i][j] == 0) or (gameMap[i][j] == 0 and gameMap[i-1][j] != 0):
+                        if valueMap[i][j].getWeight() != 0:
                             result.append(str(i) + ":" + str(j))
                             size += 1
                         if size == 8:
                             return result
             return result
 
-        self.targets = getTargets(self.gameMap, self.valueMap)
+        def getHorizontalTargets(gameMap, valueMap):
+            result = []
+            size = 0
+            for i in range(12):
+                for j in range(7):
+                    if(i==0 and gameMap[i][j] == 0 and gameMap[i][j+1] == 0) or (gameMap[i][j]==0 and gameMap[i][j+1]==0 and gameMap[i-1][j]==0 and gameMap[i-1][j+1]==0):
+                        if valueMap[i][j].getWeight()!=0 or valueMap[i][j+1]!=0:
+                            result.append(str(i) + ":" + str(j))
+                            size += 1
+                        if size == 4:
+                            return result
+            return result
+
+        self.vtargets = getVerticalTargets(self.gameMap, self.valueMap)
+        self.htargets = getHorizontalTargets(self.gameMap, self.valueMap)
 
         def getRecycles(gameMap):
             result = []
@@ -85,51 +99,40 @@ class Treenode:
         # would reuse victoryCheck, but need to refactor it a bit
         self.goalState = self.validator.victoryCheck(party)
 
-        def populateChildren(targets, recycles):
-            for coordinate in targets:
+        def childcreator(moveString):
+            move = Move(moveString)
+            print(moveString)
+            if self.validator.placeValidator(move):
+                newGameMap = copy.copy(self.gameMap)
+                newValueMap = copy.copy(self.valueMap)
+                newValidator = copy.copy(self.validator)
+
+                Placer().place(move, newValidator, newGameMap)
+                Appraiser().appraise(move, newValueMap, newGameMap)
+
+                childNode = Treenode(depth - 1, newValueMap, newGameMap, moveNum + 1, newValidator, self.party)
+                childNode.rawMove = moveString
+                self.children.append(childNode)
+
+
+        def populateChildren(vtargets, htargets, recycles):
+            for coordinate in vtargets:
                 i = coordinate.split(":")[0]
                 j = coordinate.split(":")[1]
-                for position in range(1,9):
+                for position in [2, 6, 4, 8]:
                     moveString = '0 ' + str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i)+1)
-                    move = Move(moveString)
-                    if self.validator.placeValidator(move):
+                    childcreator(moveString)
 
-                        newGameMap = copy.copy(self.gameMap)
-                        newValueMap = copy.copy(self.valueMap)
-                        newValidator = copy.copy(self.validator)
+            for coordinate in htargets:
+                i = coordinate.split(":")[0]
+                j = coordinate.split(":")[1]
+                for position in [1, 3, 5, 7]:
+                    moveString = '0 ' + str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1)
+                    childcreator(moveString)
 
-                        Placer().place(move, newValidator, newGameMap)
-                        Appraiser().appraise(move, newValueMap, newGameMap)
-                        # here we place nasty valueMap updater method call, which updates newValueMap based on the
-                        # newGameMap
-
-                        childNode = Treenode(depth - 1, newValueMap, newGameMap, moveNum+1, newValidator, self.party)
-                        childNode.rawMove = moveString
-                        self.children.append(childNode)
-                    if self.moveNum > 24:
-                        for recycle in recycles:
-                            i1 = recycle.split(";")[0].split(":")[0]
-                            j1 = recycle.split(";")[0].split(":")[1]
-                            i2 = recycle.split(";")[1].split(":")[0]
-                            j2 = recycle.split(";")[1].split(":")[1]
-                            rMoveString = numbToLetter.get(int(j1)) + ' ' + str(int(i1)+1) + ' ' + numbToLetter.get(int(j2)) + ' ' + str(int(i2)+1) + ' ' + str(position) + ' ' + +numbToLetter.get(int(j)) + ' ' + str(int(i)+1)
-                            recycleMove = Move(rMoveString)
-                            if self.validator.recycleValidator(recycleMove):
-                                newGameMap = copy.copy(self.gameMap)
-                                newValueMap = copy.copy(self.valueMap)
-                                newValidator = copy.copy(self.validator)
-
-                                Placer().place(move, newValidator, newGameMap)
-                                Appraiser().appraise(move, newValueMap, newGameMap)
-
-                                # here we place nasty valueMap updater method call, which updates newValueMap based
-                                # on the newGameMap
-                                childNode = Treenode(depth - 1, newValueMap, newGameMap, moveNum+1, newValidator, self.party)
-                                childNode.rawMove = rMoveString
-                                self.children.append(childNode)
 
         if self.depth > 0 and self.goalState == 'go':
-            populateChildren(self.targets, self.recycles)
+            populateChildren(self.vtargets, self.htargets, self.recycles)
 
     def getMove(self):
         nextMove = self.children[0]
