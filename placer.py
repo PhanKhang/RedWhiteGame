@@ -47,55 +47,55 @@ class Placer:
         pass
 
     # give what is in the first half of the card according to rotation if not found return 0
-    def place(self, move, validator, game_map):
+    def place(self, move, validator, gameMap):
         if move.type == 0:
-            if validator.placeValidator(move):
+            if validator.placeValidator(move, gameMap):
                 i = move.targetCoordinateLet - 1
                 j = int(move.targetCoordinateNum) - 1
                 rotation = int(move.rotation)
                 validator.coordinateToRotation[numbToLetter.get(i + 1) + str(j + 1)] = rotation;
-                game_map[j][i] = firstCell(rotation)
+                gameMap[j][i] = firstCell(rotation)
                 if rotation % 2 != 0 and rotation != 0:
-                    game_map[j][i + 1] = secondCell(rotation)
+                    gameMap[j][i + 1] = secondCell(rotation)
                 else:
-                    game_map[j + 1][i] = secondCell(rotation)
+                    gameMap[j + 1][i] = secondCell(rotation)
                 return True
             else:
                 return False
         else:
-            if validator.recycleValidator(move):
+            if validator.recycleValidator(move, gameMap):
                 i1 = move.sourceCoordinate1Let - 1
                 j1 = move.sourceCoordinate1Num - 1
 
                 i2 = move.sourceCoordinate2Let - 1
                 j2 = move.sourceCoordinate2Num - 1
 
-                old_val1 = game_map[j1][i1]
-                old_val2 = game_map[j2][i2]
+                old_val1 = gameMap[j1][i1]
+                old_val2 = gameMap[j2][i2]
 
-                game_map[j1][i1] = 0
-                game_map[j2][i2] = 0
+                gameMap[j1][i1] = 0
+                gameMap[j2][i2] = 0
 
                 i = move.targetCoordinateLet - 1
                 j = int(move.targetCoordinateNum) - 1
                 rotation = int(move.rotation)
-                if validator.placeValidator(move):
+                if validator.placeValidator(move, gameMap):
                     # remove the value from dictionary of moves
                     if validator.coordinateToRotation.pop(numbToLetter.get(i1 + 1) + str(j1 + 1), 0) == 0:
                         validator.coordinateToRotation.pop(numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
 
                     validator.coordinateToRotation[numbToLetter.get(i + 1) + str(j + 1)] = rotation
-                    game_map[j][i] = firstCell(rotation)
+                    gameMap[j][i] = firstCell(rotation)
                     if rotation % 2 != 0:
-                        game_map[j][i + 1] = secondCell(rotation)
+                        gameMap[j][i + 1] = secondCell(rotation)
                     else:
-                        game_map[j + 1][i] = secondCell(rotation)
+                        gameMap[j + 1][i] = secondCell(rotation)
 
                     # if game_map[j1][i1] == old_val1 and game_map[j2][i2] == old_val2:
                     #     return False
                     return True
                 else:
-                    game_map[j1][i1] = old_val1
-                    game_map[j2][i2] = old_val2
+                    gameMap[j1][i1] = old_val1
+                    gameMap[j2][i2] = old_val2
                     return False
         return

@@ -6,7 +6,7 @@ from appraiser import Appraiser
 from placer import Placer
 from cell import Cell
 from treenode import Treenode
-
+import copy
 
 # game map
 gameMap = numpy.zeros((12, 8))
@@ -18,7 +18,7 @@ row_labels = ['12', '11', '10', '9 ', '8 ', '7 ', '6 ', '5 ', '4 ', '3 ', '2 ', 
 
 # player 1 is colors
 # player 2 is circles
-validator = Validator(gameMap)
+validator = Validator()
 appraiser = Appraiser()
 placer = Placer()
 red = [1, 3]
@@ -118,6 +118,7 @@ def alphabeta(node, depth, a, b, maxP):
                 break
         return node.weight
 
+valueMap = [[Cell() for j in range(8)] for i in range(12)]
 
 def main():
     choice = int(input("Write 0 for dots and 1 a for colors: "))
@@ -128,7 +129,7 @@ def main():
         print("Player 1: Colors")
         print("Player 2: Dots")
     legal = False
-    valueMap = [[Cell() for j in range(8)] for i in range(12)]
+
     Appraiser().setInitialValue(valueMap)
 
     for k in range(1, 61):
@@ -145,7 +146,9 @@ def main():
         while not legal:
             movok = False
             while not movok:
-                treenode = Treenode(2, valueMap, gameMap, k, validator, (k+choice) % 2)
+                newValueMap = copy.copy(valueMap)
+                newGameMap = copy.copy(gameMap)
+                treenode = Treenode(2, newValueMap, newGameMap, k, validator, (k+choice) % 2)
                 alphabeta(treenode, 2,  -9999999, 9999999, True)
                 print("Recommended move: " + treenode.getMove())
                 input_var = input()
@@ -156,7 +159,7 @@ def main():
                 except:
                     print("unable to parse the move, try again")
             if k <= 24 and move.type == 0:
-                legal = placer.place(move,validator,gameMap)
+                legal = placer.place(move, validator, gameMap)
             elif k > 24 and move.type == 1:
                 legal = placer.place(move, validator, gameMap)
             if not legal:
@@ -174,24 +177,24 @@ def main():
             print("Score for Dots: ")
             print(appraiser.getScoreDots(valueMap, gameMap))
 
-        # tmp = {}
-        # print("Red map")
+        tmp = {}
+        print("Red map")
         # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
-        # correctPrinter(appraiser.getRedMap())
-        #
-        # print("White map")
-        # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
-        # correctPrinter(appraiser.getWhiteMap())
-        #
-        # print("Ring map")
-        # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
-        # correctPrinter(appraiser.getRingMap())
-        #
-        # print("Dot map")
-        # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
-        # correctPrinter(appraiser.getDotMap())
+        correctPrinter(appraiser.getRedMap(valueMap))
 
-        result = validator.victoryCheck((k + choice) % 2)
+        print("White map")
+        # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
+        correctPrinter(appraiser.getWhiteMap(valueMap))
+
+        print("Ring map")
+        # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
+        correctPrinter(appraiser.getRingMap(valueMap))
+
+        print("Dot map")
+        # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
+        correctPrinter(appraiser.getDotMap(valueMap))
+
+        result = validator.victoryCheck((k + choice) % 2, gameMap)
 
         if result != "go":
             print(result)

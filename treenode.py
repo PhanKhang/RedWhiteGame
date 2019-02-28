@@ -97,12 +97,12 @@ class Treenode:
 
         # here we detect if it's a goal state
         # would reuse victoryCheck, but need to refactor it a bit
-        self.goalState = self.validator.victoryCheck(party)
+        self.goalState = self.validator.victoryCheck(party, gameMap)
 
         def childcreator(moveString):
             move = Move(moveString)
             print(moveString)
-            if self.validator.placeValidator(move):
+            if self.validator.placeValidator(move, gameMap):
                 newGameMap = copy.copy(self.gameMap)
                 newValueMap = copy.copy(self.valueMap)
                 newValidator = copy.copy(self.validator)
