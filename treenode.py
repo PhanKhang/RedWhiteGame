@@ -68,11 +68,11 @@ class Treenode:
             candidates = []
             for i in range(12):
                 for j in range(8):
-                    if (i == 0 and gameMap[i][j] == 0) or (i > 11 and gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
+                    if (i == 0 and gameMap[i][j] == 0) or (i < 11 and gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
                         for position in [2, 6, 4, 8]:
                             candidates.append(getCandidateScore(i, j, position, party))
-                    if (i == 0 and j > 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
-                            j > 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] != 0 and
+                    if (i == 0 and j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
+                            j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] != 0 and
                             gameMap[i - 1][j + 1] != 0):
                         for position in [1, 3, 5, 7]:
                             candidates.append(getCandidateScore(i, j, position, party))
