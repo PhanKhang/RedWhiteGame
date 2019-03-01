@@ -49,19 +49,23 @@ class Treenode:
         def getCandidateScore(i, j, position, party):
             score = 0
             if party == 0:
-                if position in [1, 3, 5, 7]:
-                    score = valueMap[i][j].ringWeight + valueMap[i][j].dotWeight + valueMap[i][j + 1].ringWeight + \
-                            valueMap[i][j + 1].dotWeight
-                elif position in [2, 4, 6, 8]:
-                    score = valueMap[i][j].ringWeight + valueMap[i][j].dotWeight + valueMap[i + 1][j].ringWeight + \
-                            valueMap[i + 1][j].dotWeight
+                if position in [1, 7]:
+                    score = max(valueMap[i][j].dotWeight, valueMap[i][j + 1].ringWeight)
+                elif position in [3, 5]:
+                    score = max(valueMap[i][j].ringWeight, valueMap[i][j + 1].dotWeight)
+                elif position in [2, 8]:
+                    score = max(valueMap[i][j].ringWeight, valueMap[i+1][j].dotWeight)
+                elif position in [4, 6]:
+                    score = max(valueMap[i][j].dotWeight, valueMap[i + 1][j].ringWeight)
             elif party == 1:
-                if position in [1, 3, 5, 7]:
-                    score = valueMap[i][j].redWeight + valueMap[i][j].whiteWeight + valueMap[i][j + 1].redWeight + \
-                            valueMap[i][j + 1].whiteWeight
-                elif position in [2, 4, 6, 8]:
-                    score = valueMap[i][j].redWeight + valueMap[i][j].whiteWeight + valueMap[i + 1][j].redWeight + \
-                            valueMap[i + 1][j].whiteWeight
+                if position in [1, 5]:
+                    score = max(valueMap[i][j].redWeight, valueMap[i][j + 1].whiteWeight)
+                elif position in [3, 7]:
+                    score = max(valueMap[i][j].whiteWeight, valueMap[i][j + 1].redWeight)
+                elif position in [2, 6]:
+                    score = max(valueMap[i][j].whiteWeight, valueMap[i + 1][j].redWeight)
+                elif position in [4, 8]:
+                    score = max(valueMap[i][j].redWeight, valueMap[i + 1][j].whiteWeight)
             return Candidate('0 ' + str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1), score)
 
         def getCandidates():

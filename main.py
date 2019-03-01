@@ -101,7 +101,7 @@ def alphabeta(node, depth, a, b, maxP):
             a = max(a, node.weight)
             newchildren.append(childnode)
             if a >= b:
-                print("prune!")
+                #print("prune!")
                 node.children = newchildren
                 break
         return node.weight
@@ -113,7 +113,7 @@ def alphabeta(node, depth, a, b, maxP):
             b = min(b, node.weight)
             newchildren.append(childnode)
             if a >= b:
-                print("prune!")
+                #print("prune!")
                 node.children = newchildren
                 break
         return node.weight
