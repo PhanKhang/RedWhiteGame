@@ -50,22 +50,38 @@ class Treenode:
             score = 0
             if party == 0:
                 if position in [1, 7]:
-                    score = max(valueMap[i][j].dotWeight, valueMap[i][j + 1].ringWeight)
+                    score = max(valueMap[i][j].dotWeight, valueMap[i][j + 1].ringWeight) - \
+                            max(valueMap[i][j].whiteWeight, valueMap[i][j].redWeight,
+                                valueMap[i][j + 1].whiteWeight, valueMap[i][j + 1].redWeight)
                 elif position in [3, 5]:
-                    score = max(valueMap[i][j].ringWeight, valueMap[i][j + 1].dotWeight)
+                    score = max(valueMap[i][j].ringWeight, valueMap[i][j + 1].dotWeight) - \
+                            max(valueMap[i][j].whiteWeight, valueMap[i][j].redWeight,
+                                valueMap[i][j + 1].whiteWeight, valueMap[i][j + 1].redWeight)
                 elif position in [2, 8]:
-                    score = max(valueMap[i][j].ringWeight, valueMap[i+1][j].dotWeight)
+                    score = max(valueMap[i][j].ringWeight, valueMap[i+1][j].dotWeight) - \
+                            max(valueMap[i][j].whiteWeight, valueMap[i][j].redWeight,
+                                valueMap[i + 1][j].whiteWeight, valueMap[i + 1][j].redWeight)
                 elif position in [4, 6]:
-                    score = max(valueMap[i][j].dotWeight, valueMap[i + 1][j].ringWeight)
+                    score = max(valueMap[i][j].dotWeight, valueMap[i + 1][j].ringWeight) - \
+                            max(valueMap[i][j].whiteWeight, valueMap[i][j].redWeight,
+                                valueMap[i + 1][j].whiteWeight, valueMap[i + 1][j].redWeight)
             elif party == 1:
                 if position in [1, 5]:
-                    score = max(valueMap[i][j].redWeight, valueMap[i][j + 1].whiteWeight)
+                    score = max(valueMap[i][j].redWeight, valueMap[i][j + 1].whiteWeight) - \
+                            max(valueMap[i][j].dotWeight, valueMap[i][j].ringWeight,
+                                valueMap[i][j + 1].dotWeight, valueMap[i][j + 1].ringWeight)
                 elif position in [3, 7]:
-                    score = max(valueMap[i][j].whiteWeight, valueMap[i][j + 1].redWeight)
+                    score = max(valueMap[i][j].whiteWeight, valueMap[i][j + 1].redWeight) - \
+                            max(valueMap[i][j].dotWeight, valueMap[i][j].ringWeight,
+                                valueMap[i][j + 1].dotWeight, valueMap[i][j + 1].ringWeight)
                 elif position in [2, 6]:
-                    score = max(valueMap[i][j].whiteWeight, valueMap[i + 1][j].redWeight)
+                    score = max(valueMap[i][j].whiteWeight, valueMap[i + 1][j].redWeight) - \
+                            max(valueMap[i][j].dotWeight, valueMap[i][j].ringWeight,
+                                valueMap[i + 1][j].dotWeight, valueMap[i + 1][j].ringWeight)
                 elif position in [4, 8]:
-                    score = max(valueMap[i][j].redWeight, valueMap[i + 1][j].whiteWeight)
+                    score = max(valueMap[i][j].redWeight, valueMap[i + 1][j].whiteWeight) - \
+                            max(valueMap[i][j].dotWeight, valueMap[i][j].ringWeight,
+                                valueMap[i + 1][j].dotWeight, valueMap[i + 1][j].ringWeight)
             return Candidate('0 ' + str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1), score)
 
         def getCandidates():
