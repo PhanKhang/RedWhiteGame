@@ -148,8 +148,8 @@ def main():
             while not movok:
                 newValueMap = copy.copy(valueMap)
                 newGameMap = copy.copy(gameMap)
-                treenode = Treenode(3, newValueMap, newGameMap, k, validator, (k+choice) % 2)
-                alphabeta(treenode, 3,  -9999999, 9999999, True)
+                treenode = Treenode(4, newValueMap, newGameMap, k, validator, (k+choice) % 2)
+                alphabeta(treenode, 2,  -9999999, 9999999, True)
                 print("Recommended move: " + treenode.getMove())
                 input_var = input()
                 # print(input_var)
@@ -178,21 +178,21 @@ def main():
             print(appraiser.getScoreDots(valueMap, gameMap))
 
         tmp = {}
-        print("Red map")
-        # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
-        correctPrinter(appraiser.getRedMap(valueMap))
-
-        print("White map")
-        # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
-        correctPrinter(appraiser.getWhiteMap(valueMap))
-
-        print("Ring map")
-        # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
-        correctPrinter(appraiser.getRingMap(valueMap))
-
-        print("Dot map")
-        # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
-        correctPrinter(appraiser.getDotMap(valueMap))
+        # print("Red map")
+        # # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
+        # correctPrinter(appraiser.getRedMap(valueMap))
+        #
+        # print("White map")
+        # # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
+        # correctPrinter(appraiser.getWhiteMap(valueMap))
+        #
+        # print("Ring map")
+        # # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
+        # correctPrinter(appraiser.getRingMap(valueMap))
+        #
+        # print("Dot map")
+        # # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
+        # correctPrinter(appraiser.getDotMap(valueMap))
 
         result = validator.victoryCheck((k + choice) % 2, gameMap)
 

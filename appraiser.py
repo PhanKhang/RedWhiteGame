@@ -125,7 +125,7 @@ class Appraiser:
 
     def isDownDiagonalWindowFree(self, i, j, self_color, gameMap):
         rate = 0
-        if i < 3 or j > 8:
+        if i > 3 or j < 4:
             return 0
         for step in range(4):
             if j - step >= 0 and step + i < 8:

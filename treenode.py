@@ -68,7 +68,7 @@ class Treenode:
             candidates = []
             for i in range(12):
                 for j in range(8):
-                    if (i == 0 and gameMap[i][j] == 0) or (i > 11 and gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
+                    if (i == 0 and gameMap[i][j] == 0) or (i < 11 and gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
                         for position in [2, 6, 4, 8]:
                             candidates.append(getCandidateScore(i, j, position, party))
                     if (i == 0 and j > 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
@@ -82,6 +82,7 @@ class Treenode:
             return candidates
 
         self.candidates = getCandidates()
+
         # def getVerticalTargets(gameMap, valueMap, type):
         #     result = []
         #     size = 0
@@ -116,7 +117,7 @@ class Treenode:
         # self.vtargets = getVerticalTargets(self.gameMap, self.valueMap)
         # self.htargets = getHorizontalTargets(self.gameMap, self.valueMap)
 
-        #TODO: всё ещё надо над этим поработать
+        # TODO: всё ещё надо над этим поработать
         def getRecycles(gameMap):
             result = []
             size = 0
@@ -162,7 +163,7 @@ class Treenode:
 
         def childcreator(moveString):
             move = Move(moveString)
-            #print(moveString)
+            # print(moveString)
             if self.validator.placeValidator(move, gameMap):
                 newGameMap = copy.copy(self.gameMap)
                 newValueMap = copy.deepcopy(self.valueMap)
@@ -177,7 +178,7 @@ class Treenode:
 
         def populateChildren(candidates):
             for candidate in candidates:
-                    childcreator(candidate.move)
+                childcreator(candidate.move)
 
         if self.depth > 0 and self.goalState == 'go':
             populateChildren(self.candidates)
