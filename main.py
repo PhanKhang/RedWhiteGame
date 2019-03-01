@@ -101,7 +101,7 @@ def alphabeta(node, depth, a, b, maxP):
             a = max(a, node.weight)
             newchildren.append(childnode)
             if a >= b:
-                print("prune!")
+                #print("prune!")
                 node.children = newchildren
                 break
         return node.weight
@@ -113,7 +113,7 @@ def alphabeta(node, depth, a, b, maxP):
             b = min(b, node.weight)
             newchildren.append(childnode)
             if a >= b:
-                print("prune!")
+                #print("prune!")
                 node.children = newchildren
                 break
         return node.weight
@@ -131,15 +131,17 @@ def main():
     legal = False
 
     Appraiser().setInitialValue(valueMap)
-
+    party = 0
     for k in range(1, 61):
         # print("Turn " + str(k) + " Player " + str((k-1) % 2+1))
         if choice == 0 and (k - 1) % 2 + 1 == 1:
             print("Turn " + str(k) + " Player 1" + " playing with dots")
         elif choice == 0 and (k - 1) % 2 + 1 == 2:
             print("Turn " + str(k) + " Player 2" + " playing with colors")
+            party = 1
         elif choice == 1 and (k - 1) % 2 + 1 == 1:
             print("Turn " + str(k) + " Player 1" + " playing with colors")
+            party = 1
         elif choice == 1 and (k - 1) % 2 + 1 == 2:
             print("Turn " + str(k) + " Player 2" + " playing with dots")
 
@@ -148,8 +150,10 @@ def main():
             while not movok:
                 newValueMap = copy.copy(valueMap)
                 newGameMap = copy.copy(gameMap)
-                treenode = Treenode(4, newValueMap, newGameMap, k, validator, (k+choice) % 2)
+                treenode = Treenode(4, newValueMap, newGameMap, k, validator, party)
                 alphabeta(treenode, 2,  -9999999, 9999999, True)
+                if treenode.getMove() == "0 4 B 2":
+                    print("gotcha")
                 print("Recommended move: " + treenode.getMove())
                 input_var = input()
                 # print(input_var)

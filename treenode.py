@@ -95,7 +95,10 @@ class Treenode:
                             j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] != 0 and
                             gameMap[i - 1][j + 1] != 0):
                         for position in [1, 3, 5, 7]:
-                            candidates.append(getCandidateScore(i, j, position, party))
+                            newparty = 0
+                            if party == 0:
+                                newparty = 1
+                            candidates.append(getCandidateScore(i, j, position, newparty))
             candidates.sort(key=lambda x: x.score, reverse=True)
             if len(candidates) > 5:
                 return candidates[:5]
