@@ -35,8 +35,6 @@ class Validator:
     # 2) if there is a ground for card
     # 3) if the place is free
     def placeValidatorCoord(self, i, j, rotation, gameMap):
-        if (i == 6 and j == 1):
-            print(gameMap)
         if rotation % 2 != 0:  # orientation check
             if 0 <= i <= 7 and 0 <= j <= 11 and 0 <= i + 1 <= 7:  # border check
                 if gameMap[j][i] == 0 and gameMap[j][i + 1] == 0:

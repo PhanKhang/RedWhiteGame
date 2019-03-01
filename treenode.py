@@ -17,6 +17,24 @@ numbToLetter = {
 }
 
 
+# types = {
+#     1:
+#     2:
+#     3:
+#     4:
+#     5:
+#     6:
+#     7:
+#     8:
+# }
+
+
+class Candidate:
+    def __init__(self, move, score):
+        self.move = move
+        self.score = score
+
+
 class Treenode:
     def __init__(self, depth, valueMap, gameMap, moveNum, validator, party):
         self.depth = depth
@@ -28,40 +46,77 @@ class Treenode:
         self.party = party
         self.rawMove = ''
 
-        def getVerticalTargets(gameMap, valueMap):
-            result = []
-            size = 0
-            for i in range(11):
-                for j in range(8):
-                    if (i == 0 and gameMap[i][j] == 0) or (gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
-                        if valueMap[i][j].getWeight() != 0:
-                            result.append(str(i) + ":" + str(j))
-                            size += 1
-                        if size == 8:
-                            return result
-            return result
+        def getCandidateScore(i, j, position, party):
+            score = 0
+            if party == 0:
+                if position in [1, 3, 5, 7]:
+                    score = valueMap[i][j].ringWeight + valueMap[i][j].dotWeight + valueMap[i][j + 1].ringWeight + \
+                            valueMap[i][j + 1].dotWeight
+                elif position in [2, 4, 6, 8]:
+                    score = valueMap[i][j].ringWeight + valueMap[i][j].dotWeight + valueMap[i + 1][j].ringWeight + \
+                            valueMap[i + 1][j].dotWeight
+            elif party == 1:
+                if position in [1, 3, 5, 7]:
+                    score = valueMap[i][j].redWeight + valueMap[i][j].whiteWeight + valueMap[i][j + 1].redWeight + \
+                            valueMap[i][j + 1].whiteWeight
+                elif position in [2, 4, 6, 8]:
+                    score = valueMap[i][j].redWeight + valueMap[i][j].whiteWeight + valueMap[i + 1][j].redWeight + \
+                            valueMap[i + 1][j].whiteWeight
+            return Candidate('0 ' + str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1), score)
 
-        def getHorizontalTargets(gameMap, valueMap):
-            result = []
-            size = 0
+        def getCandidates():
+            candidates = []
             for i in range(12):
-                for j in range(7):
-                    if (i == 0 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
-                            gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] == 0 and
-                            gameMap[i - 1][j + 1] == 0):
-                        if (i == 1 and j == 1):
-                            print("gotcha")
-                            print(numpy.flipud(gameMap))
-                        if valueMap[i][j].getWeight() != 0 or valueMap[i][j + 1] != 0:
-                            result.append(str(i) + ":" + str(j))
-                            size += 1
-                        if size == 4:
-                            return result
-            return result
+                for j in range(8):
+                    if (i == 0 and gameMap[i][j] == 0) or (i > 11 and gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
+                        for position in [2, 6, 4, 8]:
+                            candidates.append(getCandidateScore(i, j, position, party))
+                    if (i == 0 and j > 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
+                            j > 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] != 0 and
+                            gameMap[i - 1][j + 1] != 0):
+                        for position in [1, 3, 5, 7]:
+                            candidates.append(getCandidateScore(i, j, position, party))
+            candidates.sort(key=lambda x: x.score, reverse=True)
+            if len(candidates) > 5:
+                return candidates[:5]
+            return candidates
 
-        self.vtargets = getVerticalTargets(self.gameMap, self.valueMap)
-        self.htargets = getHorizontalTargets(self.gameMap, self.valueMap)
+        self.candidates = getCandidates()
+        # def getVerticalTargets(gameMap, valueMap, type):
+        #     result = []
+        #     size = 0
+        #     for i in range(11):
+        #         for j in range(8):
+        #             if (i == 0 and gameMap[i][j] == 0) or (gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
+        #                 if valueMap[i][j].getWeight(type) != 0:
+        #                     result.append(str(i) + ":" + str(j))
+        #                     size += 1
+        #                 if size == 8:
+        #                     return result
+        #     return result
+        #
+        # def getHorizontalTargets(gameMap, valueMap):
+        #     result = []
+        #     size = 0
+        #     for i in range(12):
+        #         for j in range(7):
+        #             if (i == 0 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
+        #                     gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] != 0 and
+        #                     gameMap[i - 1][j + 1] != 0):
+        #                 if (i == 4 and j == 1):
+        #                     print("gotcha")
+        #                     print(numpy.flipud(gameMap))
+        #                 if valueMap[i][j].getWeight(party) != 0 or valueMap[i][j + 1] != 0:
+        #                     result.append(str(i) + ":" + str(j))
+        #                     size += 1
+        #                 if size == 4:
+        #                     return result
+        #     return result
+        #
+        # self.vtargets = getVerticalTargets(self.gameMap, self.valueMap)
+        # self.htargets = getHorizontalTargets(self.gameMap, self.valueMap)
 
+        #TODO: всё ещё надо над этим поработать
         def getRecycles(gameMap):
             result = []
             size = 0
@@ -107,7 +162,7 @@ class Treenode:
 
         def childcreator(moveString):
             move = Move(moveString)
-            print(moveString)
+            #print(moveString)
             if self.validator.placeValidator(move, gameMap):
                 newGameMap = copy.copy(self.gameMap)
                 newValueMap = copy.deepcopy(self.valueMap)
@@ -120,23 +175,12 @@ class Treenode:
                 childNode.rawMove = moveString
                 self.children.append(childNode)
 
-        def populateChildren(vtargets, htargets, recycles):
-            for coordinate in vtargets:
-                i = coordinate.split(":")[0]
-                j = coordinate.split(":")[1]
-                for position in [2, 6, 4, 8]:
-                    moveString = '0 ' + str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1)
-                    childcreator(moveString)
-
-            for coordinate in htargets:
-                i = coordinate.split(":")[0]
-                j = coordinate.split(":")[1]
-                for position in [1, 3, 5, 7]:
-                    moveString = '0 ' + str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1)
-                    childcreator(moveString)
+        def populateChildren(candidates):
+            for candidate in candidates:
+                    childcreator(candidate.move)
 
         if self.depth > 0 and self.goalState == 'go':
-            populateChildren(self.vtargets, self.htargets, self.recycles)
+            populateChildren(self.candidates)
 
     def getMove(self):
         nextMove = self.children[0]

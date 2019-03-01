@@ -8,6 +8,9 @@ class Cell:
     target: int = 0
     totalWeight: int = 0
 
-    def getWeight(self):
-        self.totalWeight = (self.dotWeight + self.redWeight + self.ringWeight + self.whiteWeight)/4
+    def getWeight(self, party):
+        if party == '0':
+            self.totalWeight = (self.dotWeight + self.ringWeight) - (self.whiteWeight + self.redWeight)
+        elif party == '1':
+            self.totalWeight = (self.redWeight + self.whiteWeight) - (self.dotWeight + self.ringWeight)
         return self.totalWeight
