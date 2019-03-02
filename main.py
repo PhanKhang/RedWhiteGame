@@ -188,10 +188,10 @@ def main():
 
         if (k + choice) % 2 == 0:
             print("Score for Colors: ")
-            print(appraiser.getScoreColors(valueMap, gameMap))
+            print(appraiser.getScoreColors())
         else:
             print("Score for Dots: ")
-            print(appraiser.getScoreDots(valueMap, gameMap))
+            print(appraiser.getScoreDots())
 
         tmp = {}
         print("Red map")

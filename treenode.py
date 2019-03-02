@@ -3,6 +3,7 @@ from move import Move
 from placer import Placer
 from appraiser import Appraiser
 import copy
+from nonvalidatedplacer import  Nonvalidatedplacer
 import numpy
 
 numbToLetter = {
@@ -191,14 +192,17 @@ class Treenode:
         # which represents h()
         def getOwnWeight(valueMap):
             if party == 0:  # maybe 1 stays for dots?
-                return Appraiser().getScoreColors(valueMap, self.gameMap)
+                return Appraiser().getScoreColors()
             else:
-                return Appraiser().getScoreDots(valueMap, self.gameMap)
+                return Appraiser().getScoreDots()
 
         self.goalState = self.validator.victoryCheck(party, gameMap)
         self.weight = getOwnWeight(self.valueMap)
-        if self.goalState != 'go':
+        if self.goalState == 'color wins' and party == 0:
             self.weight *= 10
+        elif self.goalState == 'dots wins' and party == 1:
+            self.weight *= 10
+
 
         # here we detect if it's a goal state
         # would reuse victoryCheck, but need to refactor it a bit
@@ -213,7 +217,7 @@ class Treenode:
                 newValueMap = copy.deepcopy(self.valueMap)
                 newValidator = copy.copy(self.validator)
 
-                Placer().place(move, newValidator, newGameMap)
+                Nonvalidatedplacer().place(move, newValidator, newGameMap)
                 Appraiser().appraise(move, newValueMap, newGameMap)
                 newparty = 0
                 if self.party == 0:

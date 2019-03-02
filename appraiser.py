@@ -2,7 +2,7 @@ import numpy
 from cell import Cell
 
 price: int = 10
-
+victoryMoveMult = 100
 priceing_blocked = -1000;
 
 letterToNumb = {
@@ -30,6 +30,11 @@ class Appraiser:
     ring = [2, 3]
 
     targetList = []
+
+    previousDotsWeight = 0
+    currentDotsWeight = 0
+    previousColorWeight = 0
+    currentColorWeight = 0
 
     # appraise how how card will affect gameMap
     def appraise(self, move, valueMap, gameMap):
@@ -68,16 +73,22 @@ class Appraiser:
         if gameMap[j1][i1] in self.ring:
             self.appraise_ring(i1, j1, valueMap, gameMap)
 
-        self.targetList.clear()
-        for j in range(12):
-            for i in range(8):
-                if self.isTargeted(i, j, gameMap) and valueMap[j][i].occupied == 0:
-                    self.targetList.append(valueMap[j][i])
+        self.currentColorWeight = max(self.getAvailableMoves(self.getRedMap(valueMap), gameMap),
+                                      self.getAvailableMoves(self.getWhiteMap(valueMap), gameMap))
+
+        self.currentDotsWeight = max(self.getAvailableMoves(self.getRingMap(valueMap), gameMap),
+                                     self.getAvailableMoves(self.getDotMap(valueMap), gameMap))
+
+        # self.targetList.clear()
+        # for j in range(12):
+        #     for i in range(8):
+        #         if self.isTargeted(i, j, gameMap) and valueMap[j][i].occupied == 0:
+        #             self.targetList.append(valueMap[j][i])
 
     # look for next 4 fields to see if there is possibility of creating 4 in a row
     def isHorizontalWindowFree(self, i, j, self_color, gameMap):
         rate = 0
-        if i > 3:
+        if i + 3 > 7:
             return 0
         for step in range(4):
             if step + i < 8:
@@ -88,12 +99,12 @@ class Appraiser:
             else:
                 return 0
             if rate == 3:
-                return 10
+                return victoryMoveMult
         return rate
 
     def isVerticalWindowFree(self, i, j, self_color, gameMap):
         rate = 0
-        if j > 8:
+        if j + 3 > 11:
             return 0
         for step in range(4):
             if step + j < 12:
@@ -104,12 +115,12 @@ class Appraiser:
             else:
                 return 0
             if rate == 3:
-                return 10
+                return victoryMoveMult
         return rate
 
     def isUpDiagonalWindowFree(self, i, j, self_color, gameMap):
         rate = 0
-        if i > 3 or j > 8:
+        if i + 3 > 7 or j + 3 > 11:
             return 0
         for step in range(4):
             if step + j < 12 and step + i < 8:
@@ -125,7 +136,7 @@ class Appraiser:
 
     def isDownDiagonalWindowFree(self, i, j, self_color, gameMap):
         rate = 0
-        if i > 3 or j < 4:
+        if i + 3 > 7 or j - 3 < 0:
             return 0
         for step in range(4):
             if j - step >= 0 and step + i < 8:
@@ -136,7 +147,7 @@ class Appraiser:
             else:
                 return 0
             if rate == 3:
-                return 10
+                return victoryMoveMult
         return rate
 
     # not used for now
@@ -330,7 +341,7 @@ class Appraiser:
                 rate = self.isHorizontalWindowFree(i - step, j, self.red, gameMap)
                 if rate > 0:
                     for k in range(4):
-                            valueMap[j][i - step + k].redWeight += price * rate
+                        valueMap[j][i - step + k].redWeight += price * rate
         for step in range(4):
             if j - step >= 0:
                 rate = self.isVerticalWindowFree(i, j - step, self.red, gameMap)
@@ -489,20 +500,14 @@ class Appraiser:
         pass
 
     # returns coordinate with non zero weight and free on the gameMap
-    def getAvailableMoves(self, colorMap, maxMoves, gameMap):
-        aveMoves = {}
+    def getAvailableMoves(self, colorMap, gameMap):
         max = 0
         for i in range(8):
             for j in range(12):
-                if colorMap[j][i] > 0 and gameMap[j][i] == 0 and self.isTargeted(i, j, gameMap):
+                if colorMap[j][i] > 0 and gameMap[j][i] == 0:
                     # print(numbToLetter.get(i+1)+str(j+1)+": "+str(colorMap[j][i]))
-                    aveMoves[numbToLetter.get(i + 1) + str(j + 1)] = colorMap[j][i]
                     if colorMap[j][i] > max:
                         max = colorMap[j][i]
-
-        for m in aveMoves.keys():
-            if abs(aveMoves.get(m) - max) <= price:
-                maxMoves[m] = aveMoves.get(m)
         return max
 
     def isTargeted(self, i, j, gameMap):
@@ -539,15 +544,17 @@ class Appraiser:
                 Matrix[j][i] = valueMap[j][i].ringWeight
         return Matrix
 
-    def getScoreDots(self, valueMap, gameMap):
-        tmp = {}
-        return max(self.getAvailableMoves(self.getDotMap(valueMap), tmp, gameMap),
-                   self.getAvailableMoves(self.getRingMap(valueMap), tmp, gameMap)) - self.getAvgColors(valueMap)
+    def getScoreDots(self):
+        diff = (self.currentDotsWeight - self.previousDotsWeight) - (self.currentColorWeight - self.previousColorWeight)
+        self.previousColorWeight = self.currentColorWeight
+        self.previousDotsWeight = self.currentDotsWeight
+        return diff
 
-    def getScoreColors(self, valueMap, gameMap):
-        tmp = {}
-        return max(self.getAvailableMoves(self.getRedMap(valueMap), tmp, gameMap),
-                   self.getAvailableMoves(self.getWhiteMap(valueMap), tmp, gameMap)) - self.getAvgDots(valueMap)
+    def getScoreColors(self):
+        diff = (self.currentColorWeight - self.previousColorWeight) - (self.currentDotsWeight - self.previousDotsWeight)
+        self.previousColorWeight = self.currentColorWeight
+        self.previousDotsWeight = self.currentDotsWeight
+        return diff
 
     def getAvgColors(self, valueMap):
         count = 0
