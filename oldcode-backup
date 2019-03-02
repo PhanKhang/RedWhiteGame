@@ -1,0 +1,76 @@
+# def getVerticalTargets(gameMap, valueMap, type):
+# result = []
+#     size = 0
+#     for i in range(11):
+#         for j in range(8):
+#             if (i == 0 and gameMap[i][j] == 0) or (gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
+#                 if valueMap[i][j].getWeight(type) != 0:
+#                     result.append(str(i) + ":" + str(j))
+#                     size += 1
+#                 if size == 8:
+#                     return result
+#     return result
+#
+# def getHorizontalTargets(gameMap, valueMap):
+#     result = []
+#     size = 0
+#     for i in range(12):
+#         for j in range(7):
+#             if (i == 0 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
+#                     gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] != 0 and
+#                     gameMap[i - 1][j + 1] != 0):
+#                 if (i == 4 and j == 1):
+#                     print("gotcha")
+#                     print(numpy.flipud(gameMap))
+#                 if valueMap[i][j].getWeight(party) != 0 or valueMap[i][j + 1] != 0:
+#                     result.append(str(i) + ":" + str(j))
+#                     size += 1
+#                 if size == 4:
+#                     return result
+#     return result
+#
+# self.vtargets = getVerticalTargets(self.gameMap, self.valueMap)
+# self.htargets = getHorizontalTargets(self.gameMap, self.valueMap)
+
+# TODO: всё ещё надо над этим поработать
+def getRecycles(gameMap):
+    result = []
+    size = 0
+    for i in range(12):
+        for j in range(8):
+            if i == 0 and j < 8 and gameMap[i][j] != 0 and gameMap[i][j + 1] != 0 and gameMap[i + 1][j] == 0 and \
+                    gameMap[i + 1][j + 1] == 0:
+                result.append(str(i) + ":" + str(j) + ";" + str(i) + ":" + str(j + 1))
+                size += 2
+            if 0 < i < 12 and gameMap[i][j] != 0 and gameMap[i + 1][j] == 0:
+                result.append((i - 1) + ":" + j + ";" + i + ":" + j)
+                size += 1
+                if j < 8 and gameMap[i][j + 1] != 0 and gameMap[i + 1][j + 1] == 0:
+                    result.append(i + ":" + j + ";" + i + ":" + (j + 1))
+                    size += 1
+            if i == 12 and gameMap[i][j] != 0:
+                result.append((i - 1) + ":" + j + ";" + i + ":" + j)
+                size += 1
+                if j < 8 and gameMap[i][j + 1] != 0:
+                    result.append(i + ":" + j + ";" + i + ":" + (j + 1))
+                    size += 1
+            if size >= 16:
+                return result
+    return result
+
+
+
+# if (i == 0 and gameMap[i][j] == 0) or (i < 11 and gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
+                    #     for position in [2, 6, 4, 8]:
+                    #         if self.party == 0:
+                    #             newparty = 1
+                    #         candidates.append(getCandidateScore(i, j, position, newparty))
+                    #
+                    # if (i == 0 and j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
+                    #         j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] != 0 and
+                    #         gameMap[i - 1][j + 1] != 0):
+                    #     for position in [1, 3, 5, 7]:
+                    #         newparty = 0
+                    #         if self.party == 0:
+                    #             newparty = 1
+                    #         candidates.append(getCandidateScore(i, j, position, newparty))

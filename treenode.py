@@ -18,18 +18,6 @@ numbToLetter = {
 }
 
 
-# types = {
-#     1:
-#     2:
-#     3:
-#     4:
-#     5:
-#     6:
-#     7:
-#     8:
-# }
-
-
 class Candidate:
     def __init__(self, move, score):
         self.move = move
@@ -48,6 +36,14 @@ class Treenode:
         self.rawMove = ''
         self.coef = 0.8
 
+        def getRecycleCandidateScore(i1, j1, i2, j2, party):
+            score = 0
+            if party == 0:
+                score = max(valueMap[i1][j1].redWeight + valueMap[i2][j2].whiteWeight, valueMap[i1][j1].whiteWeight + valueMap[i2][j2].redWeight)
+            elif party == 1:
+                score = max(valueMap[i1][j1].dotWeight + valueMap[i2][j2].ringWeight, valueMap[i1][j1].ringWeight + valueMap[i2][j2].dotWeight)
+            return score
+
         def getCandidateScore(i, j, position, party):
             score = 0
             if party == 0:
@@ -55,17 +51,17 @@ class Treenode:
                     score = (valueMap[i][j].dotWeight + valueMap[i][j + 1].ringWeight) \
                             - (valueMap[i][j].redWeight + valueMap[i][j + 1].whiteWeight) * self.coef
                 elif position in [2]:
-                    score = (valueMap[i][j].ringWeight + valueMap[i+1][j].dotWeight) \
+                    score = (valueMap[i][j].ringWeight + valueMap[i + 1][j].dotWeight) \
                             - (valueMap[i][j].whiteWeight + valueMap[i + 1][j].redWeight) * self.coef
                 elif position in [3]:
                     score = (valueMap[i][j].ringWeight + valueMap[i][j + 1].dotWeight) \
                             - (valueMap[i][j].whiteWeight + valueMap[i][j + 1].redWeight) * self.coef
                 elif position in [4]:
-                    score = (valueMap[i][j].dotWeight + valueMap[i + 1][j].ringWeight)\
-                            - (valueMap[i][j].redWeight+ valueMap[i + 1][j].whiteWeight) * self.coef
+                    score = (valueMap[i][j].dotWeight + valueMap[i + 1][j].ringWeight) \
+                            - (valueMap[i][j].redWeight + valueMap[i + 1][j].whiteWeight) * self.coef
                 elif position in [5]:
                     score = (valueMap[i][j].ringWeight + valueMap[i][j + 1].dotWeight) \
-                            - ( valueMap[i][j].redWeight + valueMap[i][j + 1].whiteWeight) * self.coef
+                            - (valueMap[i][j].redWeight + valueMap[i][j + 1].whiteWeight) * self.coef
                 elif position in [6]:
                     score = (valueMap[i][j].dotWeight + valueMap[i + 1][j].ringWeight) \
                             - (valueMap[i][j].whiteWeight + valueMap[i + 1][j].redWeight) * self.coef
@@ -73,12 +69,12 @@ class Treenode:
                     score = (valueMap[i][j].dotWeight + valueMap[i][j + 1].ringWeight) \
                             - (valueMap[i][j].whiteWeight + valueMap[i][j + 1].redWeight) * self.coef
                 elif position in [8]:
-                    score = (valueMap[i][j].ringWeight + valueMap[i+1][j].dotWeight) \
-                            - (valueMap[i][j].redWeight+ valueMap[i + 1][j].whiteWeight) * self.coef
+                    score = (valueMap[i][j].ringWeight + valueMap[i + 1][j].dotWeight) \
+                            - (valueMap[i][j].redWeight + valueMap[i + 1][j].whiteWeight) * self.coef
             elif party == 1:
                 if position in [1]:
                     score = (valueMap[i][j].redWeight + valueMap[i][j + 1].whiteWeight) \
-                            - (valueMap[i][j].dotWeight+ valueMap[i][j + 1].ringWeight) * self.coef
+                            - (valueMap[i][j].dotWeight + valueMap[i][j + 1].ringWeight) * self.coef
                 elif position in [2]:
                     score = (valueMap[i][j].whiteWeight + valueMap[i + 1][j].redWeight) \
                             - (valueMap[i][j].ringWeight + valueMap[i + 1][j].dotWeight) * self.coef
@@ -86,7 +82,7 @@ class Treenode:
                     score = (valueMap[i][j].whiteWeight + valueMap[i][j + 1].redWeight) \
                             - (valueMap[i][j].ringWeight + valueMap[i][j + 1].dotWeight) * self.coef
                 elif position in [4]:
-                    score = (valueMap[i][j].redWeight + valueMap[i + 1][j].whiteWeight)\
+                    score = (valueMap[i][j].redWeight + valueMap[i + 1][j].whiteWeight) \
                             - (valueMap[i][j].dotWeight + valueMap[i + 1][j].ringWeight) * self.coef
                 elif position in [5]:
                     score = (valueMap[i][j].redWeight + valueMap[i][j + 1].whiteWeight) \
@@ -96,97 +92,99 @@ class Treenode:
                             - (valueMap[i][j].dotWeight + valueMap[i + 1][j].ringWeight) * self.coef
                 elif position in [7]:
                     score = (valueMap[i][j].whiteWeight + valueMap[i][j + 1].redWeight) \
-                            - (valueMap[i][j].dotWeight+ valueMap[i][j + 1].ringWeight) * self.coef
+                            - (valueMap[i][j].dotWeight + valueMap[i][j + 1].ringWeight) * self.coef
                 elif position in [8]:
                     score = (valueMap[i][j].redWeight + valueMap[i + 1][j].whiteWeight) \
                             - (valueMap[i][j].ringWeight + valueMap[i + 1][j].dotWeight) * self.coef
-            return Candidate('0 ' + str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1), score)
+            # return Candidate('0 ' + str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1), score)
+            return score
+
+        def toPut(i, j):
+            if (i == 0 and gameMap[i][j] == 0) or (i < 11 and gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
+                for position in [2, 6, 4, 8]:
+                    if self.party == 0:
+                        newparty = 1
+                    return Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1),
+                                     (getCandidateScore(i, j, position, newparty)))
+            if (i == 0 and j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
+                    j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] != 0 and
+                    gameMap[i - 1][j + 1] != 0):
+                for position in [1, 3, 5, 7]:
+                    newparty = 0
+                    if self.party == 0:
+                        newparty = 1
+                    return Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1),
+                                     (getCandidateScore(i, j, position, newparty)))
+            return 'none'
+
+        def toPick(i, j):
+            if (0 < i < 11 and gameMap[i][j] != 0 and gameMap[i - 1][j] != 0 and gameMap[i + 1][j] == 0) or (
+                    i == 11 and gameMap[i][j] != 0 and gameMap[i - 1][j] != 0):
+                secondCardPart = validator.getCard(i - 1, j)
+                if secondCardPart != 'none':
+                    i2 = secondCardPart.split(":")[0]
+                    j2 = secondCardPart.split(":")[1]
+                    if (i == i2 and j == j2):
+                        return Candidate(
+                            str(numbToLetter.get(int(j))) + ' ' + str(i) + str(numbToLetter.get(int(j2))) + ' ' + str(
+                                int(i2) + 1), getRecycleCandidateScore(i - 1, j, i2, j2, party))
+            if (j < 7 and i < 11 and gameMap[i][j] != 0 and gameMap[i][j + 1] != 0 and gameMap[i + 1][j] == 0 and
+                gameMap[i + 1][j + 1] == 0) or (j < 7 and i == 11 and gameMap[i][j] != 0 and gameMap[i][j + 1] != 0):
+                secondCardPart = validator.getCard(i, j)
+                if secondCardPart != 'none':
+                    i2 = secondCardPart.split(":")[0]
+                    j2 = secondCardPart.split(":")[1]
+                    if (i == i2) and (j + 1 == j2):
+                        return Candidate(str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1) + str(
+                            numbToLetter.get(int(j2))) + ' ' + str(int(i2) + 1),
+                                         getRecycleCandidateScore(i, j, i2, j2, party))
+            return 'none'
 
         def getCandidates():
             candidates = []
+            putCandidates = []
+            pickCandidates = []
+            size = 0
             for i in range(12):
                 for j in range(8):
-                    if (i == 0 and gameMap[i][j] == 0) or (i < 11 and gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
-                        for position in [2, 6, 4, 8]:
-                            candidates.append(getCandidateScore(i, j, position, party))
-                    if (i == 0 and j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
-                            j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] != 0 and
-                            gameMap[i - 1][j + 1] != 0):
-                        for position in [1, 3, 5, 7]:
-                            newparty = 0
-                            if self.party == 0:
-                                newparty = 1
-                            candidates.append(getCandidateScore(i, j, position, newparty))
+                    putCandidate = toPut(i, j)
+                    if putCandidate != 'none':
+                        putCandidates.append(putCandidate)
+                        size += 1
+                    if size == 14:
+                        break
+
+            for putCandidate in putCandidates:
+                move = '0 ' + putCandidate.move
+                score = putCandidate.score
+                candidates.append(Candidate(move, score))
+
+            if moveNum > 24:
+                size = 0
+                for i in range(12):
+                    for j in range(8):
+                        pickCandidate = toPick(i, j)
+                        if pickCandidate != 'none':
+                            pickCandidates.append(pickCandidate)
+                            size += 1
+                        if size == 7:
+                            break
+                for pickCandidate in pickCandidates:
+                    for putCandidate in putCandidates:
+                        if (putCandidate.move.split(" ")[1] != pickCandidate.move.split(" ")[0] and
+                            putCandidate.move.split(" ")[2] != pickCandidate.move.split(" ")[1]) \
+                                or (putCandidate.move.split(" ")[1] != pickCandidate.move.split(" ")[2] and
+                                    putCandidate.move.split(" ")[2] != pickCandidate.move.split(" ")[3]):
+                            move = pickCandidate.move + ' ' + putCandidate.move
+                            score = pickCandidate.score + putCandidate.score
+                            candidates.append(move, score)
+
             candidates.sort(key=lambda x: x.score, reverse=True)
             if len(candidates) > 5:
                 return candidates[:5]
             return candidates
 
         self.candidates = getCandidates()
-
-        # def getVerticalTargets(gameMap, valueMap, type):
-        #     result = []
-        #     size = 0
-        #     for i in range(11):
-        #         for j in range(8):
-        #             if (i == 0 and gameMap[i][j] == 0) or (gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
-        #                 if valueMap[i][j].getWeight(type) != 0:
-        #                     result.append(str(i) + ":" + str(j))
-        #                     size += 1
-        #                 if size == 8:
-        #                     return result
-        #     return result
-        #
-        # def getHorizontalTargets(gameMap, valueMap):
-        #     result = []
-        #     size = 0
-        #     for i in range(12):
-        #         for j in range(7):
-        #             if (i == 0 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
-        #                     gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] != 0 and
-        #                     gameMap[i - 1][j + 1] != 0):
-        #                 if (i == 4 and j == 1):
-        #                     print("gotcha")
-        #                     print(numpy.flipud(gameMap))
-        #                 if valueMap[i][j].getWeight(party) != 0 or valueMap[i][j + 1] != 0:
-        #                     result.append(str(i) + ":" + str(j))
-        #                     size += 1
-        #                 if size == 4:
-        #                     return result
-        #     return result
-        #
-        # self.vtargets = getVerticalTargets(self.gameMap, self.valueMap)
-        # self.htargets = getHorizontalTargets(self.gameMap, self.valueMap)
-
-        # TODO: всё ещё надо над этим поработать
-        def getRecycles(gameMap):
-            result = []
-            size = 0
-            for i in range(12):
-                for j in range(8):
-                    if i == 0 and j < 8 and gameMap[i][j] != 0 and gameMap[i][j + 1] != 0 and gameMap[i + 1][j] == 0 and \
-                            gameMap[i + 1][j + 1] == 0:
-                        result.append(str(i) + ":" + str(j) + ";" + str(i) + ":" + str(j + 1))
-                        size += 2
-                    if 0 < i < 12 and gameMap[i][j] != 0 and gameMap[i + 1][j] == 0:
-                        result.append((i - 1) + ":" + j + ";" + i + ":" + j)
-                        size += 1
-                        if j < 8 and gameMap[i][j + 1] != 0 and gameMap[i + 1][j + 1] == 0:
-                            result.append(i + ":" + j + ";" + i + ":" + (j + 1))
-                            size += 1
-                    if i == 12 and gameMap[i][j] != 0:
-                        result.append((i - 1) + ":" + j + ";" + i + ":" + j)
-                        size += 1
-                        if j < 8 and gameMap[i][j + 1] != 0:
-                            result.append(i + ":" + j + ";" + i + ":" + (j + 1))
-                            size += 1
-                    if size >= 16:
-                        return result
-            return result
-
-        self.recycles = []
-        if moveNum > 24:
-            self.recycles = getRecycles(self.gameMap)
 
         # here we place move heuristic weight (as discussed OUR MAX- ENEMY MAX)
         # which represents h()
@@ -206,8 +204,6 @@ class Treenode:
 
         # here we detect if it's a goal state
         # would reuse victoryCheck, but need to refactor it a bit
-
-
 
         def childcreator(moveString):
             move = Move(moveString)

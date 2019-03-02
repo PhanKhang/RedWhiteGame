@@ -98,6 +98,17 @@ class Validator:
     # Checks recycle move:
     # 1) checks card integrity by coordinates
     # 2) checks if there is no other cards above the given one
+    def getCard(self, i, j):
+        rotation = self.coordinateToRotation.get(self.numbToLetter.get(i + 1) + str(j + 1), 0)
+        if rotation != 0:
+            if int(rotation) % 2 == 0:
+                return str(i+1)+":"+str(j)
+            else:
+                return str(i)+":"+str(j+1)
+        else:
+            return "none"
+
+
     def recycleValidator(self, move, gameMap):
         if self.isNotLastMove(move):
             i1 = move.sourceCoordinate1Let - 1
