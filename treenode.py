@@ -100,22 +100,18 @@ class Treenode:
             return score
 
         def toPut(i, j):
+            subCandidates = []
             if (i == 0 and gameMap[i][j] == 0) or (i < 11 and gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
                 for position in [2, 6, 4, 8]:
-                    if self.party == 0:
-                        newparty = 1
-                    return Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1),
-                                     (getCandidateScore(i, j, position, newparty)))
+                    subCandidates.append(Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1),
+                                     (getCandidateScore(i, j, position, party))))
             if (i == 0 and j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
                     j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] != 0 and
                     gameMap[i - 1][j + 1] != 0):
                 for position in [1, 3, 5, 7]:
-                    newparty = 0
-                    if self.party == 0:
-                        newparty = 1
-                    return Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1),
-                                     (getCandidateScore(i, j, position, newparty)))
-            return 'none'
+                    subCandidates.append(Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1),
+                                     (getCandidateScore(i, j, position, party))))
+            return subCandidates
 
         def toPick(i, j):
             if (0 < i < 11 and gameMap[i][j] != 0 and gameMap[i - 1][j] != 0 and gameMap[i + 1][j] == 0) or (
@@ -149,7 +145,7 @@ class Treenode:
                 for j in range(8):
                     putCandidate = toPut(i, j)
                     if putCandidate != 'none':
-                        putCandidates.append(putCandidate)
+                        putCandidates += putCandidate
                         size += 1
                     if size == 14:
                         break
