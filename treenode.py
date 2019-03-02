@@ -96,7 +96,7 @@ class Treenode:
                             gameMap[i - 1][j + 1] != 0):
                         for position in [1, 3, 5, 7]:
                             newparty = 0
-                            if party == 0:
+                            if self.party == 0:
                                 newparty = 1
                             candidates.append(getCandidateScore(i, j, position, newparty))
             candidates.sort(key=lambda x: x.score, reverse=True)
@@ -194,8 +194,10 @@ class Treenode:
 
                 Placer().place(move, newValidator, newGameMap)
                 Appraiser().appraise(move, newValueMap, newGameMap)
-
-                childNode = Treenode(depth - 1, newValueMap, newGameMap, moveNum + 1, newValidator, self.party)
+                newparty = 0
+                if self.party == 0:
+                    newparty = 1
+                childNode = Treenode(depth - 1, newValueMap, newGameMap, moveNum + 1, newValidator, newparty)
                 childNode.rawMove = moveString
                 self.children.append(childNode)
 

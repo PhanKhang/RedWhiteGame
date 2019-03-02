@@ -136,6 +136,7 @@ def main():
         # print("Turn " + str(k) + " Player " + str((k-1) % 2+1))
         if choice == 0 and (k - 1) % 2 + 1 == 1:
             print("Turn " + str(k) + " Player 1" + " playing with dots")
+            party = 0
         elif choice == 0 and (k - 1) % 2 + 1 == 2:
             print("Turn " + str(k) + " Player 2" + " playing with colors")
             party = 1
@@ -144,6 +145,7 @@ def main():
             party = 1
         elif choice == 1 and (k - 1) % 2 + 1 == 2:
             print("Turn " + str(k) + " Player 2" + " playing with dots")
+            party = 0
 
         while not legal:
             movok = False
@@ -152,7 +154,7 @@ def main():
                 newGameMap = copy.copy(gameMap)
                 treenode = Treenode(4, newValueMap, newGameMap, k, validator, party)
                 alphabeta(treenode, 2,  -9999999, 9999999, True)
-                if treenode.getMove() == "0 4 B 2":
+                if treenode.getMove() == "0 7 F 2":
                     print("gotcha")
                 print("Recommended move: " + treenode.getMove())
                 input_var = input()
