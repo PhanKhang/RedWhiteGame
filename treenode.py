@@ -195,11 +195,15 @@ class Treenode:
             else:
                 return Appraiser().getScoreDots(valueMap, self.gameMap)
 
+        self.goalState = self.validator.victoryCheck(party, gameMap)
         self.weight = getOwnWeight(self.valueMap)
+        if self.goalState != 'go':
+            self.weight *= 10
 
         # here we detect if it's a goal state
         # would reuse victoryCheck, but need to refactor it a bit
-        self.goalState = self.validator.victoryCheck(party, gameMap)
+
+
 
         def childcreator(moveString):
             move = Move(moveString)
