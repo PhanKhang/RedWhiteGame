@@ -121,7 +121,10 @@ def alphabeta(node, depth, a, b, maxP):
 valueMap = [[Cell() for j in range(8)] for i in range(12)]
 
 def main():
-    choice = int(input("Write 0 for dots and 1 a for colors: "))
+    pruning = int(input("Activate alpha-beta pruning? 1 for yes 0 for no: "))
+    trace = int(input("Generate trace? 1 for yes 0 for no: "))
+    computer = int(input("Which player should be computer 1 or 2?: "))
+    choice = int(input("Player 1  will be playing? 0 for dots and 1 a for colors: "))
     if choice == 0:
         print("Player 1: Dots")
         print("Player 2: Colors")
@@ -152,12 +155,19 @@ def main():
             while not movok:
                 newValueMap = copy.copy(valueMap)
                 newGameMap = copy.copy(gameMap)
-                treenode = Treenode(4, newValueMap, newGameMap, k, validator, party)
-                alphabeta(treenode, 2,  -9999999, 9999999, True)
-                if treenode.getMove() == "0 7 F 2":
-                    print("gotcha")
-                print("Recommended move: " + treenode.getMove())
-                input_var = input()
+                input_var = ''
+                if (k%2==1 and computer == 1) or (k%2 == 0 and computer == 2):
+                    treenode = Treenode(4, newValueMap, newGameMap, k, validator, party)
+                    if pruning == 1:
+                        alphabeta(treenode, 2,  -9999999, 9999999, True)
+                    if treenode.getMove() == "0 7 F 2":
+                        print("gotcha")
+                    input_var = treenode.getMove()
+                    print("computer move: " + input_var)
+                else:
+                    input_var = input()
+
+                #print("Recommended move: " + treenode.getMove())
                 # print(input_var)
                 try:
                     move = Move(input_var)
