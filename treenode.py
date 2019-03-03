@@ -25,7 +25,7 @@ class Candidate:
 
 
 class Treenode:
-    def __init__(self, depth, valueMap, gameMap, moveNum, validator, party):
+    def __init__(self, depth, valueMap, gameMap, moveNum, validator, party, weightParent):
         self.depth = depth
         self.gameMap = gameMap
         self.valueMap = valueMap
@@ -35,6 +35,7 @@ class Treenode:
         self.party = party
         self.rawMove = ''
         self.coef = 0.8
+        self.parentWeight = weightParent
 
         def getRecycleCandidateScore(i1, j1, i2, j2, party):
             score = 0
@@ -184,14 +185,11 @@ class Treenode:
 
         # here we place move heuristic weight (as discussed OUR MAX- ENEMY MAX)
         # which represents h()
-        def getOwnWeight(valueMap):
-            if party == 0:  # maybe 1 stays for dots?
-                return Appraiser().getScoreColors()
-            else:
-                return Appraiser().getScoreDots()
+        def getOwnWeight(valueMap, gameMap):
+            return Appraiser().getScore(valueMap, gameMap) - weightParent
 
         self.goalState = self.validator.victoryCheck(party, gameMap)
-        self.weight = getOwnWeight(self.valueMap)
+        self.weight = getOwnWeight(self.valueMap, self.gameMap)
         if self.goalState == 'color wins' and party == 0:
             self.weight *= 10
         elif self.goalState == 'dots wins' and party == 1:
@@ -214,7 +212,8 @@ class Treenode:
                 newparty = 0
                 if self.party == 0:
                     newparty = 1
-                childNode = Treenode(depth - 1, newValueMap, newGameMap, moveNum + 1, newValidator, newparty)
+                childNode = Treenode(depth - 1, newValueMap, newGameMap, moveNum + 1, newValidator, newparty,
+                                     self.weight)
                 childNode.rawMove = moveString
                 self.children.append(childNode)
 

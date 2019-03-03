@@ -26,18 +26,19 @@ white = [2, 4]
 dot = [1, 4]
 ring = [2, 3]
 
+
 def getCard(i):
     whiteB = '\033[0;37;40m'
     redB = '\033[0;37;41m'
     dot = u" \u25CF"
     ring = u" \u25EF"
-    if i == 1 :
+    if i == 1:
         return redB + dot
-    if i == 2 :
+    if i == 2:
         return whiteB + ring
-    if i == 3 :
+    if i == 3:
         return redB + ring
-    if i == 4 :
+    if i == 4:
         return whiteB + dot
     return " 0"
 
@@ -47,13 +48,13 @@ def getCardL(i):
     redB = "R"
     dot = "D"
     ring = "C"
-    if i == 1 :
+    if i == 1:
         return redB + dot
-    if i == 2 :
+    if i == 2:
         return whiteB + ring
-    if i == 3 :
+    if i == 3:
         return redB + ring
-    if i == 4 :
+    if i == 4:
         return whiteB + dot
     return " 0"
 
@@ -68,7 +69,7 @@ def correctPrinterMapL(gameMap):
     ENDC = '\033[2m'
     print("     A  B  C  D  E  F  G  H")
     for j in range(11, -1, -1):
-        s = str(j+1)+"\t"
+        s = str(j + 1) + "\t"
         for i in range(8):
             s += getCardL(gameMap[j][i])
             s += " "
@@ -81,7 +82,7 @@ def correctPrinterMap(gameMap):
     ENDC = '\033[2m'
     print("     A  B  C  D  E  F  G  H")
     for j in range(11, -1, -1):
-        s = str(j+1)+"\t"
+        s = str(j + 1) + "\t"
         for i in range(8):
             s += getCard(gameMap[j][i])
             s += " "
@@ -97,11 +98,11 @@ def alphabeta(node, depth, a, b, maxP):
         node.weight = -9999999
         newchildren = []
         for childnode in node.children:
-            node.weight = max(node.weight, alphabeta(childnode, depth -1, a, b, False))
+            node.weight = max(node.weight, alphabeta(childnode, depth - 1, a, b, False))
             a = max(a, node.weight)
             newchildren.append(childnode)
             if a >= b:
-                #print("prune!")
+                # print("prune!")
                 node.children = newchildren
                 break
         return node.weight
@@ -109,18 +110,22 @@ def alphabeta(node, depth, a, b, maxP):
         node.weight = 9999999
         newchildren = []
         for childnode in node.children:
-            node.weight = min(node.weight, alphabeta(childnode, depth -1, a, b, True))
+            node.weight = min(node.weight, alphabeta(childnode, depth - 1, a, b, True))
             b = min(b, node.weight)
             newchildren.append(childnode)
             if a >= b:
-                #print("prune!")
+                # print("prune!")
                 node.children = newchildren
                 break
         return node.weight
 
+
 valueMap = [[Cell() for j in range(8)] for i in range(12)]
 
+
 def main():
+    prevWeight = 0
+
     pruning = int(input("Activate alpha-beta pruning? 1 for yes 0 for no: "))
     trace = int(input("Generate trace? 1 for yes 0 for no: "))
     computer = int(input("Which player should be computer 1 or 2?: "))
@@ -156,10 +161,10 @@ def main():
                 newValueMap = copy.copy(valueMap)
                 newGameMap = copy.copy(gameMap)
                 input_var = ''
-                if (k%2==1 and computer == 1) or (k%2 == 0 and computer == 2):
-                    treenode = Treenode(4, newValueMap, newGameMap, k, validator, party)
+                if (k % 2 == 1 and computer == 1) or (k % 2 == 0 and computer == 2):
+                    treenode = Treenode(4, newValueMap, newGameMap, k, validator, party, 0)
                     if pruning == 1:
-                        alphabeta(treenode, 2,  -9999999, 9999999, True)
+                        alphabeta(treenode, 2, -9999999, 9999999, True)
                     if treenode.getMove() == "0 7 F 2":
                         print("gotcha")
                     input_var = treenode.getMove()
@@ -167,7 +172,7 @@ def main():
                 else:
                     input_var = input()
 
-                #print("Recommended move: " + treenode.getMove())
+                # print("Recommended move: " + treenode.getMove())
                 # print(input_var)
                 try:
                     move = Move(input_var)
@@ -182,16 +187,20 @@ def main():
                 print("illegal move, try again")
 
         print("Current Game field")
-        correctPrinterMap(gameMap) # change to correctPrinterMapL for letter output
+        correctPrinterMap(gameMap)  # change to correctPrinterMapL for letter output
         # print(validator.coordinateToRotation)
         appraiser.appraise(move, valueMap, gameMap)
 
-        if (k + choice) % 2 == 0:
-            print("Score for Colors: ")
-            print(appraiser.getScoreColors())
-        else:
-            print("Score for Dots: ")
-            print(appraiser.getScoreDots())
+
+        print("Current Weight")
+        print(appraiser.getScore(valueMap, gameMap) -prevWeight)
+
+        # if (k + choice) % 2 == 0:
+        #     print("Score for Colors: ")
+        #     print(appraiser.getScore())
+        # else:
+        #     print("Score for Dots: ")
+        #     print(appraiser.getScore())
 
         tmp = {}
         print("Red map")

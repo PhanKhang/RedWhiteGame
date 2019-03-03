@@ -2,6 +2,7 @@ import numpy
 from cell import Cell
 
 price: int = 10
+adjPrice: int = 12
 victoryMoveMult = 100
 priceing_blocked = -1000;
 
@@ -68,13 +69,6 @@ class Appraiser:
         if gameMap[j1][i1] in self.ring:
             self.appraise_ring(i1, j1, valueMap, gameMap)
 
-
-
-        # self.targetList.clear()
-        # for j in range(12):
-        #     for i in range(8):
-        #         if self.isTargeted(i, j, gameMap) and valueMap[j][i].occupied == 0:
-        #             self.targetList.append(valueMap[j][i])
 
     # look for next 4 fields to see if there is possibility of creating 4 in a row
     def isHorizontalWindowFree(self, i, j, self_color, gameMap):
@@ -333,34 +327,48 @@ class Appraiser:
                 if rate > 0:
                     for k in range(4):
                         valueMap[j][i - step + k].redWeight += price * rate
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j][i - step + k].redWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j][i - step + k].redWeight += adjPrice / (4 - k)
         for step in range(4):
             if j - step >= 0:
                 rate = self.isVerticalWindowFree(i, j - step, self.red, gameMap)
                 if rate > 0:
                     for k in range(4):
                         valueMap[j - step + k][i].redWeight += price * rate
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j - step + k][i].redWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j - step + k][i].redWeight += adjPrice / (4 - k)
         for step in range(4):
             if i - step >= 0 and j + step < 12:
                 rate = self.isDownDiagonalWindowFree(i - step, j + step, self.red, gameMap)
                 if rate > 0:
                     for k in range(4):
                         valueMap[j + step - k][i - step + k].redWeight += price * rate
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j + step - k][i - step + k].redWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j + step - k][i - step + k].redWeight += adjPrice / (4 - k)
         for step in range(4):
             if j - step >= 0 and i - step >= 0:
                 rate = self.isUpDiagonalWindowFree(i - step, j - step, self.red, gameMap)
                 if rate > 0:
                     for k in range(4):
                         valueMap[j - step + k][i - step + k].redWeight += price * rate
-        # for step in range(1, 4):
-        #     if j + step < 12:
-        #         gameMap_red[j + step][i] += price        #     if j - step >= 0:
-        #         gameMap_red[j - step][i] += price        #     if i + step < 8:
-        #         gameMap_red[j][i + step] += price        #     if i - step >= 0:
-        #         gameMap_red[j][i - step] += price        #     if j + step < 12 and i + step < 8:
-        #         gameMap_red[j + step][i + step] += price        #     if j - step >= 0 and i - step >= 0:
-        #         gameMap_red[j - step][i - step] += price        #     if j + step < 12 and i - step >= 0:
-        #         gameMap_red[j + step][i - step] += price        #     if j - step >= 0 and i + step < 8:
-        #         gameMap_red[j - step][i + step] += price        pass
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j - step + k][i - step + k].redWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j - step + k][i - step + k].redWeight += adjPrice / (4 - k)
 
     def appraise_white(self, i, j, valueMap, gameMap):
         for step in range(4):
@@ -369,42 +377,49 @@ class Appraiser:
                 if rate > 0:
                     for k in range(4):
                         valueMap[j][i - step + k].whiteWeight += price * rate
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j][i - step + k].whiteWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j][i - step + k].whiteWeight += adjPrice / (4 - k)
         for step in range(4):
             if j - step >= 0:
                 rate = self.isVerticalWindowFree(i, j - step, self.white, gameMap)
                 if rate > 0:
                     for k in range(4):
                         valueMap[j - step + k][i].whiteWeight += price * rate
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j - step + k][i].whiteWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j - step + k][i].whiteWeight += adjPrice / (4 - k)
         for step in range(4):
             if i - step >= 0 and j + step < 12:
                 rate = self.isDownDiagonalWindowFree(i - step, j + step, self.white, gameMap)
                 if rate > 0:
                     for k in range(4):
                         valueMap[j + step - k][i - step + k].whiteWeight += price * rate
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j + step - k][i - step + k].whiteWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j + step - k][i - step + k].whiteWeight += adjPrice / (4 - k)
+
         for step in range(4):
             if j - step >= 0 and i - step >= 0:
                 rate = self.isUpDiagonalWindowFree(i - step, j - step, self.white, gameMap)
                 if rate > 0:
                     for k in range(4):
                         valueMap[j - step + k][i - step + k].whiteWeight += price * rate
-        # for step in range(1, 4):
-        #     if j + step < 12:
-        #         gameMap_white[j + step][i] += price
-        #     if j - step >= 0:
-        #         gameMap_white[j - step][i] += price
-        #     if i + step < 8:
-        #         gameMap_white[j][i + step] += price
-        #     if i - step >= 0:
-        #         gameMap_white[j][i - step] += price
-        #     if j + step < 12 and i + step < 8:
-        #         gameMap_white[j + step][i + step] += price
-        #     if j - step >= 0 and i - step >= 0:
-        #         gameMap_white[j - step][i - step] += price
-        #     if j + step < 12 and i - step >= 0:
-        #         gameMap_white[j + step][i - step] += price
-        #     if j - step >= 0 and i + step < 8:
-        #         gameMap_white[j - step][i + step] += price
-        pass
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j - step + k][i - step + k].whiteWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j - step + k][i - step + k].whiteWeight += adjPrice / (4 - k)
 
     def appraise_dot(self, i, j, valueMap, gameMap):
         for step in range(4):
@@ -413,34 +428,48 @@ class Appraiser:
                 if rate > 0:
                     for k in range(4):
                         valueMap[j][i - step + k].dotWeight += price * rate
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j][i - step + k].dotWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j][i - step + k].dotWeight += adjPrice / (4 - k)
         for step in range(4):
             if j - step >= 0:
                 rate = self.isVerticalWindowFree(i, j - step, self.dot, gameMap)
                 if rate > 0:
                     for k in range(4):
                         valueMap[j - step + k][i].dotWeight += price * rate
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j - step + k][i].dotWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j - step + k][i].dotWeight += adjPrice / (4 - k)
         for step in range(4):
             if i - step >= 0 and j + step < 12:
                 rate = self.isDownDiagonalWindowFree(i - step, j + step, self.dot, gameMap)
                 if rate > 0:
                     for k in range(4):
                         valueMap[j + step - k][i - step + k].dotWeight += price * rate
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j + step - k][i - step + k].dotWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j + step - k][i - step + k].dotWeight += adjPrice / (4 - k)
         for step in range(4):
             if j - step >= 0 and i - step >= 0:
                 rate = self.isUpDiagonalWindowFree(i - step, j - step, self.dot, gameMap)
                 if rate > 0:
                     for k in range(4):
                         valueMap[j - step + k][i - step + k].dotWeight += price * rate
-        # for step in range(1, 4):
-        #     if j + step < 12:
-        #         gameMap_dot[j + step][i] += price        #     if j - step >= 0:
-        #         gameMap_dot[j - step][i] += price        #     if i + step < 8:
-        #         gameMap_dot[j][i + step] += price        #     if i - step >= 0:
-        #         gameMap_dot[j][i - step] += price        #     if j + step < 12 and i + step < 8:
-        #         gameMap_dot[j + step][i + step] += price        #     if j - step >= 0 and i - step >= 0:
-        #         gameMap_dot[j - step][i - step] += price        #     if j + step < 12 and i - step >= 0:
-        #         gameMap_dot[j + step][i - step] += price        #     if j - step >= 0 and i + step < 8:
-        #         gameMap_dot[j - step][i + step] += price        pass
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j - step + k][i - step + k].dotWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j - step + k][i - step + k].dotWeight += adjPrice / (4 - k)
 
     def appraise_ring(self, i, j, valueMap, gameMap):
         for step in range(4):
@@ -448,47 +477,50 @@ class Appraiser:
                 rate = self.isHorizontalWindowFree(i - step, j, self.ring, gameMap)
                 if rate > 0:
                     for k in range(4):
-                        # gameMap_ring[j][i - step + k] += price
                         valueMap[j][i - step + k].ringWeight += price * rate
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j][i - step + k].ringWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j][i - step + k].ringWeight += adjPrice / (4 - k)
         for step in range(4):
             if j - step >= 0:
                 rate = self.isVerticalWindowFree(i, j - step, self.ring, gameMap)
                 if rate > 0:
                     for k in range(4):
-                        # gameMap_ring[j - step + k][i] += price
                         valueMap[j - step + k][i].ringWeight += price * rate
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j - step + k][i].ringWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j - step + k][i].ringWeight += adjPrice / (4 - k)
         for step in range(4):
             if i - step >= 0 and j + step < 12:
                 rate = self.isDownDiagonalWindowFree(i - step, j + step, self.ring, gameMap)
                 if rate > 0:
                     for k in range(4):
-                        # gameMap_ring[j + step - k][i - step + k] += price
                         valueMap[j + step - k][i - step + k].ringWeight += price * rate
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j + step - k][i - step + k].ringWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j + step - k][i - step + k].ringWeight += adjPrice / (4 - k)
         for step in range(4):
             if j - step >= 0 and i - step >= 0:
                 rate = self.isUpDiagonalWindowFree(i - step, j - step, self.ring, gameMap)
                 if rate > 0:
                     for k in range(4):
-                        # gameMap_ring[j - step + k][i - step + k] += price
                         valueMap[j - step + k][i - step + k].ringWeight += price * rate
-        # for step in range(1, 4):
-        #     if j + step < 12:
-        #         gameMap_ring[j + step][i] += price
-        #     if j - step >= 0:
-        #         gameMap_ring[j - step][i] += price
-        #     if i + step < 8:
-        #         gameMap_ring[j][i + step] += price
-        #     if i - step >= 0:
-        #         gameMap_ring[j][i - step] += price
-        #     if j + step < 12 and i + step < 8:
-        #         gameMap_ring[j + step][i + step] += price
-        #     if j - step >= 0 and i - step >= 0:
-        #         gameMap_ring[j - step][i - step] += price
-        #     if j + step < 12 and i - step >= 0:
-        #         gameMap_ring[j + step][i - step] += price
-        #     if j - step >= 0 and i + step < 8:
-        #         gameMap_ring[j - step][i + step] += price
-        pass
+                    if step == 0:
+                        for k in range(4):
+                            valueMap[j - step + k][i - step + k].ringWeight += adjPrice / (k + 1)
+                    if step == 3:
+                        for k in range(4):
+                            valueMap[j - step + k][i - step + k].ringWeight += adjPrice / (4 - k)
+
 
     # returns coordinate with non zero weight and free on the gameMap
     def getAvailableMoves(self, colorMap, gameMap):
