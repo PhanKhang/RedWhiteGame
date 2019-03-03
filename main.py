@@ -91,29 +91,29 @@ def correctPrinterMap(gameMap):
     print("     A  B  C  D  E  F  G  H")
 
 
-def minimax(node, depth, maxP, trace):
+def minimax(node, depth, maxP):
     if depth == 0 or node.goalState != 'go':
-        return node.wight
+        return node.weight
     if maxP:
-        node.value = -9999999
+        node.weight = -9999999
         for childnode in node.children:
-            node.weight = max(node.weight, minimax(childnode, depth -1, False, trace))
-        return node.value
+            node.weight = max(node.weight, minimax(childnode, depth - 1, False))
+        return node.weight
     else:
         node.weight = 9999999
         for childnode in node.children:
-            node.weight = min(node.weight, minimax(childnode, depth - 1, True, trace))
+            node.weight = min(node.weight, minimax(childnode, depth - 1, True))
         return node.weight
 
 
-def alphabeta(node, depth, a, b, maxP, trace):
+def alphabeta(node, depth, a, b, maxP):
     if depth == 0 or node.goalState != 'go':
         return node.weight
     if maxP:
         node.weight = -9999999
         newchildren = []
         for childnode in node.children:
-            node.weight = max(node.weight, alphabeta(childnode, depth -1, a, b, False, trace))
+            node.weight = max(node.weight, alphabeta(childnode, depth -1, a, b, False))
             a = max(a, node.weight)
             newchildren.append(childnode)
             if a >= b:
@@ -125,7 +125,7 @@ def alphabeta(node, depth, a, b, maxP, trace):
         node.weight = 9999999
         newchildren = []
         for childnode in node.children:
-            node.weight = min(node.weight, alphabeta(childnode, depth -1, a, b, True, trace))
+            node.weight = min(node.weight, alphabeta(childnode, depth -1, a, b, True))
             b = min(b, node.weight)
             newchildren.append(childnode)
             if a >= b:
@@ -186,12 +186,24 @@ def main():
                     #     targetWeight = minimax(treenode, 2, maximizing)
                     # input_var = treenode.getMove(targetWeight)
 
-                    naiveNode = Naivenode(2, 1, newGameMap, k, validator, party, trace)
+                    naiveNode = Naivenode(2, 1, newGameMap, k, validator, party, True)
                     if pruning == 1:
-                        targetWeight = alphabeta(naiveNode, 2 -9999999, 9999999, maximizing)
+                        targetWeight = alphabeta(naiveNode, 2, -9999999, 9999999, maximizing)
                     else:
-                        targetWeight = minimax(naiveNode, 2, -999999, 9999999, maximizing)
+                        targetWeight = minimax(naiveNode, 2, maximizing)
                     input_var = naiveNode.getMove(targetWeight)
+
+                    if trace:
+                        f = open("trace.txt", "a")
+                        f.write(str(naiveNode.getECalls())+'\n')
+                        l3 = naiveNode.getL3value(1, targetWeight)
+                        f.write(str(l3)+'\n')
+                        f.write('\n')
+                        l2vals = naiveNode.getL2values()
+                        for val in l2vals:
+                            f.write(str(val)+'\n')
+                        f.write('\n')
+                        f.close()
 
                     print("computer move: " + input_var)
                 else:
@@ -215,29 +227,29 @@ def main():
         # print(validator.coordinateToRotation)
         appraiser.appraise(move, valueMap, gameMap)
 
-        if (k + choice) % 2 == 0:
-            print("Score for Colors: ")
-            print(appraiser.getScoreColors())
-        else:
-            print("Score for Dots: ")
-            print(appraiser.getScoreDots())
+        # if (k + choice) % 2 == 0:
+        #     print("Score for Colors: ")
+        #     print(appraiser.getScoreColors())
+        # else:
+        #     print("Score for Dots: ")
+        #     print(appraiser.getScoreDots())
 
         tmp = {}
-        print("Red map")
-        # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
-        correctPrinter(appraiser.getRedMap(valueMap))
-
-        print("White map")
-        # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
-        correctPrinter(appraiser.getWhiteMap(valueMap))
-
-        print("Ring map")
-        # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
-        correctPrinter(appraiser.getRingMap(valueMap))
-
-        print("Dot map")
-        # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
-        correctPrinter(appraiser.getDotMap(valueMap))
+        # print("Red map")
+        # # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
+        # correctPrinter(appraiser.getRedMap(valueMap))
+        #
+        # print("White map")
+        # # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
+        # correctPrinter(appraiser.getWhiteMap(valueMap))
+        #
+        # print("Ring map")
+        # # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
+        # correctPrinter(appraiser.getRingMap(valueMap))
+        #
+        # print("Dot map")
+        # # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
+        # correctPrinter(appraiser.getDotMap(valueMap))
 
         result = validator.victoryCheck((k + choice) % 2, gameMap)
 

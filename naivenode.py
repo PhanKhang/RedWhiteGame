@@ -131,9 +131,6 @@ class Naivenode:
         self.weight = getOwnWeight(self.gameMap)
 
 
-
-
-
         # here we detect if it's a goal state
         # would reuse victoryCheck, but need to refactor it a bit
         self.goalState = self.validator.victoryCheck(party, gameMap)
@@ -168,11 +165,9 @@ class Naivenode:
             populateChildren(self.candidates)
 
     def getMove(self, weight):
-        nextMove = self.children[0]
         for node in self.children:
-            if nextMove.weight == weight:
-                nextMove = node
-        return nextMove.rawMove
+            if node.weight == weight:
+                return node.rawMove
 
     def getECalls(self):
         result = 0
@@ -185,7 +180,8 @@ class Naivenode:
             if child.weight == weight:
                 if level == 2:
                     return child.weight
-                child.getL3value(level+1, weight)
+                else:
+                    return child.getL3value(level+1, weight)
 
     def getL2values(self):
         values = []
