@@ -25,8 +25,9 @@ class Candidate:
 
 
 class Treenode:
-    def __init__(self, depth, valueMap, gameMap, moveNum, validator, party):
+    def __init__(self, depth, level, valueMap, gameMap, moveNum, validator, party, trace):
         self.depth = depth
+        self.level = level
         self.gameMap = gameMap
         self.valueMap = valueMap
         self.children = []
@@ -35,6 +36,8 @@ class Treenode:
         self.party = party
         self.rawMove = ''
         self.coef = 0.8
+        self.trace = trace
+        self.eCalls = 0
 
         def getRecycleCandidateScore(i1, j1, i2, j2, party):
             score = 0
@@ -192,6 +195,8 @@ class Treenode:
 
         self.goalState = self.validator.victoryCheck(party, gameMap)
         self.weight = getOwnWeight(self.valueMap)
+
+
         if self.goalState == 'color wins' and party == 0:
             self.weight *= 10
         elif self.goalState == 'dots wins' and party == 1:
@@ -214,7 +219,10 @@ class Treenode:
                 newparty = 0
                 if self.party == 0:
                     newparty = 1
-                childNode = Treenode(depth - 1, newValueMap, newGameMap, moveNum + 1, newValidator, newparty)
+
+                if self.trace and self.level == 2:
+                    self.eCalls +=1
+                childNode = Treenode(depth - 1, level + 1, newValueMap, newGameMap, moveNum + 1, newValidator, newparty, trace)
                 childNode.rawMove = moveString
                 self.children.append(childNode)
 
@@ -225,9 +233,13 @@ class Treenode:
         if self.depth > 0 and self.goalState == 'go':
             populateChildren(self.candidates)
 
-    def getMove(self):
+        if self.trace and self.level == 2:
+            open("trace.txt", "a").write(self.eCalls)
+
+
+    def getMove(self, weight):
         nextMove = self.children[0]
         for node in self.children:
-            if nextMove.weight < node.weight:
+            if nextMove.weight == weight:
                 nextMove = node
         return nextMove.rawMove

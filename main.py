@@ -6,6 +6,7 @@ from appraiser import Appraiser
 from placer import Placer
 from cell import Cell
 from treenode import Treenode
+
 import copy
 
 # game map
@@ -90,14 +91,29 @@ def correctPrinterMap(gameMap):
     print("     A  B  C  D  E  F  G  H")
 
 
-def alphabeta(node, depth, a, b, maxP):
+def minimax(node, depth, maxP, trace):
+    if depth == 0 or node.goalState != 'go':
+        return node.wight
+    if maxP:
+        node.value = -9999999
+        for childnode in node.children:
+            node.weight = max(node.weight, minimax(childnode, depth -1, False, trace))
+        return node.value
+    else:
+        node.weight = 9999999
+        for childnode in node.children:
+            node.weight = min(node.weight, minimax(childnode, depth - 1, True, trace))
+        return node.weight
+
+
+def alphabeta(node, depth, a, b, maxP, trace):
     if depth == 0 or node.goalState != 'go':
         return node.weight
     if maxP:
         node.weight = -9999999
         newchildren = []
         for childnode in node.children:
-            node.weight = max(node.weight, alphabeta(childnode, depth -1, a, b, False))
+            node.weight = max(node.weight, alphabeta(childnode, depth -1, a, b, False, trace))
             a = max(a, node.weight)
             newchildren.append(childnode)
             if a >= b:
@@ -109,7 +125,7 @@ def alphabeta(node, depth, a, b, maxP):
         node.weight = 9999999
         newchildren = []
         for childnode in node.children:
-            node.weight = min(node.weight, alphabeta(childnode, depth -1, a, b, True))
+            node.weight = min(node.weight, alphabeta(childnode, depth -1, a, b, True, trace))
             b = min(b, node.weight)
             newchildren.append(childnode)
             if a >= b:
@@ -150,30 +166,43 @@ def main():
             print("Turn " + str(k) + " Player 2" + " playing with dots")
             party = 0
 
+        maximizing = True
+        if party == 1:
+            maximizing = False
+
         while not legal:
             movok = False
             while not movok:
+
                 newValueMap = copy.copy(valueMap)
                 newGameMap = copy.copy(gameMap)
-                input_var = ''
+
                 if (k%2==1 and computer == 1) or (k%2 == 0 and computer == 2):
-                    treenode = Treenode(4, newValueMap, newGameMap, k, validator, party)
+
+                    treenode = Treenode(2, 1, newValueMap, newGameMap, k, validator, party)
                     if pruning == 1:
-                        alphabeta(treenode, 2,  -9999999, 9999999, True)
-                    if treenode.getMove() == "0 7 F 2":
-                        print("gotcha")
-                    input_var = treenode.getMove()
+                        targetWeight = alphabeta(treenode, 2,  -9999999, 9999999, maximizing)
+                    else:
+                        targetWeight = minimax(treenode, 2, maximizing)
+                    input_var = treenode.getMove(targetWeight)
+
+                    # naiveNode = Naivenode(2, 1, newGameMap, k, validator, party, trace)
+                    # if pruning == 1:
+                    #     targetWeight = alphabeta(naiveNode, 2 -9999999, 9999999, maximizing)
+                    # else:
+                    #     targetWeight = minimax(naiveNode, 2, -999999, 9999999, maximizing)
+                    # input_var = naiveNode.getMove(targetWeight)
+
                     print("computer move: " + input_var)
                 else:
                     input_var = input()
 
-                #print("Recommended move: " + treenode.getMove())
-                # print(input_var)
                 try:
                     move = Move(input_var)
                     movok = True
                 except:
                     print("unable to parse the move, try again")
+
             if k <= 24 and move.type == 0:
                 legal = placer.place(move, validator, gameMap)
             elif k > 24 and move.type == 1:
