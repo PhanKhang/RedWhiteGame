@@ -108,9 +108,27 @@ class Naivenode:
 
         self.candidates = getCandidates()
 
+        # krasnyCherny - 1
+        # beluyKolco - 2
+        # krasnyKolco - 3
+        # beluyChernuy - 4
+
         # Naive heuristic implementation call here
-        # def getOwnWeight(valueMap):
-        # self.weight = getOwnWeight(self.valueMap)
+        def getOwnWeight(gameMap):
+            e = 0
+            for i in range(8):
+                for j in range(12):
+                    if gameMap[j][i] == 2:
+                        e += (j + 1) * 10 + (i + 1)
+                    elif gameMap[j][i] == 4:
+                        e += ((j + 1) * 10 + (i + 1)) * 3
+                    elif gameMap[j][i] == 1:
+                        e -= ((j + 1) * 10 + (i + 1)) * 2
+                    elif gameMap[j][i] == 3:
+                        e -= ((j + 1) * 10 + (i + 1)) * 1.5
+            return e
+
+        self.weight = getOwnWeight(self.gameMap)
 
 
 
