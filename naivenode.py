@@ -127,7 +127,7 @@ class Naivenode:
                     elif gameMap[j][i] == 3:
                         e -= ((j + 1) * 10 + (i + 1)) * 1.5
             return e
-        
+
         self.weight = getOwnWeight(self.gameMap)
 
         # here we detect if it's a goal state
