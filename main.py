@@ -157,7 +157,7 @@ def main():
                 newGameMap = copy.copy(gameMap)
                 input_var = ''
                 if (k%2==1 and computer == 1) or (k%2 == 0 and computer == 2):
-                    treenode = Treenode(4, newValueMap, newGameMap, k, validator, party, 0)
+                    treenode = Treenode(4, newValueMap, newGameMap, k, validator, party)
                     if pruning == 1:
                         alphabeta(treenode, 2,  -9999999, 9999999, True)
                     if treenode.getMove() == "0 7 F 2":
