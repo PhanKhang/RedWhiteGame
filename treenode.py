@@ -188,6 +188,7 @@ class Treenode:
         def getOwnWeight(valueMap, gameMap):
             return Appraiser().getScore(valueMap, gameMap) - weightParent
 
+
         self.goalState = self.validator.victoryCheck(party, gameMap)
         self.weight = getOwnWeight(self.valueMap, self.gameMap)
         if self.goalState == 'color wins' and party == 0:
