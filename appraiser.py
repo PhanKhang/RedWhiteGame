@@ -31,11 +31,6 @@ class Appraiser:
 
     targetList = []
 
-    previousDotsWeight = 0
-    currentDotsWeight = 0
-    previousColorWeight = 0
-    currentColorWeight = 0
-
     # appraise how how card will affect gameMap
     def appraise(self, move, valueMap, gameMap):
         i = int(move.targetCoordinateLet) - 1
@@ -73,11 +68,7 @@ class Appraiser:
         if gameMap[j1][i1] in self.ring:
             self.appraise_ring(i1, j1, valueMap, gameMap)
 
-        self.currentColorWeight = max(self.getAvailableMoves(self.getRedMap(valueMap), gameMap),
-                                      self.getAvailableMoves(self.getWhiteMap(valueMap), gameMap))
 
-        self.currentDotsWeight = max(self.getAvailableMoves(self.getRingMap(valueMap), gameMap),
-                                     self.getAvailableMoves(self.getDotMap(valueMap), gameMap))
 
         # self.targetList.clear()
         # for j in range(12):
@@ -544,17 +535,13 @@ class Appraiser:
                 Matrix[j][i] = valueMap[j][i].ringWeight
         return Matrix
 
-    def getScoreDots(self):
-        diff = (self.currentDotsWeight - self.previousDotsWeight) - (self.currentColorWeight - self.previousColorWeight)
-        self.previousColorWeight = self.currentColorWeight
-        self.previousDotsWeight = self.currentDotsWeight
-        return diff
+    def getScore(self, valueMap, gameMap):
+        currentColorWeight = max(self.getAvailableMoves(self.getRedMap(valueMap), gameMap),
+                                 self.getAvailableMoves(self.getWhiteMap(valueMap), gameMap))
 
-    def getScoreColors(self):
-        diff = (self.currentColorWeight - self.previousColorWeight) - (self.currentDotsWeight - self.previousDotsWeight)
-        self.previousColorWeight = self.currentColorWeight
-        self.previousDotsWeight = self.currentDotsWeight
-        return diff
+        currentDotsWeight = max(self.getAvailableMoves(self.getRingMap(valueMap), gameMap),
+                                self.getAvailableMoves(self.getDotMap(valueMap), gameMap))
+        return currentDotsWeight - currentColorWeight
 
     def getAvgColors(self, valueMap):
         count = 0
