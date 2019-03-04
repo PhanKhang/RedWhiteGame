@@ -224,9 +224,9 @@ class Treenode:
         if self.depth > 0 and self.goalState == 'go':
             populateChildren(self.candidates)
 
-    def getMove(self):
-        nextMove = self.children[0]
+
+    def getMove(self, weight):
         for node in self.children:
-            if nextMove.weight < node.weight:
-                nextMove = node
-        return nextMove.rawMove
+            if node.weight == weight:
+                return node.rawMove
+

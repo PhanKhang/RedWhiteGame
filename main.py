@@ -64,7 +64,7 @@ def correctPrinter(gameMap):
     for row_label, row in zip(row_labels, numpy.flipud(gameMap)):
         print('%s [%s]' % (row_label, ' '.join('%04s' % int(i) for i in row)))
 
-
+git
 def correctPrinterMapL(gameMap):
     ENDC = '\033[2m'
     print("     A  B  C  D  E  F  G  H")
@@ -90,6 +90,19 @@ def correctPrinterMap(gameMap):
         print(s, ENDC)
     print("     A  B  C  D  E  F  G  H")
 
+def minimax(node, depth, maxP):
+    if depth == 0 or node.goalState != 'go':
+        return node.weight
+    if maxP:
+        node.weight = -9999999
+        for childnode in node.children:
+            node.weight = max(node.weight, minimax(childnode, depth - 1, False))
+        return node.weight
+    else:
+        node.weight = 9999999
+        for childnode in node.children:
+            node.weight = min(node.weight, minimax(childnode, depth - 1, True))
+        return node.weight
 
 def alphabeta(node, depth, a, b, maxP):
     if depth == 0 or node.goalState != 'go':
@@ -155,6 +168,10 @@ def main():
             print("Turn " + str(k) + " Player 2" + " playing with dots")
             party = 0
 
+        maximizing = True
+        if party == 1:
+            maximizing = False
+
         while not legal:
             movok = False
             while not movok:
@@ -162,12 +179,22 @@ def main():
                 newGameMap = copy.copy(gameMap)
                 input_var = ''
                 if (k % 2 == 1 and computer == 1) or (k % 2 == 0 and computer == 2):
+
+                    # treenode = Treenode(2, 1, newValueMap, newGameMap, k, validator, party)
+                    # if pruning == 1:
+                    #     targetWeight = alphabeta(treenode, 2,  -9999999, 9999999, maximizing)
+                    # else:
+                    #     targetWeight = minimax(treenode, 2, maximizing)
+                    # input_var = treenode.getMove(targetWeight)
+
                     treenode = Treenode(4, newValueMap, newGameMap, k, validator, party, 0)
                     if pruning == 1:
-                        alphabeta(treenode, 2, -9999999, 9999999, True)
-                    if treenode.getMove() == "0 7 F 2":
-                        print("gotcha")
-                    input_var = treenode.getMove()
+                        targetWeight = alphabeta(treenode, 2, -9999999, 9999999, maximizing)
+                    else:
+                        targetWeight = minimax(treenode, 2, maximizing)
+
+
+                    input_var = treenode.getMove(targetWeight)
                     print("computer move: " + input_var)
                 else:
                     input_var = input()
