@@ -48,7 +48,8 @@ class Validator:
                             print(numpy.flipud(gameMap))
                             return False
                 else:
-                    print("Not free")
+                    print("Not free"+ str(i) + ' ' + str(j) + ' ' + str(rotation))
+                    print(numpy.flipud(gameMap))
                     return False
             else:
                 print("Out of border")
@@ -63,9 +64,11 @@ class Validator:
                             return True
                         else:
                             print("No support: " + str(i) + ' ' + str(j) + ' ' + str(rotation))
+                            print(numpy.flipud(gameMap))
                             return False
                 else:
-                    print("Not free")
+                    print("Not free" + str(i) + ' ' + str(j) + ' ' + str(rotation))
+                    print(numpy.flipud(gameMap))
                     return False
             else:
                 print("Out of border")
@@ -121,9 +124,7 @@ class Validator:
             rotation = self.coordinateToRotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 0)
             if rotation == 0:
                 rotation = self.coordinateToRotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
-                print(rotation)
             if rotation == 0:
-                print(rotation)
                 return False
             # find if 2 coordinates are of the same card
             if int(rotation) % 2 == 0:
