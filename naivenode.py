@@ -86,13 +86,14 @@ class Naivenode:
         def getCandidates():
             candidates = []
             pickCandidates = []
-            putCandidates = getPutCandidates(gameMap)
+            putCandidates = []
 
-            for putCandidate in putCandidates:
-                move = '0 ' + putCandidate.move
-                candidates.append(Candidate(move))
-
-            if moveNum > 2:
+            if moveNum < 2:
+                putCandidates = getPutCandidates(gameMap)
+                for putCandidate in putCandidates:
+                    move = '0 ' + putCandidate.move
+                    candidates.append(Candidate(move))
+            else:
                 size = 0
                 for i in range(12):
                     for j in range(8):
