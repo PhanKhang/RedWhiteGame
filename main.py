@@ -93,14 +93,16 @@ def correctPrinterMap(gameMap):
 
 def minimax(node, depth, maxP):
     if depth == 0 or node.goalState != 'go':
-        return node.weight
+        return node.getOwnWeight()
     if maxP:
         node.weight = -9999999
+        node.populateChildren()
         for childnode in node.children:
             node.weight = max(node.weight, minimax(childnode, depth - 1, False))
         return node.weight
     else:
         node.weight = 9999999
+        node.populateChildren()
         for childnode in node.children:
             node.weight = min(node.weight, minimax(childnode, depth - 1, True))
         return node.weight
@@ -108,12 +110,13 @@ def minimax(node, depth, maxP):
 
 def alphabeta(node, depth, a, b, maxP):
     if depth == 0 or node.goalState != 'go':
-        return node.weight
+        return node.getOwnWeight()
     if maxP:
         node.weight = -9999999
         newchildren = []
+        node.populateChildren()
         for childnode in node.children:
-            node.weight = max(node.weight, alphabeta(childnode, depth -1, a, b, False))
+            node.weight = max(node.weight, alphabeta(childnode, depth -1, a, b, False, ))
             a = max(a, node.weight)
             newchildren.append(childnode)
             if a >= b:
@@ -124,6 +127,7 @@ def alphabeta(node, depth, a, b, maxP):
     else:
         node.weight = 9999999
         newchildren = []
+        node.populateChildren()
         for childnode in node.children:
             node.weight = min(node.weight, alphabeta(childnode, depth -1, a, b, True))
             b = min(b, node.weight)
@@ -186,7 +190,7 @@ def main():
                     #     targetWeight = minimax(treenode, 2, maximizing)
                     # input_var = treenode.getMove(targetWeight)
 
-                    naiveNode = Naivenode(2, 1, newGameMap, k, validator, party, True)
+                    naiveNode = Naivenode(2, 1, newGameMap, k, validator, party, True, None)
                     if pruning == 1:
                         targetWeight = alphabeta(naiveNode, 2, -9999999, 9999999, maximizing)
                     else:

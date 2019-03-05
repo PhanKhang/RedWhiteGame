@@ -20,7 +20,7 @@ class Candidate:
 
 
 class Naivenode:
-    def __init__(self, depth, level, gameMap, moveNum, validator, party, trace):
+    def __init__(self, depth, level, gameMap, moveNum, validator, party, trace, parent):
         self.depth = depth
         self.level = level
         self.gameMap = gameMap
@@ -31,6 +31,7 @@ class Naivenode:
         self.rawMove = ''
         self.trace = trace
         self.eCalls = 0
+        self.parent = parent
 
         def toPut(i, j):
             subCandidates = []
@@ -114,21 +115,11 @@ class Naivenode:
         # beluyChernuy - 4
 
         # Naive heuristic implementation call here
-        def getOwnWeight(gameMap):
-            e = 0
-            for i in range(8):
-                for j in range(12):
-                    if gameMap[j][i] == 2:
-                        e += (j + 1) * 10 + (i + 1)
-                    elif gameMap[j][i] == 4:
-                        e += ((j + 1) * 10 + (i + 1)) * 3
-                    elif gameMap[j][i] == 1:
-                        e -= ((j + 1) * 10 + (i + 1)) * 2
-                    elif gameMap[j][i] == 3:
-                        e -= ((j + 1) * 10 + (i + 1)) * 1.5
-            return e
 
-        self.weight = getOwnWeight(self.gameMap)
+
+
+        self.weight = 0
+
 
 
         # here we detect if it's a goal state
@@ -140,29 +131,44 @@ class Naivenode:
         elif self.goalState == 'dots wins' and party == 1:
             self.weight *= 10
 
-        def childcreator(moveString):
-            move = Move(moveString)
-            # print(moveString)
-            if self.validator.placeValidator(move, gameMap):
-                newGameMap = copy.copy(self.gameMap)
-                newValidator = copy.copy(self.validator)
-                Nonvalidatedplacer().place(move, newValidator, newGameMap)
-                newparty = 0
-                if self.party == 0:
-                    newparty = 1
-                if self.trace and self.level == 2:
-                    self.eCalls += 1
-                childNode = Naivenode(depth - 1, level + 1, newGameMap, moveNum + 1, newValidator, newparty,
-                                      trace)
-                childNode.rawMove = moveString
-                self.children.append(childNode)
+    def childcreator(self, moveString):
+        move = Move(moveString)
+        # print(moveString)
+        if self.validator.placeValidator(move, self.gameMap):
+            newGameMap = copy.copy(self.gameMap)
+            newValidator = copy.copy(self.validator)
+            Nonvalidatedplacer().place(move, newValidator, newGameMap)
+            newparty = 0
+            if self.party == 0:
+                newparty = 1
+            childNode = Naivenode(self.depth - 1, self.level + 1, newGameMap, self.moveNum + 1, newValidator, newparty,
+                                  self.trace, self)
+            childNode.rawMove = moveString
+            self.children.append(childNode)
 
-        def populateChildren(candidates):
-            for candidate in candidates:
-                childcreator(candidate.move)
 
-        if self.depth > 0 and self.goalState == 'go':
-            populateChildren(self.candidates)
+    def populateChildren(self):
+            for candidate in self.candidates:
+                self.childcreator(candidate.move)
+
+
+    def getOwnWeight(self):
+        e = 0
+        if self.trace and self.level == 3:
+            self.parent.eCalls += 1
+        for i in range(8):
+            for j in range(12):
+                if self.gameMap[j][i] == 2:
+                    e += (j + 1) * 10 + (i + 1)
+                elif self.gameMap[j][i] == 4:
+                    e += ((j + 1) * 10 + (i + 1)) * 3
+                elif self.gameMap[j][i] == 1:
+                    e -= ((j + 1) * 10 + (i + 1)) * 2
+                elif self.gameMap[j][i] == 3:
+                    e -= ((j + 1) * 10 + (i + 1)) * 1.5
+        self.weight = e
+        return self.weight
+
 
     def getMove(self, weight):
         for node in self.children:
