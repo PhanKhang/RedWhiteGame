@@ -64,8 +64,8 @@ class Naivenode:
                 if secondCardPart != 'none':
                     i2 = secondCardPart.split(":")[0]
                     j2 = secondCardPart.split(":")[1]
-                    if (i == i2) and (j + 1 == j2):
-                        return Candidate(str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1) + str(
+                    if (i == int(i2)) and (j + 1 == int(j2)):
+                        return Candidate(str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1) + ' ' + str(
                             numbToLetter.get(int(j2))) + ' ' + str(int(i2) + 1))
             return 'none'
 
@@ -87,7 +87,7 @@ class Naivenode:
                 move = '0 ' + putCandidate.move
                 candidates.append(Candidate(move))
 
-            if moveNum > 24:
+            if moveNum > 2:
                 size = 0
                 for i in range(12):
                     for j in range(8):
@@ -97,14 +97,12 @@ class Naivenode:
                             size += 1
                         if size == 7:
                             break
+
                 for pickCandidate in pickCandidates:
                     for putCandidate in putCandidates:
-                        if (putCandidate.move.split(" ")[1] != pickCandidate.move.split(" ")[0] and
-                            putCandidate.move.split(" ")[2] != pickCandidate.move.split(" ")[1]) \
-                                or (putCandidate.move.split(" ")[1] != pickCandidate.move.split(" ")[2] and
-                                    putCandidate.move.split(" ")[2] != pickCandidate.move.split(" ")[3]):
+                        if (putCandidate.move.split(" ")[1] != pickCandidate.move.split(" ")[0]) and (putCandidate.move.split(" ")[1] != pickCandidate.move.split(" ")[2]):
                             move = pickCandidate.move + ' ' + putCandidate.move
-                            candidates.append(move)
+                            candidates.append(Candidate(move))
             return candidates
 
         self.candidates = getCandidates()
@@ -116,11 +114,7 @@ class Naivenode:
 
         # Naive heuristic implementation call here
 
-
-
         self.weight = 0
-
-
 
         # here we detect if it's a goal state
         # would reuse victoryCheck, but need to refactor it a bit
@@ -146,11 +140,9 @@ class Naivenode:
             childNode.rawMove = moveString
             self.children.append(childNode)
 
-
     def populateChildren(self):
-            for candidate in self.candidates:
-                self.childcreator(candidate.move)
-
+        for candidate in self.candidates:
+            self.childcreator(candidate.move)
 
     def getOwnWeight(self):
         e = 0
@@ -169,7 +161,6 @@ class Naivenode:
         self.weight = e
         return self.weight
 
-
     def getMove(self, weight):
         for node in self.children:
             if node.weight == weight:
@@ -187,11 +178,10 @@ class Naivenode:
                 if level == 2:
                     return child.weight
                 else:
-                    return child.getL3value(level+1, weight)
+                    return child.getL3value(level + 1, weight)
 
     def getL2values(self):
         values = []
         for child in self.children:
             values.append(child.weight)
         return values
-
