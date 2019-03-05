@@ -33,7 +33,7 @@ class Naivenode:
         self.eCalls = 0
         self.parent = parent
 
-        def toPut(i, j):
+        def toPut(i, j, gameMap):
             subCandidates = []
             if (i == 0 and gameMap[i][j] == 0) or (i < 11 and gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
                 for position in [2, 6, 4, 8]:
@@ -54,9 +54,9 @@ class Naivenode:
                 if secondCardPart != 'none':
                     i2 = secondCardPart.split(":")[0]
                     j2 = secondCardPart.split(":")[1]
-                    if (i == i2 and j == j2):
+                    if (i == int(i2) and j == int(j2)):
                         return Candidate(
-                            str(numbToLetter.get(int(j))) + ' ' + str(i) + str(numbToLetter.get(int(j2))) + ' ' + str(
+                            str(numbToLetter.get(int(j))) + ' ' + str(i) + ' ' + str(numbToLetter.get(int(j2))) + ' ' + str(
                                 int(i2) + 1))
             if (j < 7 and i < 11 and gameMap[i][j] != 0 and gameMap[i][j + 1] != 0 and gameMap[i + 1][j] == 0 and
                 gameMap[i + 1][j + 1] == 0) or (j < 7 and i == 11 and gameMap[i][j] != 0 and gameMap[i][j + 1] != 0):
@@ -69,19 +69,23 @@ class Naivenode:
                             numbToLetter.get(int(j2))) + ' ' + str(int(i2) + 1))
             return 'none'
 
-        def getCandidates():
-            candidates = []
-            putCandidates = []
-            pickCandidates = []
+        def getPutCandidates(gameMap):
             size = 0
+            putCandidates = []
             for i in range(12):
                 for j in range(8):
-                    putCandidate = toPut(i, j)
+                    putCandidate = toPut(i, j, gameMap)
                     if putCandidate != 'none':
                         putCandidates += putCandidate
                         size += 1
                     if size == 14:
                         break
+            return putCandidates
+
+        def getCandidates():
+            candidates = []
+            pickCandidates = []
+            putCandidates = getPutCandidates(gameMap)
 
             for putCandidate in putCandidates:
                 move = '0 ' + putCandidate.move
@@ -93,14 +97,24 @@ class Naivenode:
                     for j in range(8):
                         pickCandidate = toPick(i, j)
                         if pickCandidate != 'none':
-                            pickCandidates.append(pickCandidate)
-                            size += 1
+                            i1 = int(pickCandidate.move.split(" ")[1])
+                            j1 = int(validator.letterToNumb.get(pickCandidate.move.split(" ")[0]))
+                            if not (j1 == validator.lastMove.targetCoordinateLet and i1 == validator.lastMove.targetCoordinateNum):
+                                pickCandidates.append(pickCandidate)
+                                size += 1
                         if size == 7:
                             break
-
                 for pickCandidate in pickCandidates:
-                    for putCandidate in putCandidates:
-                        if (putCandidate.move.split(" ")[1] != pickCandidate.move.split(" ")[0]) and (putCandidate.move.split(" ")[1] != pickCandidate.move.split(" ")[2]):
+                    pickGameMap = copy.copy(gameMap)
+                    i1 = int(pickCandidate.move.split(" ")[1])
+                    j1 = int(validator.letterToNumb.get(pickCandidate.move.split(" ")[0]))
+                    i2 = int(pickCandidate.move.split(" ")[3])
+                    j2 = int(validator.letterToNumb.get(pickCandidate.move.split(" ")[2]))
+                    pickGameMap[i1-1][j1-1] = 0
+                    pickGameMap[i2-1][j2-1] = 0
+                    pickPutCandidates = getPutCandidates(pickGameMap)
+                    for putCandidate in pickPutCandidates:
+                        if not (int(validator.coordinateToRotation.get(numbToLetter.get(j1-1) + str(i1))) == int(putCandidate.move.split(" ")[0]) and pickCandidate.move.split(" ")[0] == putCandidate.move.split(" ")[1] and pickCandidate.move.split(" ")[1] == putCandidate.move.split(" ")[2]):
                             move = pickCandidate.move + ' ' + putCandidate.move
                             candidates.append(Candidate(move))
             return candidates
