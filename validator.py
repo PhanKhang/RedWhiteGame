@@ -1,8 +1,6 @@
 import numpy
 class Validator:
     def __init__(self):
-        self.coordinateToRotation = {}
-
         self.letterToNumb = {
             "A": 1,
             "B": 2,
@@ -18,8 +16,8 @@ class Validator:
 
     lastMove = None
 
-    def getListOfItems(self):
-        return self.coordinateToRotation
+    # def getListOfItems(self):
+    #     return coordinateToRotation
 
     # parse the move and check if the card can be placed
     def placeValidator(self, move, gameMap):
@@ -30,11 +28,11 @@ class Validator:
             self.lastMove = move
             return True
 
-    def validateMove(self, move, gameMap):
+    def validateMove(self, move, gameMap, coordinateToRotation):
         if move.type == 0:
             return self.placeValidator(move, gameMap)
         else:
-            return self.recycleValidatorWithCardRemoval(move, gameMap)
+            return self.recycleValidatorWithCardRemoval(move, gameMap, coordinateToRotation)
 
     # Checks:
     # 1) if card within the board's boundaries
@@ -107,8 +105,8 @@ class Validator:
     # Checks recycle move:
     # 1) checks card integrity by coordinates
     # 2) checks if there is no other cards above the given one
-    def getCard(self, i, j):
-        rotation = self.coordinateToRotation.get(self.numbToLetter.get(j + 1) + str(i + 1), 0)
+    def getCard(self, i, j, coordinateToRotation):
+        rotation = coordinateToRotation.get(self.numbToLetter.get(j + 1) + str(i + 1), 0)
         if rotation != 0:
             if int(rotation) % 2 == 0:
                 return str(i+1)+":"+str(j)
@@ -117,7 +115,7 @@ class Validator:
         else:
             return "none"
 
-    def recycleValidator(self, move, gameMap):
+    def recycleValidator(self, move, gameMap, coordinateToRotation):
         if self.isNotLastMove(move):
             i1 = move.sourceCoordinate1Let - 1
             j1 = int(move.sourceCoordinate1Num) - 1
@@ -125,12 +123,18 @@ class Validator:
             i2 = move.sourceCoordinate2Let - 1
             j2 = int(move.sourceCoordinate2Num) - 1
 
-            # get the sored rotation of the card to validate the card integrity holds
-            rotation = self.coordinateToRotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 0)
-            if rotation == 0:
-                rotation = self.coordinateToRotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
-            if rotation == 0:
+            if gameMap[j1][i1] == 0 or gameMap[j2][i2] == 0:
+                print("Tried on empty")
                 return False
+
+            # get the sored rotation of the card to validate the card integrity holds
+            rotation = coordinateToRotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 0)
+            if rotation == 0:
+                rotation = coordinateToRotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
+            if rotation == 0:
+                print("not found")
+                return False
+
             # find if 2 coordinates are of the same card
             if int(rotation) % 2 == 0:
                 if i1 == i2 and abs(j1 - j2) == 1 and self.lookUpValidatorVertical(i2, j2, gameMap):
@@ -144,11 +148,11 @@ class Validator:
                             and rotation == move.rotation:
                         return False
                     return True
-        print("Was the last move: " + str(move.targetCoordinateNum) + " " + str(move.targetCoordinateLet) + " "
-              + str(move.rotation))
+        print("Was the last move: " + str(self.lastMove.targetCoordinateNum) + " " + str(self.lastMove.targetCoordinateLet) + " "
+              + str(self.lastMove.rotation))
         return False
 
-    def recycleValidatorWithCardRemoval(self, move, gameMap):
+    def recycleValidatorWithCardRemoval(self, move, gameMap, coordinateToRotation):
         if self.isNotLastMove(move):
             i1 = move.sourceCoordinate1Let - 1
             j1 = int(move.sourceCoordinate1Num) - 1
@@ -157,9 +161,9 @@ class Validator:
             j2 = int(move.sourceCoordinate2Num) - 1
 
             # get the sored rotation of the card to validate the card integrity holds
-            rotation = self.coordinateToRotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 0)
+            rotation = coordinateToRotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 0)
             if rotation == 0:
-                rotation = self.coordinateToRotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
+                rotation = coordinateToRotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
             if rotation == 0:
                 return False
 

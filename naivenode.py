@@ -20,7 +20,7 @@ class Candidate:
 
 
 class Naivenode:
-    def __init__(self, depth, level, gameMap, moveNum, validator, party, trace, parent):
+    def __init__(self, depth, level, gameMap, moveNum, validator, party, trace, parent, coordinateToRotation):
         self.depth = depth
         self.level = level
         self.gameMap = gameMap
@@ -32,6 +32,7 @@ class Naivenode:
         self.trace = trace
         self.eCalls = 0
         self.parent = parent
+        self.coordinateToRotation = coordinateToRotation
 
         def toPut(i, j, gameMap):
             subCandidates = []
@@ -50,7 +51,7 @@ class Naivenode:
         def toPick(i, j):  # vertical pick
             if (0 < i < 11 and gameMap[i][j] != 0 and gameMap[i - 1][j] != 0 and gameMap[i + 1][j] == 0) or (
                     i == 11 and gameMap[i][j] != 0 and gameMap[i - 1][j] != 0):
-                secondCardPart = validator.getCard(i - 1, j)
+                secondCardPart = validator.getCard(i - 1, j, coordinateToRotation)
                 if secondCardPart != 'none':
                     i2 = secondCardPart.split(":")[0]
                     j2 = secondCardPart.split(":")[1]
@@ -61,7 +62,7 @@ class Naivenode:
             if (0 <= j < 7 and 0 <= i < 11 and gameMap[i][j] != 0 and gameMap[i][j + 1] != 0 and gameMap[i + 1][
                 j] == 0 and gameMap[i + 1][j + 1] == 0) or (j < 7 and i == 11 and gameMap[i][j] != 0
                                                             and gameMap[i][j + 1] != 0):
-                secondCardPart = validator.getCard(i, j)
+                secondCardPart = validator.getCard(i, j, coordinateToRotation)
                 if secondCardPart != 'none':
                     i2 = secondCardPart.split(":")[0]
                     j2 = secondCardPart.split(":")[1]
@@ -88,7 +89,7 @@ class Naivenode:
             pickCandidates = []
             putCandidates = []
 
-            if moveNum < 2:
+            if moveNum <= 2:
                 putCandidates = getPutCandidates(gameMap)
                 for putCandidate in putCandidates:
                     move = '0 ' + putCandidate.move
@@ -117,7 +118,7 @@ class Naivenode:
                     pickGameMap[i2 - 1][j2 - 1] = 0
                     pickPutCandidates = getPutCandidates(pickGameMap)
                     for putCandidate in pickPutCandidates:
-                        if not (int(validator.coordinateToRotation.get(numbToLetter.get(j1 - 1) + str(i1))) == int(
+                        if not (int(coordinateToRotation.get(numbToLetter.get(j1 - 1) + str(i1))) == int(
                                 putCandidate.move.split(" ")[0]) and pickCandidate.move.split(" ")[0] ==
                                 putCandidate.move.split(" ")[1] and pickCandidate.move.split(" ")[1] ==
                                 putCandidate.move.split(" ")[2]):
@@ -147,16 +148,16 @@ class Naivenode:
 
     def childcreator(self, moveString):
         move = Move(moveString)
-        # print(moveString)
-        if self.validator.validateMove(move, self.gameMap):
+        if self.validator.validateMove(move, self.gameMap, self.coordinateToRotation):
             newGameMap = copy.copy(self.gameMap)
             newValidator = copy.copy(self.validator)
-            Nonvalidatedplacer().place(move, newValidator, newGameMap)
+            newCoordinateToRotation = copy.copy(self.coordinateToRotation)
+            Nonvalidatedplacer().place(move, newValidator, newGameMap, newCoordinateToRotation)
             newparty = 0
             if self.party == 0:
                 newparty = 1
             childNode = Naivenode(self.depth - 1, self.level + 1, newGameMap, self.moveNum + 1, newValidator, newparty,
-                                  self.trace, self)
+                                  self.trace, self, newCoordinateToRotation)
             childNode.rawMove = moveString
             self.children.append(childNode)
 

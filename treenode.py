@@ -25,7 +25,7 @@ class Candidate:
 
 
 class Treenode:
-    def __init__(self, depth, level, valueMap, gameMap, moveNum, validator, party, trace):
+    def __init__(self, depth, level, valueMap, gameMap, moveNum, validator, party, trace, coordinateToRotation):
         self.depth = depth
         self.level = level
         self.gameMap = gameMap
@@ -119,7 +119,7 @@ class Treenode:
         def toPick(i, j):
             if (0 < i < 11 and gameMap[i][j] != 0 and gameMap[i - 1][j] != 0 and gameMap[i + 1][j] == 0) or (
                     i == 11 and gameMap[i][j] != 0 and gameMap[i - 1][j] != 0):
-                secondCardPart = validator.getCard(i - 1, j)
+                secondCardPart = validator.getCard(i - 1, j, coordinateToRotation)
                 if secondCardPart != 'none':
                     i2 = secondCardPart.split(":")[0]
                     j2 = secondCardPart.split(":")[1]
@@ -129,7 +129,7 @@ class Treenode:
                                 int(i2) + 1), getRecycleCandidateScore(i - 1, j, i2, j2, party))
             if (j < 7 and i < 11 and gameMap[i][j] != 0 and gameMap[i][j + 1] != 0 and gameMap[i + 1][j] == 0 and
                 gameMap[i + 1][j + 1] == 0) or (j < 7 and i == 11 and gameMap[i][j] != 0 and gameMap[i][j + 1] != 0):
-                secondCardPart = validator.getCard(i, j)
+                secondCardPart = validator.getCard(i, j, coordinateToRotation)
                 if secondCardPart != 'none':
                     i2 = secondCardPart.split(":")[0]
                     j2 = secondCardPart.split(":")[1]

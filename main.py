@@ -92,24 +92,24 @@ def correctPrinterMap(gameMap):
     print("     A  B  C  D  E  F  G  H")
 
 
-def minimax(node, depth, maxP):
+def minimax(node, depth, maxP, coordinateToRotation):
     if depth == 0 or node.goalState != 'go':
         return node.getOwnWeight()
     if maxP:
         node.weight = -9999999
         node.populateChildren()
         for childnode in node.children:
-            node.weight = max(node.weight, minimax(childnode, depth - 1, False))
+            node.weight = max(node.weight, minimax(childnode, depth - 1, False, coordinateToRotation))
         return node.weight
     else:
         node.weight = 9999999
         node.populateChildren()
         for childnode in node.children:
-            node.weight = min(node.weight, minimax(childnode, depth - 1, True))
+            node.weight = min(node.weight, minimax(childnode, depth - 1, True, coordinateToRotation))
         return node.weight
 
 
-def alphabeta(node, depth, a, b, maxP):
+def alphabeta(node, depth, a, b, maxP, coordinateToRotation):
     if depth == 0 or node.goalState != 'go':
         return node.getOwnWeight()
     if maxP:
@@ -117,7 +117,7 @@ def alphabeta(node, depth, a, b, maxP):
         newchildren = []
         node.populateChildren()
         for childnode in node.children:
-            node.weight = max(node.weight, alphabeta(childnode, depth - 1, a, b, False, ))
+            node.weight = max(node.weight, alphabeta(childnode, depth - 1, a, b, False, coordinateToRotation))
             a = max(a, node.weight)
             newchildren.append(childnode)
             if a >= b:
@@ -130,7 +130,7 @@ def alphabeta(node, depth, a, b, maxP):
         newchildren = []
         node.populateChildren()
         for childnode in node.children:
-            node.weight = min(node.weight, alphabeta(childnode, depth - 1, a, b, True))
+            node.weight = min(node.weight, alphabeta(childnode, depth - 1, a, b, True, coordinateToRotation))
             b = min(b, node.weight)
             newchildren.append(childnode)
             if a >= b:
@@ -141,6 +141,7 @@ def alphabeta(node, depth, a, b, maxP):
 
 
 valueMap = [[Cell() for j in range(8)] for i in range(12)]
+coordinateToRotation = {}
 
 
 def main():
@@ -185,11 +186,11 @@ def main():
                 newGameMap = copy.copy(gameMap)
 
                 if (k % 2 == 1 and computer == 1) or (k % 2 == 0 and computer == 2):
-                    naiveNode = Naivenode(2, 1, newGameMap, k, validator, party, True, None)
+                    naiveNode = Naivenode(2, 1, newGameMap, k, validator, party, True, None, coordinateToRotation)
                     if pruning == 1:
-                        targetWeight = alphabeta(naiveNode, 2, -9999999, 9999999, maximizing)
+                        targetWeight = alphabeta(naiveNode, 2, -9999999, 9999999, maximizing, coordinateToRotation)
                     else:
-                        targetWeight = minimax(naiveNode, 2, maximizing)
+                        targetWeight = minimax(naiveNode, 2, maximizing, coordinateToRotation)
                     input_var = naiveNode.getMove(targetWeight)
 
                     if trace:
@@ -215,14 +216,15 @@ def main():
                     print("unable to parse the move, try again")
 
             if k <= 2 and move.type == 0:
-                legal = placer.place(move, validator, gameMap)
+                legal = placer.place(move, validator, gameMap, coordinateToRotation)
             elif k > 2 and move.type == 1:
-                legal = placer.place(move, validator, gameMap)
+                legal = placer.place(move, validator, gameMap, coordinateToRotation)
             if not legal:
                 print("illegal move, try again")
 
         print("Current Game field")
         correctPrinterMap(gameMap)  # change to correctPrinterMapL for letter output
+        print(coordinateToRotation)
         appraiser.appraise(move, valueMap, gameMap)
         result = validator.victoryCheck((k + choice) % 2, gameMap)
 
