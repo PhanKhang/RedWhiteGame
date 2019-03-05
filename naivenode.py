@@ -87,7 +87,7 @@ class Naivenode:
                 move = '0 ' + putCandidate.move
                 candidates.append(Candidate(move))
 
-            if moveNum > 24:
+            if moveNum > 1:
                 size = 0
                 for i in range(12):
                     for j in range(8):
