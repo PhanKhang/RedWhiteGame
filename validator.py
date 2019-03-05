@@ -48,7 +48,7 @@ class Validator:
                             print(numpy.flipud(gameMap))
                             return False
                 else:
-                    print("Not free"+ str(i) + ' ' + str(j) + ' ' + str(rotation))
+                    print("Not free" + str(i) + ' ' + str(j) + ' ' + str(rotation))
                     print(numpy.flipud(gameMap))
                     return False
             else:
