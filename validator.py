@@ -99,7 +99,7 @@ class Validator:
     # 1) checks card integrity by coordinates
     # 2) checks if there is no other cards above the given one
     def getCard(self, i, j):
-        rotation = self.coordinateToRotation.get(self.numbToLetter.get(i + 1) + str(j + 1), 0)
+        rotation = self.coordinateToRotation.get(self.numbToLetter.get(j + 1) + str(i + 1), 0)
         if rotation != 0:
             if int(rotation) % 2 == 0:
                 return str(i+1)+":"+str(j)
