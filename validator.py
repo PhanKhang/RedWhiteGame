@@ -30,6 +30,12 @@ class Validator:
             self.lastMove = move
             return True
 
+    def validateMove(self, move, gameMap):
+        if move.type == 0:
+            return self.placeValidator(move, gameMap)
+        else:
+            return self.recycleValidatorWithCardRemoval(move, gameMap)
+
     # Checks:
     # 1) if card within the board's boundaries
     # 2) if there is a ground for card
@@ -111,7 +117,6 @@ class Validator:
         else:
             return "none"
 
-
     def recycleValidator(self, move, gameMap):
         if self.isNotLastMove(move):
             i1 = move.sourceCoordinate1Let - 1
@@ -139,6 +144,76 @@ class Validator:
                             and rotation == move.rotation:
                         return False
                     return True
+        print("Was the last move: " + str(move.targetCoordinateNum) + " " + str(move.targetCoordinateLet) + " "
+              + str(move.rotation))
+        return False
+
+    def recycleValidatorWithCardRemoval(self, move, gameMap):
+        if self.isNotLastMove(move):
+            i1 = move.sourceCoordinate1Let - 1
+            j1 = int(move.sourceCoordinate1Num) - 1
+
+            i2 = move.sourceCoordinate2Let - 1
+            j2 = int(move.sourceCoordinate2Num) - 1
+
+            # get the sored rotation of the card to validate the card integrity holds
+            rotation = self.coordinateToRotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 0)
+            if rotation == 0:
+                rotation = self.coordinateToRotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
+            if rotation == 0:
+                return False
+
+            # find if 2 coordinates are of the same card
+            if int(rotation) % 2 == 0:
+                if i1 == i2 and abs(j1 - j2) == 1 and self.lookUpValidatorVertical(i2, j2, gameMap):
+                    if i1 == (move.targetCoordinateLet-1) and j1 == (move.targetCoordinateNum-1) \
+                            and rotation == move.rotation:
+                        return False
+                    old_val1 = gameMap[j1][i1]
+                    old_val2 = gameMap[j2][i2]
+
+                    gameMap[j1][i1] = 0
+                    gameMap[j2][i2] = 0
+
+                    i = move.targetCoordinateLet - 1
+                    j = int(move.targetCoordinateNum) - 1
+                    rotation = int(move.rotation)
+
+                    if self.placeValidatorCoord(i, j, rotation, gameMap):
+                        gameMap[j1][i1] = old_val1
+                        gameMap[j2][i2] = old_val2
+                        return True
+                    else:
+                        gameMap[j1][i1] = old_val1
+                        gameMap[j2][i2] = old_val2
+                        return False
+                # return True
+            else:
+                if abs(i1 - i2) == 1 and j1 == j2 and self.lookUpValidatorHorizontal(i1, j1, i2, j2, gameMap):
+                    if i1 == (move.targetCoordinateLet-1) and j1 == (move.targetCoordinateNum-1) \
+                            and rotation == move.rotation:
+                        return False
+                    old_val1 = gameMap[j1][i1]
+                    old_val2 = gameMap[j2][i2]
+
+                    gameMap[j1][i1] = 0
+                    gameMap[j2][i2] = 0
+
+                    i = move.targetCoordinateLet - 1
+                    j = int(move.targetCoordinateNum) - 1
+                    rotation = int(move.rotation)
+
+                    if self.placeValidatorCoord(i, j, rotation, gameMap):
+                        gameMap[j1][i1] = old_val1
+                        gameMap[j2][i2] = old_val2
+                        return True
+                    else:
+                        gameMap[j1][i1] = old_val1
+                        gameMap[j2][i2] = old_val2
+                        return False
+                    # return True
+        print("Was the last move: "+ str(move.targetCoordinateNum) + " " + str(move.targetCoordinateLet) + " "
+              + str(move.rotation))
         return False
 
     # correspondence of value to card

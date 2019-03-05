@@ -47,7 +47,7 @@ class Naivenode:
                         Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1)))
             return subCandidates
 
-        def toPick(i, j):
+        def toPick(i, j):  # vertical pick
             if (0 < i < 11 and gameMap[i][j] != 0 and gameMap[i - 1][j] != 0 and gameMap[i + 1][j] == 0) or (
                     i == 11 and gameMap[i][j] != 0 and gameMap[i - 1][j] != 0):
                 secondCardPart = validator.getCard(i - 1, j)
@@ -56,10 +56,11 @@ class Naivenode:
                     j2 = secondCardPart.split(":")[1]
                     if (i == int(i2) and j == int(j2)):
                         return Candidate(
-                            str(numbToLetter.get(int(j))) + ' ' + str(i) + ' ' + str(numbToLetter.get(int(j2))) + ' ' + str(
-                                int(i2) + 1))
-            if (j < 7 and i < 11 and gameMap[i][j] != 0 and gameMap[i][j + 1] != 0 and gameMap[i + 1][j] == 0 and
-                gameMap[i + 1][j + 1] == 0) or (j < 7 and i == 11 and gameMap[i][j] != 0 and gameMap[i][j + 1] != 0):
+                            str(numbToLetter.get(int(j))) + ' ' + str(i) + ' ' + str(numbToLetter.get(int(j2))) + ' '
+                            + str(int(i2) + 1))
+            if (0 <= j < 7 and 0 <= i < 11 and gameMap[i][j] != 0 and gameMap[i][j + 1] != 0 and gameMap[i + 1][
+                j] == 0 and gameMap[i + 1][j + 1] == 0) or (j < 7 and i == 11 and gameMap[i][j] != 0
+                                                            and gameMap[i][j + 1] != 0):
                 secondCardPart = validator.getCard(i, j)
                 if secondCardPart != 'none':
                     i2 = secondCardPart.split(":")[0]
@@ -99,7 +100,8 @@ class Naivenode:
                         if pickCandidate != 'none':
                             i1 = int(pickCandidate.move.split(" ")[1])
                             j1 = int(validator.letterToNumb.get(pickCandidate.move.split(" ")[0]))
-                            if not (j1 == validator.lastMove.targetCoordinateLet and i1 == validator.lastMove.targetCoordinateNum):
+                            if not (
+                                    j1 == validator.lastMove.targetCoordinateLet and i1 == validator.lastMove.targetCoordinateNum):
                                 pickCandidates.append(pickCandidate)
                                 size += 1
                         if size == 7:
@@ -110,11 +112,14 @@ class Naivenode:
                     j1 = int(validator.letterToNumb.get(pickCandidate.move.split(" ")[0]))
                     i2 = int(pickCandidate.move.split(" ")[3])
                     j2 = int(validator.letterToNumb.get(pickCandidate.move.split(" ")[2]))
-                    pickGameMap[i1-1][j1-1] = 0
-                    pickGameMap[i2-1][j2-1] = 0
+                    pickGameMap[i1 - 1][j1 - 1] = 0
+                    pickGameMap[i2 - 1][j2 - 1] = 0
                     pickPutCandidates = getPutCandidates(pickGameMap)
                     for putCandidate in pickPutCandidates:
-                        if not (int(validator.coordinateToRotation.get(numbToLetter.get(j1-1) + str(i1))) == int(putCandidate.move.split(" ")[0]) and pickCandidate.move.split(" ")[0] == putCandidate.move.split(" ")[1] and pickCandidate.move.split(" ")[1] == putCandidate.move.split(" ")[2]):
+                        if not (int(validator.coordinateToRotation.get(numbToLetter.get(j1 - 1) + str(i1))) == int(
+                                putCandidate.move.split(" ")[0]) and pickCandidate.move.split(" ")[0] ==
+                                putCandidate.move.split(" ")[1] and pickCandidate.move.split(" ")[1] ==
+                                putCandidate.move.split(" ")[2]):
                             move = pickCandidate.move + ' ' + putCandidate.move
                             candidates.append(Candidate(move))
             return candidates
@@ -142,7 +147,7 @@ class Naivenode:
     def childcreator(self, moveString):
         move = Move(moveString)
         # print(moveString)
-        if self.validator.placeValidator(move, self.gameMap):
+        if self.validator.validateMove(move, self.gameMap):
             newGameMap = copy.copy(self.gameMap)
             newValidator = copy.copy(self.validator)
             Nonvalidatedplacer().place(move, newValidator, newGameMap)
