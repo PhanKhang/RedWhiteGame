@@ -5,9 +5,9 @@ from validator import Validator
 from appraiser import Appraiser
 from placer import Placer
 from cell import Cell
-from treenode import Treenode
 from naivenode import Naivenode
 import copy
+import time
 
 # game map
 gameMap = numpy.zeros((12, 8))
@@ -186,6 +186,7 @@ def main():
                 newGameMap = copy.copy(gameMap)
 
                 if (k % 2 == 1 and computer == 1) or (k % 2 == 0 and computer == 2):
+                    start_time = time.time()
                     naiveNode = Naivenode(2, 1, newGameMap, k, validator, party, True, None, coordinateToRotation)
                     if pruning == 1:
                         targetWeight = alphabeta(naiveNode, 2, -9999999, 9999999, maximizing, coordinateToRotation)
@@ -205,7 +206,9 @@ def main():
                         f.write('\n')
                         f.close()
 
+                    print("time elapsed: {:.2f}s".format(time.time() - start_time))
                     print("computer move: " + input_var)
+
                 else:
                     input_var = input()
 
@@ -215,9 +218,9 @@ def main():
                 except:
                     print("unable to parse the move, try again")
 
-            if k <= 2 and move.type == 0:
+            if k <= 4 and move.type == 0:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
-            elif k > 2 and move.type == 1:
+            elif k > 4 and move.type == 1:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
             if not legal:
                 print("illegal move, try again")

@@ -89,7 +89,7 @@ class Naivenode:
             pickCandidates = []
             putCandidates = []
 
-            if moveNum <= 2:
+            if moveNum <= 4:
                 putCandidates = getPutCandidates(gameMap)
                 for putCandidate in putCandidates:
                     move = '0 ' + putCandidate.move
