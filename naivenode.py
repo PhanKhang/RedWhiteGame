@@ -33,100 +33,7 @@ class Naivenode:
         self.eCalls = 0
         self.parent = parent
         self.coordinateToRotation = coordinateToRotation
-
-        def toPut(i, j, gameMap):
-            subCandidates = []
-            if (i == 0 and gameMap[i][j] == 0) or (i < 11 and gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
-                for position in [2, 6, 4, 8]:
-                    subCandidates.append(
-                        Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1)))
-            if (i == 0 and j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
-                    j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] != 0 and
-                    gameMap[i - 1][j + 1] != 0):
-                for position in [1, 3, 5, 7]:
-                    subCandidates.append(
-                        Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1)))
-            return subCandidates
-
-        def toPick(i, j):  # vertical pick
-            if (0 < i < 11 and gameMap[i][j] != 0 and gameMap[i - 1][j] != 0 and gameMap[i + 1][j] == 0) or (
-                    i == 11 and gameMap[i][j] != 0 and gameMap[i - 1][j] != 0):
-                secondCardPart = validator.getCard(i - 1, j, coordinateToRotation)
-                if secondCardPart != 'none':
-                    i2 = secondCardPart.split(":")[0]
-                    j2 = secondCardPart.split(":")[1]
-                    if (i == int(i2) and j == int(j2)):
-                        return Candidate(
-                            str(numbToLetter.get(int(j))) + ' ' + str(i) + ' ' + str(numbToLetter.get(int(j2))) + ' '
-                            + str(int(i2) + 1))
-            if (0 <= j < 7 and 0 <= i < 11 and gameMap[i][j] != 0 and gameMap[i][j + 1] != 0 and gameMap[i + 1][
-                j] == 0 and gameMap[i + 1][j + 1] == 0) or (j < 7 and i == 11 and gameMap[i][j] != 0
-                                                            and gameMap[i][j + 1] != 0):
-                secondCardPart = validator.getCard(i, j, coordinateToRotation)
-                if secondCardPart != 'none':
-                    i2 = secondCardPart.split(":")[0]
-                    j2 = secondCardPart.split(":")[1]
-                    if (i == int(i2)) and (j + 1 == int(j2)):
-                        return Candidate(str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1) + ' ' + str(
-                            numbToLetter.get(int(j2))) + ' ' + str(int(i2) + 1))
-            return 'none'
-
-        def getPutCandidates(gameMap):
-            size = 0
-            putCandidates = []
-            for i in range(12):
-                for j in range(8):
-                    putCandidate = toPut(i, j, gameMap)
-                    if putCandidate != 'none':
-                        putCandidates += putCandidate
-                        size += 1
-                    if size == 14:
-                        break
-            return putCandidates
-
-        def getCandidates():
-            candidates = []
-            pickCandidates = []
-            putCandidates = []
-
-            if moveNum <= 4:
-                putCandidates = getPutCandidates(gameMap)
-                for putCandidate in putCandidates:
-                    move = '0 ' + putCandidate.move
-                    candidates.append(Candidate(move))
-            else:
-                size = 0
-                for i in range(12):
-                    for j in range(8):
-                        pickCandidate = toPick(i, j)
-                        if pickCandidate != 'none':
-                            i1 = int(pickCandidate.move.split(" ")[1])
-                            j1 = int(validator.letterToNumb.get(pickCandidate.move.split(" ")[0]))
-                            if not (
-                                    j1 == validator.lastMove.targetCoordinateLet and i1 == validator.lastMove.targetCoordinateNum):
-                                pickCandidates.append(pickCandidate)
-                                size += 1
-                        if size == 7:
-                            break
-                for pickCandidate in pickCandidates:
-                    pickGameMap = copy.copy(gameMap)
-                    i1 = int(pickCandidate.move.split(" ")[1])
-                    j1 = int(validator.letterToNumb.get(pickCandidate.move.split(" ")[0]))
-                    i2 = int(pickCandidate.move.split(" ")[3])
-                    j2 = int(validator.letterToNumb.get(pickCandidate.move.split(" ")[2]))
-                    pickGameMap[i1 - 1][j1 - 1] = 0
-                    pickGameMap[i2 - 1][j2 - 1] = 0
-                    pickPutCandidates = getPutCandidates(pickGameMap)
-                    for putCandidate in pickPutCandidates:
-                        if not (int(coordinateToRotation.get(numbToLetter.get(j1 - 1) + str(i1))) == int(
-                                putCandidate.move.split(" ")[0]) and pickCandidate.move.split(" ")[0] ==
-                                putCandidate.move.split(" ")[1] and pickCandidate.move.split(" ")[1] ==
-                                putCandidate.move.split(" ")[2]):
-                            move = pickCandidate.move + ' ' + putCandidate.move
-                            candidates.append(Candidate(move))
-            return candidates
-
-        self.candidates = getCandidates()
+        self.candidates = []
 
         # krasnyCherny - 1
         # beluyKolco - 2
@@ -136,7 +43,6 @@ class Naivenode:
         # Naive heuristic implementation call here
 
         self.weight = 0
-
         # here we detect if it's a goal state
         # would reuse victoryCheck, but need to refactor it a bit
         self.goalState = self.validator.victoryCheck(party, gameMap)
@@ -145,6 +51,101 @@ class Naivenode:
             self.weight *= 10
         elif self.goalState == 'dots wins' and party == 1:
             self.weight *= 10
+
+    def toPut(self, i, j, gameMap):
+        subCandidates = []
+        if (i == 0 and self.gameMap[i][j] == 0) or (i < 11 and self.gameMap[i][j] == 0 and self.gameMap[i - 1][j] != 0):
+            for position in [2, 6, 4, 8]:
+                subCandidates.append(
+                    Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1)))
+        if (i == 0 and j < 7 and self.gameMap[i][j] == 0 and self.gameMap[i][j + 1] == 0) or (
+                j < 7 and self.gameMap[i][j] == 0 and self.gameMap[i][j + 1] == 0 and self.gameMap[i - 1][j] != 0 and
+                self.gameMap[i - 1][j + 1] != 0):
+            for position in [1, 3, 5, 7]:
+                subCandidates.append(
+                    Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1)))
+        return subCandidates
+
+    def toPick(self, i, j):  # vertical pick
+        if (0 < i < 11 and self.gameMap[i][j] != 0 and self.gameMap[i - 1][j] != 0 and self.gameMap[i + 1][j] == 0) or (
+                i == 11 and self.gameMap[i][j] != 0 and self.gameMap[i - 1][j] != 0):
+            secondCardPart = self.validator.getCard(i - 1, j, self.coordinateToRotation)
+            if secondCardPart != 'none':
+                i2 = secondCardPart.split(":")[0]
+                j2 = secondCardPart.split(":")[1]
+                if (i == int(i2) and j == int(j2)):
+                    return Candidate(
+                        str(numbToLetter.get(int(j))) + ' ' + str(i) + ' ' + str(numbToLetter.get(int(j2))) + ' '
+                        + str(int(i2) + 1))
+        if (0 <= j < 7 and 0 <= i < 11 and self.gameMap[i][j] != 0 and self.gameMap[i][j + 1] != 0 and self.gameMap[i + 1][
+            j] == 0 and self.gameMap[i + 1][j + 1] == 0) or (j < 7 and i == 11 and self.gameMap[i][j] != 0
+                                                        and self.gameMap[i][j + 1] != 0):
+            secondCardPart = self.validator.getCard(i, j, self.coordinateToRotation)
+            if secondCardPart != 'none':
+                i2 = secondCardPart.split(":")[0]
+                j2 = secondCardPart.split(":")[1]
+                if (i == int(i2)) and (j + 1 == int(j2)):
+                    return Candidate(str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1) + ' ' + str(
+                        numbToLetter.get(int(j2))) + ' ' + str(int(i2) + 1))
+        return 'none'
+
+
+    def getPutCandidates(self, gameMap):
+        size = 0
+        putCandidates = []
+        for i in range(12):
+            for j in range(8):
+                putCandidate = self.toPut(i, j, self.gameMap)
+                if putCandidate != 'none':
+                    putCandidates += putCandidate
+                    size += 1
+                if size == 14:
+                    break
+        return putCandidates
+
+
+    def getCandidates(self):
+        candidates = []
+        pickCandidates = []
+        putCandidates = []
+
+        if self.moveNum <= 4:
+            putCandidates = self.getPutCandidates(self.gameMap)
+            for putCandidate in putCandidates:
+                move = '0 ' + putCandidate.move
+                candidates.append(Candidate(move))
+        else:
+            size = 0
+            for i in range(12):
+                for j in range(8):
+                    pickCandidate = self.toPick(i, j)
+                    if pickCandidate != 'none':
+                        i1 = int(pickCandidate.move.split(" ")[1])
+                        j1 = int(self.validator.letterToNumb.get(pickCandidate.move.split(" ")[0]))
+                        if not (
+                                j1 == self.validator.lastMove.targetCoordinateLet and i1 == self.validator.lastMove.targetCoordinateNum):
+                            pickCandidates.append(pickCandidate)
+                            size += 1
+                    if size == 7:
+                        break
+            for pickCandidate in pickCandidates:
+                pickGameMap = copy.copy(self.gameMap)
+                i1 = int(pickCandidate.move.split(" ")[1])
+                j1 = int(self.validator.letterToNumb.get(pickCandidate.move.split(" ")[0]))
+                i2 = int(pickCandidate.move.split(" ")[3])
+                j2 = int(self.validator.letterToNumb.get(pickCandidate.move.split(" ")[2]))
+                pickGameMap[i1 - 1][j1 - 1] = 0
+                pickGameMap[i2 - 1][j2 - 1] = 0
+                pickPutCandidates = self.getPutCandidates(pickGameMap)
+                for putCandidate in pickPutCandidates:
+                    if not (int(self.coordinateToRotation.get(numbToLetter.get(j1 - 1) + str(i1))) == int(
+                            putCandidate.move.split(" ")[0]) and pickCandidate.move.split(" ")[0] ==
+                            putCandidate.move.split(" ")[1] and pickCandidate.move.split(" ")[1] ==
+                            putCandidate.move.split(" ")[2]):
+                        move = pickCandidate.move + ' ' + putCandidate.move
+                        candidates.append(Candidate(move))
+        return candidates
+
 
     def childcreator(self, moveString):
         move = Move(moveString)
@@ -162,6 +163,7 @@ class Naivenode:
             self.children.append(childNode)
 
     def populateChildren(self):
+        self.candidates = self.getCandidates()
         for candidate in self.candidates:
             self.childcreator(candidate.move)
 
