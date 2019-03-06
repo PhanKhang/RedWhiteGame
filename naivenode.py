@@ -110,7 +110,7 @@ class Naivenode:
         pickCandidates = []
         putCandidates = []
 
-        if self.moveNum <= 8:
+        if self.moveNum <= 24:
             putCandidates = self.getPutCandidates(self.gameMap)
             for putCandidate in putCandidates:
                 move = '0 ' + putCandidate.move

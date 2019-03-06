@@ -121,7 +121,6 @@ def alphabeta(node, depth, a, b, maxP, coordinateToRotation):
             a = max(a, node.weight)
             newchildren.append(childnode)
             if a >= b:
-                # print("prune!")
                 node.children = newchildren
                 break
         return node.weight
@@ -218,16 +217,16 @@ def main():
                 except:
                     print("unable to parse the move, try again")
 
-            if k <= 8 and move.type == 0:
+            if k <= 24 and move.type == 0:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
-            elif k > 8 and move.type == 1:
+            elif k > 24 and move.type == 1:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
             if not legal:
                 print("illegal move, try again")
 
         print("Current Game field")
         correctPrinterMap(gameMap)  # change to correctPrinterMapL for letter output
-        print(coordinateToRotation)
+        # print(coordinateToRotation)
         appraiser.appraise(move, valueMap, gameMap)
         result = validator.victoryCheck((k + choice) % 2, gameMap)
 
@@ -235,6 +234,4 @@ def main():
             print(result)
             break
         legal = False
-
-
 main()
