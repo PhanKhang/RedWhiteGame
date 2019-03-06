@@ -45,12 +45,13 @@ class Naivenode:
         self.weight = 0
         # here we detect if it's a goal state
         # would reuse victoryCheck, but need to refactor it a bit
-        self.goalState = self.validator.victoryCheck(party, gameMap)
+        # self.goalState = self.validator.victoryCheck(party, gameMap)
+        self.goalState = "go"
 
-        if self.goalState == 'color wins' and party == 0:
-            self.weight *= 10
-        elif self.goalState == 'dots wins' and party == 1:
-            self.weight *= 10
+        # if self.goalState == 'color wins' and party == 0:
+        #     self.weight *= 10
+        # elif self.goalState == 'dots wins' and party == 1:
+        #     self.weight *= 10
 
     def toPut(self, i, j, gameMap):
         subCandidates = []
@@ -109,7 +110,7 @@ class Naivenode:
         pickCandidates = []
         putCandidates = []
 
-        if self.moveNum <= 4:
+        if self.moveNum <= 8:
             putCandidates = self.getPutCandidates(self.gameMap)
             for putCandidate in putCandidates:
                 move = '0 ' + putCandidate.move

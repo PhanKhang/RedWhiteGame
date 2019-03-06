@@ -48,15 +48,15 @@ class Validator:
                         if gameMap[j - 1][i] != 0 and gameMap[j - 1][i + 1] != 0:  # there is support
                             return True
                         else:
-                            print("No support: " + str(i) + ' ' + str(j) + ' ' + str(rotation))
-                            print(numpy.flipud(gameMap))
+                            # print("No support: " + str(i) + ' ' + str(j) + ' ' + str(rotation))
+                            # print(numpy.flipud(gameMap))
                             return False
                 else:
-                    print("Not free" + str(i) + ' ' + str(j) + ' ' + str(rotation))
-                    print(numpy.flipud(gameMap))
+                    # print("Not free" + str(i) + ' ' + str(j) + ' ' + str(rotation))
+                    # print(numpy.flipud(gameMap))
                     return False
             else:
-                print("Out of border")
+                # print("Out of border")
                 return False
         else:
             if 0 <= i <= 7 and 0 <= j <= 11 and 0 <= j + 1 <= 11:
@@ -67,15 +67,15 @@ class Validator:
                         if gameMap[j - 1][i] != 0:
                             return True
                         else:
-                            print("No support: " + str(i) + ' ' + str(j) + ' ' + str(rotation))
-                            print(numpy.flipud(gameMap))
+                            # print("No support: " + str(i) + ' ' + str(j) + ' ' + str(rotation))
+                            # print(numpy.flipud(gameMap))
                             return False
                 else:
-                    print("Not free" + str(i) + ' ' + str(j) + ' ' + str(rotation))
-                    print(numpy.flipud(gameMap))
+                    # print("Not free" + str(i) + ' ' + str(j) + ' ' + str(rotation))
+                    # print(numpy.flipud(gameMap))
                     return False
             else:
-                print("Out of border")
+                # print("Out of border")
                 return False
 
     # Checks if horizontal card is not piled.

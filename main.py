@@ -218,9 +218,9 @@ def main():
                 except:
                     print("unable to parse the move, try again")
 
-            if k <= 4 and move.type == 0:
+            if k <= 8 and move.type == 0:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
-            elif k > 4 and move.type == 1:
+            elif k > 8 and move.type == 1:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
             if not legal:
                 print("illegal move, try again")
