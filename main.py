@@ -173,9 +173,9 @@ def main():
             print("Turn " + str(k) + " Player 2" + " playing with dots")
             party = 0
 
-        maximizing = True
+        maximizing = False
         if party == 1:
-            maximizing = False
+            maximizing = True
 
         while not legal:
             movok = False
