@@ -70,6 +70,26 @@ class Appraiser:
         if gameMap[j1][i1] in self.ring:
             self.appraise_ring(i1, j1, valueMap, gameMap, remove)
 
+        if remove:
+            remove = False
+            if gameMap[j][i] in self.red:
+                self.appraise_red(i, j, valueMap, gameMap, remove)
+            if gameMap[j][i] in self.white:
+                self.appraise_white(i, j, valueMap, gameMap, remove)
+            if gameMap[j][i] in self.dot:
+                self.appraise_dot(i, j, valueMap, gameMap, remove)
+            if gameMap[j][i] in self.ring:
+                self.appraise_ring(i, j, valueMap, gameMap, remove)
+
+            if gameMap[j1][i1] in self.red:
+                self.appraise_red(i1, j1, valueMap, gameMap, remove)
+            if gameMap[j1][i1] in self.white:
+                self.appraise_white(i1, j1, valueMap, gameMap, remove)
+            if gameMap[j1][i1] in self.dot:
+                self.appraise_dot(i1, j1, valueMap, gameMap, remove)
+            if gameMap[j1][i1] in self.ring:
+                self.appraise_ring(i1, j1, valueMap, gameMap, remove)
+
         # if move.type == 1:
         #     valueMap[move.sourceCoordinate1Num - 1][move.sourceCoordinate1Let - 1].occupied = 0
         #     valueMap[move.sourceCoordinate2Num - 1][move.sourceCoordinate2Let - 1].occupied = 0
