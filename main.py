@@ -64,7 +64,7 @@ def correctPrinter(gameMap):
     for row_label, row in zip(row_labels, numpy.flipud(gameMap)):
         print('%s [%s]' % (row_label, ' '.join('%04s' % int(i) for i in row)))
 
-git
+
 def correctPrinterMapL(gameMap):
     ENDC = '\033[2m'
     print("     A  B  C  D  E  F  G  H")
@@ -92,36 +92,40 @@ def correctPrinterMap(gameMap):
 
 def minimax(node, depth, maxP):
     if depth == 0 or node.goalState != 'go':
-        return node.weight
+        return node.getOwnWeight()
     if maxP:
         node.weight = -9999999
+        node.populateChildren()
         for childnode in node.children:
             node.weight = max(node.weight, minimax(childnode, depth - 1, False))
         return node.weight
     else:
         node.weight = 9999999
+        node.populateChildren()
         for childnode in node.children:
             node.weight = min(node.weight, minimax(childnode, depth - 1, True))
         return node.weight
 
+
 def alphabeta(node, depth, a, b, maxP):
     if depth == 0 or node.goalState != 'go':
-        return node.weight
+        return node.getOwnWeight()
     if maxP:
         node.weight = -9999999
         newchildren = []
+        node.populateChildren()
         for childnode in node.children:
             node.weight = max(node.weight, alphabeta(childnode, depth - 1, a, b, False))
             a = max(a, node.weight)
             newchildren.append(childnode)
             if a >= b:
-                # print("prune!")
                 node.children = newchildren
                 break
         return node.weight
     else:
         node.weight = 9999999
         newchildren = []
+        node.populateChildren()
         for childnode in node.children:
             node.weight = min(node.weight, alphabeta(childnode, depth - 1, a, b, True))
             b = min(b, node.weight)
@@ -140,7 +144,9 @@ def main():
     prevWeight = 0
 
     pruning = int(input("Activate alpha-beta pruning? 1 for yes 0 for no: "))
-    trace = int(input("Generate trace? 1 for yes 0 for no: "))
+    #trace = int(input("Generate trace? 1 for yes 0 for no: "))
+    depth = int(input("Set tree depth: "))
+    width = int(input("Set tree width: "))
     computer = int(input("Which player should be computer 1 or 2?: "))
     choice = int(input("Player 1  will be playing? 0 for dots and 1 a for colors: "))
     if choice == 0:
@@ -180,18 +186,12 @@ def main():
                 input_var = ''
                 if (k % 2 == 1 and computer == 1) or (k % 2 == 0 and computer == 2):
 
-                    # treenode = Treenode(2, 1, newValueMap, newGameMap, k, validator, party)
-                    # if pruning == 1:
-                    #     targetWeight = alphabeta(treenode, 2,  -9999999, 9999999, maximizing)
-                    # else:
-                    #     targetWeight = minimax(treenode, 2, maximizing)
-                    # input_var = treenode.getMove(targetWeight)
 
-                    treenode = Treenode(4, newValueMap, newGameMap, k, validator, party, 0)
+                    treenode = Treenode(depth, newValueMap, newGameMap, k, validator, party, 0, width)
                     if pruning == 1:
-                        targetWeight = alphabeta(treenode, 2, -9999999, 9999999, maximizing)
+                        targetWeight = alphabeta(treenode, depth, -9999999, 9999999, maximizing)
                     else:
-                        targetWeight = minimax(treenode, 2, maximizing)
+                        targetWeight = minimax(treenode, depth, maximizing)
 
 
                     input_var = treenode.getMove(targetWeight)
