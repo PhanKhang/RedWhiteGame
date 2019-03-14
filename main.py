@@ -7,6 +7,7 @@ from placer import Placer
 from cell import Cell
 from treenode import Treenode
 import copy
+import time
 
 # game map
 gameMap = numpy.zeros((12, 8))
@@ -186,7 +187,7 @@ def main():
                 input_var = ''
                 if (k % 2 == 1 and computer == 1) or (k % 2 == 0 and computer == 2):
 
-
+                    start_time = time.time()
                     treenode = Treenode(depth, newValueMap, newGameMap, k, validator, party, 0, width)
                     if pruning == 1:
                         targetWeight = alphabeta(treenode, depth, -9999999, 9999999, maximizing)
@@ -195,12 +196,11 @@ def main():
 
 
                     input_var = treenode.getMove(targetWeight)
+                    print("--- %s seconds ---" % (time.time() - start_time))
                     print("computer move: " + input_var)
                 else:
                     input_var = input()
 
-                # print("Recommended move: " + treenode.getMove())
-                # print(input_var)
                 try:
                     move = Move(input_var)
                     movok = True
@@ -220,16 +220,8 @@ def main():
 
 
         print("Current Weight")
-        print(appraiser.getScore(valueMap, gameMap) -prevWeight)
-
-        # if (k + choice) % 2 == 0:
-        #     print("Score for Colors: ")
-        #     print(appraiser.getScore())
-        # else:
-        #     print("Score for Dots: ")
-        #     print(appraiser.getScore())
-
-        tmp = {}
+        print(appraiser.getScore(valueMap, gameMap) - prevWeight)
+        prevWeight = appraiser.getScore(valueMap, gameMap) - prevWeight
         print("Red map")
         # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
         correctPrinter(appraiser.getRedMap(valueMap))

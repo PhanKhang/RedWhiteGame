@@ -169,7 +169,7 @@ class Treenode:
                     if putCandidate != 'none':
                         putCandidates += putCandidate
                         size += 1
-                    if size == 14:
+                    if size == 15:
                         break
 
             for putCandidate in putCandidates:
@@ -184,7 +184,7 @@ class Treenode:
                     if pickCandidate != 'none':
                         pickCandidates.append(pickCandidate)
                         size += 1
-                    if size == 7:
+                    if size == 8:
                         break
             for pickCandidate in pickCandidates:
                 for putCandidate in putCandidates:
