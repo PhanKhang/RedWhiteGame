@@ -95,16 +95,19 @@ def minimax(node, depth, maxP):
     if depth == 0 or node.goalState != 'go':
         return node.getOwnWeight()
     if maxP:
-        node.weight = -9999999
+        #node.weight = -9999999
+        weight = -9999999
         node.populateChildren()
         for childnode in node.children:
-            node.weight = max(node.weight, minimax(childnode, depth - 1, False))
+            weight = max(weight, minimax(childnode, depth - 1, False))
+        node.weight = weight
         return node.weight
     else:
-        node.weight = 9999999
+        weight = 9999999
         node.populateChildren()
         for childnode in node.children:
-            node.weight = min(node.weight, minimax(childnode, depth - 1, True))
+            weight = min(weight, minimax(childnode, depth - 1, True))
+        node.weight = weight
         return node.weight
 
 
@@ -112,29 +115,31 @@ def alphabeta(node, depth, a, b, maxP):
     if depth == 0 or node.goalState != 'go':
         return node.getOwnWeight()
     if maxP:
-        node.weight = -9999999
+        weight = -9999999
         newchildren = []
         node.populateChildren()
         for childnode in node.children:
-            node.weight = max(node.weight, alphabeta(childnode, depth - 1, a, b, False))
-            a = max(a, node.weight)
+            weight = max(weight, alphabeta(childnode, depth - 1, a, b, False))
+            a = max(a, weight)
             newchildren.append(childnode)
             if a >= b:
                 node.children = newchildren
                 break
+        node.weight = weight
         return node.weight
     else:
-        node.weight = 9999999
+        weight = 9999999
         newchildren = []
         node.populateChildren()
         for childnode in node.children:
-            node.weight = min(node.weight, alphabeta(childnode, depth - 1, a, b, True))
-            b = min(b, node.weight)
+            weight = min(weight, alphabeta(childnode, depth - 1, a, b, True))
+            b = min(b, weight)
             newchildren.append(childnode)
             if a >= b:
                 # print("prune!")
                 node.children = newchildren
                 break
+        node.weight = weight
         return node.weight
 
 
@@ -220,8 +225,7 @@ def main():
 
 
         print("Current Weight")
-        print(appraiser.getScore(valueMap, gameMap) - prevWeight)
-        prevWeight = appraiser.getScore(valueMap, gameMap) - prevWeight
+        print(appraiser.getScore(valueMap, gameMap))
         print("Red map")
         # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
         correctPrinter(appraiser.getRedMap(valueMap))

@@ -38,6 +38,8 @@ class Treenode:
         self.weightParent = weightParent
         self.goalState = "go"
         self.width = width
+        self.weight = 0
+
         # self.goalState = self.validator.victoryCheck(party, gameMap)
         # if self.goalState == 'color wins' and party == 0:
         #     self.weight *= 10
@@ -45,7 +47,8 @@ class Treenode:
         #     self.weight *= 10
 
     def getOwnWeight(self):
-        return Appraiser().getScore(self.valueMap, self.gameMap) - self.weightParent
+        self.weight = Appraiser().getScore(self.valueMap, self.gameMap)
+        return self.weight
 
     def populateChildren(self):
         candidates = self.getCandidates()

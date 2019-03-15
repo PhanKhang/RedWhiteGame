@@ -573,7 +573,8 @@ class Appraiser:
         max = 0
         for i in range(8):
             for j in range(12):
-                if colorMap[j][i] > 0 and gameMap[j][i] == 0:
+                if colorMap[j][i] > 0 :
+                        # or gameMap[j][i] == 0:
                     # print(numbToLetter.get(i+1)+str(j+1)+": "+str(colorMap[j][i]))
                     if colorMap[j][i] > max:
                         max = colorMap[j][i]
@@ -613,7 +614,7 @@ class Appraiser:
 
         currentDotsWeight = max(self.getAvailableMoves(self.getRingMap(valueMap), gameMap),
                                 self.getAvailableMoves(self.getDotMap(valueMap), gameMap))
-        return currentDotsWeight - currentColorWeight
+        return 1.1 * currentDotsWeight - currentColorWeight
 
     def getAvgColors(self, valueMap):
         count = 0
