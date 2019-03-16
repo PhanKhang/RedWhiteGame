@@ -47,7 +47,7 @@ class Treenode:
         #     self.weight *= 10
 
     def getOwnWeight(self):
-        self.weight = Appraiser().getScore(self.valueMap, self.gameMap)
+        self.weight = Appraiser().getScore(self.valueMap, self.gameMap) - self.weightParent
         return self.weight
 
     def populateChildren(self):
