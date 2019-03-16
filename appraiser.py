@@ -327,7 +327,7 @@ class Appraiser:
                     ringWeight = valueMap[j][i].ringWeight
                     dotWeight = valueMap[j][i].dotWeight
 
-                    if (ringWeight > price[1] or dotWeight > price[1]) and (redWeight < 8 or whiteWeight < 8):
+                    if ringWeight >= price[3] or dotWeight >= price[3]:
                         ringWeight *= 10
                         dotWeight *= 10
 
@@ -343,7 +343,7 @@ class Appraiser:
                     ringWeight = valueMap[j][i].ringWeight
                     dotWeight = valueMap[j][i].dotWeight
 
-                    if (ringWeight < 8 or dotWeight < 8) and (redWeight > price[1] or whiteWeight > price[1]):
+                    if redWeight >= price[3] or whiteWeight >= price[3]:
                         whiteWeight *= 10
                         redWeight *= 10
 
