@@ -2,21 +2,6 @@ import numpy
 
 price = [0, 1, 1, 2, 3, 5]
 
-letterToNumb = {
-    "A": 1,
-    "B": 2,
-    "C": 3,
-    "D": 4,
-    "E": 5,
-    "F": 6,
-    "G": 7,
-    "H": 8
-
-}
-# convert numbers to letters
-numbToLetter = dict([[v, k] for k, v in letterToNumb.items()])
-
-
 class Appraiser:
     def __init__(self):
         pass
@@ -48,7 +33,7 @@ class Appraiser:
         valueMap[j1][i1].occupied = 1
 
         if gameMap[j][i] in self.red:
-            self.appraise_red(i, j, valueMap, gameMap)
+            self.appraiseRed(i, j, valueMap, gameMap)
         if gameMap[j][i] in self.white:
             self.appraise_white(i, j, valueMap, gameMap)
         if gameMap[j][i] in self.dot:
@@ -57,7 +42,7 @@ class Appraiser:
             self.appraise_ring(i, j, valueMap, gameMap)
 
         if gameMap[j1][i1] in self.red:
-            self.appraise_red(i1, j1, valueMap, gameMap)
+            self.appraiseRed(i1, j1, valueMap, gameMap)
         if gameMap[j1][i1] in self.white:
             self.appraise_white(i1, j1, valueMap, gameMap)
         if gameMap[j1][i1] in self.dot:
@@ -66,9 +51,12 @@ class Appraiser:
             self.appraise_ring(i1, j1, valueMap, gameMap)
 
         if remove:
-            remove = False
+            i = move.sourceCoordinate1Let - 1
+            j = move.sourceCoordinate1Num - 1
+            i1 = move.sourceCoordinate2Let - 1
+            j1 = move.sourceCoordinate2Num -1
             if gameMap[j][i] in self.red:
-                self.appraise_red(i, j, valueMap, gameMap)
+                self.appraiseRedRemove(i, j, valueMap, gameMap)
             if gameMap[j][i] in self.white:
                 self.appraise_white(i, j, valueMap, gameMap)
             if gameMap[j][i] in self.dot:
@@ -77,7 +65,7 @@ class Appraiser:
                 self.appraise_ring(i, j, valueMap, gameMap)
 
             if gameMap[j1][i1] in self.red:
-                self.appraise_red(i1, j1, valueMap, gameMap)
+                self.appraiseRed(i1, j1, valueMap, gameMap)
             if gameMap[j1][i1] in self.white:
                 self.appraise_white(i1, j1, valueMap, gameMap)
             if gameMap[j1][i1] in self.dot:
@@ -148,7 +136,7 @@ class Appraiser:
 
     # check and apply the weight on the window of 4 elements if there is possibility of creating 4 in a row
     # total fields check is 7
-    def appraise_red(self, i, j, valueMap, gameMap):
+    def appraiseRed(self, i, j, valueMap, gameMap):
         for step in range(4):
             if i - step >= 0:
                 rate = self.isHorizontalWindowFree(i - step, j, self.red, gameMap)
@@ -174,6 +162,36 @@ class Appraiser:
                 if rate > 0:
                     for k in range(4):
                         if valueMap[j - step + k][i - step + k].redWeight < price[rate] \
+                                and gameMap[j - step + k][i - step + k] != 0:
+                            valueMap[j - step + k][i - step + k].redWeight = price[rate]
+
+    def appraiseRedRemove(self, i, j, valueMap, gameMap):
+        valueMap[j][i].redWeight = 0
+        for step in range(4):
+            if i - step >= 0:
+                rate = self.isHorizontalWindowFree(i - step, j, self.red, gameMap)
+                if rate > 0:
+                    for k in range(4):
+                        if valueMap[j][i - step + k].redWeight > price[rate] and gameMap[j][i - step + k] != 0:
+                            valueMap[j][i - step + k].redWeight = price[rate]
+            if j - step >= 0:
+                rate = self.isVerticalWindowFree(i, j - step, self.red, gameMap)
+                if rate > 0:
+                    for k in range(4):
+                        if valueMap[j - step + k][i].redWeight > price[rate] and gameMap[j - step + k][i] != 0:
+                            valueMap[j - step + k][i].redWeight = price[rate]
+            if i - step >= 0 and j + step < 12:
+                rate = self.isDownDiagonalWindowFree(i - step, j + step, self.red, gameMap)
+                if rate > 0:
+                    for k in range(4):
+                        if valueMap[j + step - k][i - step + k].redWeight > price[rate] \
+                                and gameMap[j + step - k][i - step + k] != 0:
+                            valueMap[j + step - k][i - step + k].redWeight = price[rate]
+            if j - step >= 0 and i - step >= 0:
+                rate = self.isUpDiagonalWindowFree(i - step, j - step, self.red, gameMap)
+                if rate > 0:
+                    for k in range(4):
+                        if valueMap[j - step + k][i - step + k].redWeight > price[rate] \
                                 and gameMap[j - step + k][i - step + k] != 0:
                             valueMap[j - step + k][i - step + k].redWeight = price[rate]
 
