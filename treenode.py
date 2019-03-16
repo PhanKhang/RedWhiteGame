@@ -124,15 +124,15 @@ class Treenode:
         if (i == 0 and self.gameMap[i][j] == 0) or (i < 11 and self.gameMap[i][j] == 0 and self.gameMap[i - 1][j] != 0):
             for position in [2, 6, 4, 8]:
                 subCandidates.append(
-                    Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1),
-                              (self.getCandidateScore(i, j, position, self.party))))
+                    Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1), 0))
+                              #(self.getCandidateScore(i, j, position, self.party))))
         if (i == 0 and j < 7 and self.gameMap[i][j] == 0 and self.gameMap[i][j + 1] == 0) or (
                 j < 7 and self.gameMap[i][j] == 0 and self.gameMap[i][j + 1] == 0 and self.gameMap[i - 1][j] != 0 and
                 self.gameMap[i - 1][j + 1] != 0):
             for position in [1, 3, 5, 7]:
                 subCandidates.append(
-                    Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1),
-                              (self.getCandidateScore(i, j, position, self.party))))
+                    Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1), 0))
+                              #(self.getCandidateScore(i, j, position, self.party))))
         return subCandidates
 
     def toPick(self, i, j):
@@ -145,7 +145,7 @@ class Treenode:
                 if (i == i2 and j == j2):
                     return Candidate(
                         str(numbToLetter.get(int(j))) + ' ' + str(i) + str(numbToLetter.get(int(j2))) + ' ' + str(
-                            int(i2) + 1), self.getRecycleCandidateScore(i - 1, j, i2, j2, self.party))
+                            int(i2) + 1), 0)#self.getRecycleCandidateScore(i - 1, j, i2, j2, self.party))
         if (j < 7 and i < 11 and self.gameMap[i][j] != 0 and self.gameMap[i][j + 1] != 0 and self.gameMap[i + 1][
             j] == 0 and
             self.gameMap[i + 1][j + 1] == 0) or (
@@ -156,8 +156,8 @@ class Treenode:
                 j2 = secondCardPart.split(":")[1]
                 if (i == i2) and (j + 1 == j2):
                     return Candidate(str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1) + str(
-                        numbToLetter.get(int(j2))) + ' ' + str(int(i2) + 1),
-                                     self.getRecycleCandidateScore(i, j, i2, j2, self.party))
+                        numbToLetter.get(int(j2))) + ' ' + str(int(i2) + 1),0)
+                                     #self.getRecycleCandidateScore(i, j, i2, j2, self.party))
         return 'none'
 
     def getCandidates(self):
@@ -177,8 +177,8 @@ class Treenode:
 
             for putCandidate in putCandidates:
                 move = '0 ' + putCandidate.move
-                score = putCandidate.score
-                candidates.append(Candidate(move, score))
+                #score = putCandidate.score
+                candidates.append(Candidate(move, 0))
         else:
             size = 0
             for i in range(12):
@@ -196,12 +196,12 @@ class Treenode:
                             or (putCandidate.move.split(" ")[1] != pickCandidate.move.split(" ")[2] and
                                 putCandidate.move.split(" ")[2] != pickCandidate.move.split(" ")[3]):
                         move = pickCandidate.move + ' ' + putCandidate.move
-                        score = pickCandidate.score + putCandidate.score
-                        candidates.append(move, score)
+                        #score = pickCandidate.score + putCandidate.score
+                        candidates.append(move, 0)
 
-        candidates.sort(key=lambda x: x.score, reverse=True)
-        if self.width != 0 & len(candidates) > self.width:
-            return candidates[:self.width]
+        #candidates.sort(key=lambda x: x.score, reverse=True)
+        #if self.width != 0 & len(candidates) > self.width:
+        #   return candidates[:self.width]
         return candidates
 
     def childcreator(self, moveString):

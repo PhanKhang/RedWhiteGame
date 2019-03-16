@@ -8,6 +8,7 @@ from cell import Cell
 from treenode import Treenode
 import copy
 import time
+import random
 
 # game map
 gameMap = numpy.zeros((12, 8))
@@ -81,21 +82,22 @@ def correctPrinterMapL(gameMap):
 
 def correctPrinterMap(gameMap):
     ENDC = '\033[2m'
-    print("     A  B  C  D  E  F  G  H")
+    print("     A   B   C   D   E   F   G   H")
     for j in range(11, -1, -1):
         s = str(j + 1) + "\t"
         for i in range(8):
             s += getCard(gameMap[j][i])
-            s += " "
+            s += "  "
             s += ENDC
         print(s, ENDC)
-    print("     A  B  C  D  E  F  G  H")
+    print("     A   B   C   D   E   F   G   H")
+
 
 def minimax(node, depth, maxP):
     if depth == 0 or node.goalState != 'go':
         return node.getOwnWeight()
     if maxP:
-        #node.weight = -9999999
+        # node.weight = -9999999
         weight = -9999999
         node.populateChildren()
         for childnode in node.children:
@@ -149,10 +151,13 @@ valueMap = [[Cell() for j in range(8)] for i in range(12)]
 def main():
     prevWeight = 0
 
-    pruning = int(input("Activate alpha-beta pruning? 1 for yes 0 for no: "))
-    #trace = int(input("Generate trace? 1 for yes 0 for no: "))
-    depth = int(input("Set tree depth: "))
-    width = int(input("Set tree width: "))
+    # pruning = int(input("Activate alpha-beta pruning? 1 for yes 0 for no: "))
+    pruning = 1
+    # trace = int(input("Generate trace? 1 for yes 0 for no: "))
+    # depth = int(input("Set tree depth: "))
+    depth = 2
+    # width = int(input("Set tree width: "))
+    width = 0
     computer = int(input("Which player should be computer 1 or 2?: "))
     choice = int(input("Player 1  will be playing? 0 for dots and 1 a for colors: "))
     if choice == 0:
@@ -163,9 +168,9 @@ def main():
         print("Player 2: Dots")
     legal = False
 
-    Appraiser().setInitialValue(valueMap)
+    # Appraiser().setInitialValue(valueMap)
     party = 0
-    for k in range(1, 61):
+    for k in range(1, 40):
         # print("Turn " + str(k) + " Player " + str((k-1) % 2+1))
         if choice == 0 and (k - 1) % 2 + 1 == 1:
             print("Turn " + str(k) + " Player 1" + " playing with dots")
@@ -191,18 +196,20 @@ def main():
                 newGameMap = copy.copy(gameMap)
                 input_var = ''
                 if (k % 2 == 1 and computer == 1) or (k % 2 == 0 and computer == 2):
+                    if k > 1:
+                        start_time = time.time()
+                        treenode = Treenode(depth, newValueMap, newGameMap, k, validator, party, 0, width)
+                        if pruning == 1:
+                            targetWeight = alphabeta(treenode, depth, -9999999, 9999999, maximizing)
+                        else:
+                            targetWeight = minimax(treenode, depth, maximizing)
 
-                    start_time = time.time()
-                    treenode = Treenode(depth, newValueMap, newGameMap, k, validator, party, 0, width)
-                    if pruning == 1:
-                        targetWeight = alphabeta(treenode, depth, -9999999, 9999999, maximizing)
+                        input_var = treenode.getMove(targetWeight)
+                        print("--- %s seconds ---" % (time.time() - start_time))
+                        print("computer move: " + input_var)
                     else:
-                        targetWeight = minimax(treenode, depth, maximizing)
-
-
-                    input_var = treenode.getMove(targetWeight)
-                    print("--- %s seconds ---" % (time.time() - start_time))
-                    print("computer move: " + input_var)
+                        input_var = "0 " + str(random.randint(1, 8)) + " " + validator.numbToLetter.get(
+                            random.randint(4, 5)) + " " + str(1)
                 else:
                     input_var = input()
 
@@ -222,7 +229,6 @@ def main():
         correctPrinterMap(gameMap)  # change to correctPrinterMapL for letter output
         # print(validator.coordinateToRotation)
         appraiser.appraise(move, valueMap, gameMap)
-
 
         print("Current Weight")
         print(appraiser.getScore(valueMap, gameMap))

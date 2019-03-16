@@ -1,6 +1,8 @@
 import numpy
 
-price = [0, 1, 1, 2, 3, 5]
+#price = [0, 1, 1, 2, 3, 5]
+
+price = [0, 1, 2, 3, 5, 8]
 
 class Appraiser:
     def __init__(self):
