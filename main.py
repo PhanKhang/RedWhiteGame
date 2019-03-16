@@ -149,8 +149,6 @@ valueMap = [[Cell() for j in range(8)] for i in range(12)]
 
 
 def main():
-    prevWeight = 0
-
     # pruning = int(input("Activate alpha-beta pruning? 1 for yes 0 for no: "))
     pruning = 1
     # trace = int(input("Generate trace? 1 for yes 0 for no: "))
@@ -198,7 +196,8 @@ def main():
                 if (k % 2 == 1 and computer == 1) or (k % 2 == 0 and computer == 2):
                     if k > 1:
                         start_time = time.time()
-                        treenode = Treenode(depth, newValueMap, newGameMap, k, validator, party, 0, width)
+                        computer_party = party
+                        treenode = Treenode(depth, newValueMap, newGameMap, k, validator, party, computer_party, width)
                         if pruning == 1:
                             targetWeight = alphabeta(treenode, depth, -9999999, 9999999, maximizing)
                         else:
@@ -231,7 +230,7 @@ def main():
         appraiser.appraise(move, valueMap, gameMap)
 
         print("Current Weight")
-        print(appraiser.getScore(valueMap, gameMap))
+        print(appraiser.getScore(valueMap, party))
         print("Red map")
         # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
         correctPrinter(appraiser.getRedMap(valueMap))
@@ -248,7 +247,7 @@ def main():
         # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
         correctPrinter(appraiser.getDotMap(valueMap))
 
-        result = validator.victoryCheck((k + choice) % 2, gameMap)
+        result = validator.victoryCheck(party, gameMap)
 
         if result != "go":
             print(result)

@@ -148,7 +148,7 @@ class Validator:
 
     # Checks if there is a row of 4 cells of the same type on the game map. Horizontal, vertical and both diagonals.
     def victoryCheck(self, player, gameMap):
-        if player == 0:
+        if player == 1:
             for i in range(12):
                 for j in range(8):
                     if i <= 8:

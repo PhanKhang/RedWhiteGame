@@ -2,7 +2,7 @@ import numpy
 
 #price = [0, 1, 1, 2, 3, 5]
 
-price = [0, 1, 2, 3, 5, 8]
+price = [1, 2, 3, 5, 8]
 
 class Appraiser:
     def __init__(self):
@@ -313,17 +313,44 @@ class Appraiser:
                 Matrix[j][i] = valueMap[j][i].ringWeight
         return Matrix
 
-    def getScore(self, valueMap, gameMap):
+    def getScore(self, valueMap, party):
         sumRed = 0
         sumWhite = 0
         sumRing = 0
         sumDot = 0
-        for i in range(8):
-            for j in range(12):
-                sumRed += valueMap[j][i].redWeight
-                sumWhite += valueMap[j][i].whiteWeight
-                sumRing += valueMap[j][i].ringWeight
-                sumDot += valueMap[j][i].dotWeight
+
+        if party == 0:
+            for i in range(8):
+                for j in range(12):
+                    redWeight = valueMap[j][i].redWeight
+                    whiteWeight = valueMap[j][i].whiteWeight
+                    ringWeight = valueMap[j][i].ringWeight
+                    dotWeight = valueMap[j][i].dotWeight
+
+                    if (ringWeight > price[1] or dotWeight > price[1]) and (redWeight < 8 or whiteWeight < 8):
+                        ringWeight *= 10
+                        dotWeight *= 10
+
+                    sumRed += redWeight
+                    sumWhite += whiteWeight
+                    sumRing += ringWeight
+                    sumDot += dotWeight
+        else:
+            for i in range(8):
+                for j in range(12):
+                    redWeight = valueMap[j][i].redWeight
+                    whiteWeight = valueMap[j][i].whiteWeight
+                    ringWeight = valueMap[j][i].ringWeight
+                    dotWeight = valueMap[j][i].dotWeight
+
+                    if (ringWeight < 8 or dotWeight < 8) and (redWeight > price[1] or whiteWeight > price[1]):
+                        whiteWeight *= 10
+                        redWeight *= 10
+
+                    sumRed += redWeight
+                    sumWhite += whiteWeight
+                    sumRing += ringWeight
+                    sumDot += dotWeight
 
         return max(sumRing, sumDot) - max(sumRed, sumWhite)
 

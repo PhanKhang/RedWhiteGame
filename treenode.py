@@ -25,7 +25,7 @@ class Candidate:
 
 
 class Treenode:
-    def __init__(self, depth, valueMap, gameMap, moveNum, validator, party, weightParent, width):
+    def __init__(self, depth, valueMap, gameMap, moveNum, validator, party, computer, width):
         self.depth = depth
         self.gameMap = gameMap
         self.valueMap = valueMap
@@ -35,7 +35,7 @@ class Treenode:
         self.party = party
         self.rawMove = ''
         self.coef = 0.8
-        self.weightParent = weightParent
+        self.computer = computer
         self.goalState = "go"
         self.width = width
         self.weight = 0
@@ -47,7 +47,7 @@ class Treenode:
         #     self.weight *= 10
 
     def getOwnWeight(self):
-        self.weight = Appraiser().getScore(self.valueMap, self.gameMap) - self.weightParent
+        self.weight = Appraiser().getScore(self.valueMap, self.computer)
         return self.weight
 
     def populateChildren(self):
