@@ -30,22 +30,32 @@ class Appraiser:
             j1 += 1
 
         if gameMap[j][i] in self.red:
-            self.appraiseMove(i, j, valueMapRed, gameMap, self.red)
+            if self.appraiseMove(i, j, valueMapRed, gameMap, self.red):
+                win = True
         if gameMap[j][i] in self.white:
-            self.appraiseMove(i, j, valueMapWhite, gameMap, self.white)
+            if self.appraiseMove(i, j, valueMapWhite, gameMap, self.white):
+                win = True
         if gameMap[j][i] in self.dot:
-            self.appraiseMove(i, j, valueMapDot, gameMap, self.dot)
+            if self.appraiseMove(i, j, valueMapDot, gameMap, self.dot):
+                win = True
         if gameMap[j][i] in self.ring:
-            self.appraiseMove(i, j, valueMapRing, gameMap, self.ring)
+            if self.appraiseMove(i, j, valueMapRing, gameMap, self.ring):
+                win = True
 
         if gameMap[j1][i1] in self.red:
-            self.appraiseMove(i1, j1, valueMapRed, gameMap, self.red)
+            if self.appraiseMove(i1, j1, valueMapRed, gameMap, self.red):
+                win = True
         if gameMap[j1][i1] in self.white:
-            self.appraiseMove(i1, j1, valueMapWhite, gameMap, self.white)
+            if self.appraiseMove(i1, j1, valueMapWhite, gameMap, self.white):
+                win = True
         if gameMap[j1][i1] in self.dot:
-            self.appraiseMove(i1, j1, valueMapDot, gameMap, self.dot)
+            if self.appraiseMove(i1, j1, valueMapDot, gameMap, self.dot):
+                win = True
         if gameMap[j1][i1] in self.ring:
-            self.appraiseMove(i1, j1, valueMapRing, gameMap, self.ring)
+            if self.appraiseMove(i1, j1, valueMapRing, gameMap, self.ring):
+                win = True
+
+        return win
 
         # if move.type == 1:
         #     valueMap[move.sourceCoordinate1Num - 1][move.sourceCoordinate1Let - 1].occupied = 0
@@ -109,21 +119,28 @@ class Appraiser:
         return rate
 
     def appraiseMove(self, i, j, valueMap, gameMap, colorOrDot):
+        win = False
         for step in range(4):
             if i - step >= 0:
                 rate = self.isHorizontalWindowFree(i - step, j, colorOrDot, gameMap)
+                if rate == 4:
+                    win = True
                 if rate > 0:
                     for k in range(4):
                         if valueMap[j][i - step + k] < price[rate] and gameMap[j][i - step + k] != 0:
                             valueMap[j][i - step + k] = price[rate]
             if j - step >= 0:
                 rate = self.isVerticalWindowFree(i, j - step, colorOrDot, gameMap)
+                if rate == 4:
+                    win = True
                 if rate > 0:
                     for k in range(4):
                         if valueMap[j - step + k][i] < price[rate] and gameMap[j - step + k][i] != 0:
                             valueMap[j - step + k][i] = price[rate]
             if i - step >= 0 and j + step < 12:
                 rate = self.isDownDiagonalWindowFree(i - step, j + step, colorOrDot, gameMap)
+                if rate == 4:
+                    win = True
                 if rate > 0:
                     for k in range(4):
                         if valueMap[j + step - k][i - step + k] < price[rate] \
@@ -131,190 +148,17 @@ class Appraiser:
                             valueMap[j + step - k][i - step + k] = price[rate]
             if j - step >= 0 and i - step >= 0:
                 rate = self.isUpDiagonalWindowFree(i - step, j - step, colorOrDot, gameMap)
+                if rate == 4:
+                    win = True
                 if rate > 0:
                     for k in range(4):
                         if valueMap[j - step + k][i - step + k] < price[rate] \
                                 and gameMap[j - step + k][i - step + k] != 0:
                             valueMap[j - step + k][i - step + k] = price[rate]
-
+        return win
 
     # check and apply the weight on the window of 4 elements if there is possibility of creating 4 in a row
     # total fields check is 7
-    def appraiseRed(self, i, j, valueMap, gameMap):
-        for step in range(4):
-            if i - step >= 0:
-                rate = self.isHorizontalWindowFree(i - step, j, self.red, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j][i - step + k].redWeight < price[rate] and gameMap[j][i - step + k] != 0:
-                            valueMap[j][i - step + k].redWeight = price[rate]
-            if j - step >= 0:
-                rate = self.isVerticalWindowFree(i, j - step, self.red, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j - step + k][i].redWeight < price[rate] and gameMap[j - step + k][i] != 0:
-                            valueMap[j - step + k][i].redWeight = price[rate]
-            if i - step >= 0 and j + step < 12:
-                rate = self.isDownDiagonalWindowFree(i - step, j + step, self.red, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j + step - k][i - step + k].redWeight < price[rate] \
-                                and gameMap[j + step - k][i - step + k] != 0:
-                            valueMap[j + step - k][i - step + k].redWeight = price[rate]
-            if j - step >= 0 and i - step >= 0:
-                rate = self.isUpDiagonalWindowFree(i - step, j - step, self.red, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j - step + k][i - step + k].redWeight < price[rate] \
-                                and gameMap[j - step + k][i - step + k] != 0:
-                            valueMap[j - step + k][i - step + k].redWeight = price[rate]
-
-    def appraiseRedRemove(self, i, j, valueMap, gameMap):
-        valueMap[j][i].redWeight = 0
-        for step in range(4):
-            if i - step >= 0:
-                rate = self.isHorizontalWindowFree(i - step, j, self.red, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j][i - step + k].redWeight > price[rate] and gameMap[j][i - step + k] != 0:
-                            valueMap[j][i - step + k].redWeight = price[rate]
-            if j - step >= 0:
-                rate = self.isVerticalWindowFree(i, j - step, self.red, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j - step + k][i].redWeight > price[rate] and gameMap[j - step + k][i] != 0:
-                            valueMap[j - step + k][i].redWeight = price[rate]
-            if i - step >= 0 and j + step < 12:
-                rate = self.isDownDiagonalWindowFree(i - step, j + step, self.red, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j + step - k][i - step + k].redWeight > price[rate] \
-                                and gameMap[j + step - k][i - step + k] != 0:
-                            valueMap[j + step - k][i - step + k].redWeight = price[rate]
-            if j - step >= 0 and i - step >= 0:
-                rate = self.isUpDiagonalWindowFree(i - step, j - step, self.red, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j - step + k][i - step + k].redWeight > price[rate] \
-                                and gameMap[j - step + k][i - step + k] != 0:
-                            valueMap[j - step + k][i - step + k].redWeight = price[rate]
-
-    def appraise_white(self, i, j, valueMap, gameMap):
-        for step in range(4):
-            if i - step >= 0:
-                rate = self.isHorizontalWindowFree(i - step, j, self.white, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j][i - step + k].whiteWeight < price[rate] and gameMap[j][i - step + k] != 0:
-                            valueMap[j][i - step + k].whiteWeight = price[rate]
-            if j - step >= 0:
-                rate = self.isVerticalWindowFree(i, j - step, self.white, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j - step + k][i].whiteWeight < price[rate] and gameMap[j - step + k][i] != 0:
-                            valueMap[j - step + k][i].whiteWeight = price[rate]
-            if i - step >= 0 and j + step < 12:
-                rate = self.isDownDiagonalWindowFree(i - step, j + step, self.white, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j + step - k][i - step + k].whiteWeight < price[rate] \
-                                and gameMap[j + step - k][i - step + k] != 0:
-                            valueMap[j + step - k][i - step + k].whiteWeight = price[rate]
-            if j - step >= 0 and i - step >= 0:
-                rate = self.isUpDiagonalWindowFree(i - step, j - step, self.white, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j - step + k][i - step + k].whiteWeight < price[rate] \
-                                and gameMap[j - step + k][i - step + k] != 0:
-                            valueMap[j - step + k][i - step + k].whiteWeight = price[rate]
-
-    def appraise_dot(self, i, j, valueMap, gameMap):
-        for step in range(4):
-            if i - step >= 0:
-                rate = self.isHorizontalWindowFree(i - step, j, self.dot, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j][i - step + k].dotWeight < price[rate] and gameMap[j][i - step + k] != 0:
-                            valueMap[j][i - step + k].dotWeight = price[rate]
-            if j - step >= 0:
-                rate = self.isVerticalWindowFree(i, j - step, self.dot, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j - step + k][i].dotWeight < price[rate] and gameMap[j - step + k][i] != 0:
-                            valueMap[j - step + k][i].dotWeight = price[rate]
-            if i - step >= 0 and j + step < 12:
-                rate = self.isDownDiagonalWindowFree(i - step, j + step, self.dot, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j + step - k][i - step + k].dotWeight < price[rate] \
-                                and gameMap[j + step - k][i - step + k] != 0:
-                            valueMap[j + step - k][i - step + k].dotWeight = price[rate]
-            if j - step >= 0 and i - step >= 0:
-                rate = self.isUpDiagonalWindowFree(i - step, j - step, self.dot, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j - step + k][i - step + k].dotWeight < price[rate] \
-                                and gameMap[j - step + k][i - step + k] != 0:
-                            valueMap[j - step + k][i - step + k].dotWeight = price[rate]
-
-    def appraise_ring(self, i, j, valueMap, gameMap):
-        for step in range(4):
-            if i - step >= 0:
-                rate = self.isHorizontalWindowFree(i - step, j, self.ring, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j][i - step + k].ringWeight < price[rate] and gameMap[j][i - step + k] != 0:
-                            valueMap[j][i - step + k].ringWeight = price[rate]
-            if j - step >= 0:
-                rate = self.isVerticalWindowFree(i, j - step, self.ring, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j - step + k][i].ringWeight < price[rate] and gameMap[j - step + k][i] != 0:
-                            valueMap[j - step + k][i].ringWeight = price[rate]
-            if i - step >= 0 and j + step < 12:
-                rate = self.isDownDiagonalWindowFree(i - step, j + step, self.ring, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j + step - k][i - step + k].ringWeight < price[rate] \
-                                and gameMap[j + step - k][i - step + k] != 0:
-                            valueMap[j + step - k][i - step + k].ringWeight = price[rate]
-            if j - step >= 0 and i - step >= 0:
-                rate = self.isUpDiagonalWindowFree(i - step, j - step, self.ring, gameMap)
-                if rate > 0:
-                    for k in range(4):
-                        if valueMap[j - step + k][i - step + k].ringWeight < price[rate] \
-                                and gameMap[j - step + k][i - step + k] != 0:
-                            valueMap[j - step + k][i - step + k].ringWeight = price[rate]
-
-    # returns coordinate with non zero weight and free on the gameMap
-    def getRedMap(self, valueMap):
-        Matrix = numpy.zeros((12, 8))
-        for j in range(12):
-            for i in range(8):
-                Matrix[j][i] = valueMap[j][i].redWeight
-        return Matrix
-
-    def getWhiteMap(self, valueMap):
-        Matrix = numpy.zeros((12, 8))
-        for j in range(12):
-            for i in range(8):
-                Matrix[j][i] = valueMap[j][i].whiteWeight
-        return Matrix
-
-    def getDotMap(self, valueMap):
-        Matrix = numpy.zeros((12, 8))
-        for j in range(12):
-            for i in range(8):
-                Matrix[j][i] = valueMap[j][i].dotWeight
-        return Matrix
-
-    def getRingMap(self, valueMap):
-        Matrix = numpy.zeros((12, 8))
-        for j in range(12):
-            for i in range(8):
-                Matrix[j][i] = valueMap[j][i].ringWeight
-        return Matrix
-
     def getScore(self, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party):
         sumRed = 0
         sumWhite = 0
