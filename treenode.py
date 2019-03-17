@@ -25,10 +25,15 @@ class Candidate:
 
 
 class Treenode:
-    def __init__(self, depth, valueMap, gameMap, moveNum, validator, party, computer, width):
+    def __init__(self, depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, moveNum, validator, party, computer, width):
         self.depth = depth
         self.gameMap = gameMap
-        self.valueMap = valueMap
+
+        self.valueMapRed = valueMapRed
+        self.valueMapRing = valueMapRing
+        self.valueMapDot = valueMapDot
+        self.valueMapWhite = valueMapWhite
+
         self.children = []
         self.moveNum = moveNum
         self.validator = validator
@@ -47,7 +52,7 @@ class Treenode:
         #     self.weight *= 10
 
     def getOwnWeight(self):
-        self.weight = Appraiser().getScore(self.valueMap, self.party)
+        self.weight = Appraiser().getScore(self.valueMapRed, self.valueMapWhite, self.valueMapRing, self.valueMapDot, self.party)
         return self.weight
 
     def populateChildren(self):
@@ -58,65 +63,65 @@ class Treenode:
     def getRecycleCandidateScore(self, i1, j1, i2, j2, party):
         score = 0
         if party == 0:
-            score = max(self.valueMap[i1][j1].redWeight + self.valueMap[i2][j2].whiteWeight,
-                        self.valueMap[i1][j1].whiteWeight + self.valueMap[i2][j2].redWeight)
+            score = max(self.valueMapRed[i1][j1] + self.valueMapWhite[i2][j2],
+                        self.valueMapWhite[i1][j1] + self.valueMapRed[i2][j2])
         elif party == 1:
-            score = max(self.valueMap[i1][j1].dotWeight + self.valueMap[i2][j2].ringWeight,
-                        self.valueMap[i1][j1].ringWeight + self.valueMap[i2][j2].dotWeight)
+            score = max(self.valueMapDot[i1][j1] + self.valueMapRing[i2][j2],
+                        self.valueMapRing[i1][j1] + self.valueMapDot[i2][j2])
         return score
 
     def getCandidateScore(self, i, j, position, party):
         score = 0
         if party == 0:
             if position in [1]:
-                score = (self.valueMap[i][j].dotWeight + self.valueMap[i][j + 1].ringWeight) \
-                        - (self.valueMap[i][j].redWeight + self.valueMap[i][j + 1].whiteWeight) * self.coef
+                score = (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) \
+                        - (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) * self.coef
             elif position in [2]:
-                score = (self.valueMap[i][j].ringWeight + self.valueMap[i + 1][j].dotWeight) \
-                        - (self.valueMap[i][j].whiteWeight + self.valueMap[i + 1][j].redWeight) * self.coef
+                score = (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) \
+                        - (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) * self.coef
             elif position in [3]:
-                score = (self.valueMap[i][j].ringWeight + self.valueMap[i][j + 1].dotWeight) \
-                        - (self.valueMap[i][j].whiteWeight + self.valueMap[i][j + 1].redWeight) * self.coef
+                score = (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) \
+                        - (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) * self.coef
             elif position in [4]:
-                score = (self.valueMap[i][j].dotWeight + self.valueMap[i + 1][j].ringWeight) \
-                        - (self.valueMap[i][j].redWeight + self.valueMap[i + 1][j].whiteWeight) * self.coef
+                score = (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) \
+                        - (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) * self.coef
             elif position in [5]:
-                score = (self.valueMap[i][j].ringWeight + self.valueMap[i][j + 1].dotWeight) \
-                        - (self.valueMap[i][j].redWeight + self.valueMap[i][j + 1].whiteWeight) * self.coef
+                score = (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) \
+                        - (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) * self.coef
             elif position in [6]:
-                score = (self.valueMap[i][j].dotWeight + self.valueMap[i + 1][j].ringWeight) \
-                        - (self.valueMap[i][j].whiteWeight + self.valueMap[i + 1][j].redWeight) * self.coef
+                score = (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) \
+                        - (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) * self.coef
             elif position in [7]:
-                score = (self.valueMap[i][j].dotWeight + self.valueMap[i][j + 1].ringWeight) \
-                        - (self.valueMap[i][j].whiteWeight + self.valueMap[i][j + 1].redWeight) * self.coef
+                score = (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) \
+                        - (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) * self.coef
             elif position in [8]:
-                score = (self.valueMap[i][j].ringWeight + self.valueMap[i + 1][j].dotWeight) \
-                        - (self.valueMap[i][j].redWeight + self.valueMap[i + 1][j].whiteWeight) * self.coef
+                score = (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) \
+                        - (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) * self.coef
         elif party == 1:
             if position in [1]:
-                score = (self.valueMap[i][j].redWeight + self.valueMap[i][j + 1].whiteWeight) \
-                        - (self.valueMap[i][j].dotWeight + self.valueMap[i][j + 1].ringWeight) * self.coef
+                score = (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) \
+                        - (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) * self.coef
             elif position in [2]:
-                score = (self.valueMap[i][j].whiteWeight + self.valueMap[i + 1][j].redWeight) \
-                        - (self.valueMap[i][j].ringWeight + self.valueMap[i + 1][j].dotWeight) * self.coef
+                score = (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) \
+                        - (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) * self.coef
             elif position in [3]:
-                score = (self.valueMap[i][j].whiteWeight + self.valueMap[i][j + 1].redWeight) \
-                        - (self.valueMap[i][j].ringWeight + self.valueMap[i][j + 1].dotWeight) * self.coef
+                score = (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) \
+                        - (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) * self.coef
             elif position in [4]:
-                score = (self.valueMap[i][j].redWeight + self.valueMap[i + 1][j].whiteWeight) \
-                        - (self.valueMap[i][j].dotWeight + self.valueMap[i + 1][j].ringWeight) * self.coef
+                score = (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) \
+                        - (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) * self.coef
             elif position in [5]:
-                score = (self.valueMap[i][j].redWeight + self.valueMap[i][j + 1].whiteWeight) \
-                        - (self.valueMap[i][j].ringWeight + self.valueMap[i][j + 1].dotWeight) * self.coef
+                score = (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) \
+                        - (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) * self.coef
             elif position in [6]:
-                score = (self.valueMap[i][j].whiteWeight + self.valueMap[i + 1][j].redWeight) \
-                        - (self.valueMap[i][j].dotWeight + self.valueMap[i + 1][j].ringWeight) * self.coef
+                score = (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) \
+                        - (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) * self.coef
             elif position in [7]:
-                score = (self.valueMap[i][j].whiteWeight + self.valueMap[i][j + 1].redWeight) \
-                        - (self.valueMap[i][j].dotWeight + self.valueMap[i][j + 1].ringWeight) * self.coef
+                score = (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) \
+                        - (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) * self.coef
             elif position in [8]:
-                score = (self.valueMap[i][j].redWeight + self.valueMap[i + 1][j].whiteWeight) \
-                        - (self.valueMap[i][j].ringWeight + self.valueMap[i + 1][j].dotWeight) * self.coef
+                score = (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) \
+                        - (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) * self.coef
         return score
 
     def toPut(self, i, j):
@@ -209,15 +214,18 @@ class Treenode:
         # print(moveString)
         if self.validator.placeValidator(move, self.gameMap):
             newGameMap = copy.copy(self.gameMap)
-            newValueMap = copy.deepcopy(self.valueMap)
+            newvalueMapRed = copy.copy(self.valueMapRed)
+            newvalueMapWhite = copy.copy(self.valueMapWhite)
+            newvalueMapRing = copy.copy(self.valueMapRing)
+            newvalueMapDot = copy.copy(self.valueMapDot)
             newValidator = copy.copy(self.validator)
 
             Nonvalidatedplacer().place(move, newValidator, newGameMap)
-            Appraiser().appraise(move, newValueMap, newGameMap)
+            Appraiser().appraise(move, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot, newGameMap)
             newparty = 0
             if self.party == 0:
                 newparty = 1
-            childNode = Treenode(self.depth - 1, newValueMap, newGameMap, self.moveNum + 1, newValidator, newparty,
+            childNode = Treenode(self.depth - 1, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot, newGameMap, self.moveNum + 1, newValidator, newparty,
                                  self.computer, self.width)
             childNode.rawMove = moveString
             self.children.append(childNode)

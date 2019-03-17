@@ -4,7 +4,6 @@ from move import Move
 from validator import Validator
 from appraiser import Appraiser
 from placer import Placer
-from cell import Cell
 from treenode import Treenode
 import copy
 import time
@@ -12,6 +11,11 @@ import random
 
 # game map
 gameMap = numpy.zeros((12, 8))
+valueMapRed = numpy.zeros((12, 8))
+valueMapWhite = numpy.zeros((12, 8))
+valueMapDot = numpy.zeros((12, 8))
+valueMapRing = numpy.zeros((12, 8))
+
 # krasnyCherny - 1
 # beluyKolco - 2
 # krasnyKolco - 3
@@ -145,8 +149,6 @@ def alphabeta(node, depth, a, b, maxP):
         return node.weight
 
 
-valueMap = [[Cell() for j in range(8)] for i in range(12)]
-
 
 def main():
     # pruning = int(input("Activate alpha-beta pruning? 1 for yes 0 for no: "))
@@ -190,14 +192,12 @@ def main():
         while not legal:
             movok = False
             while not movok:
-                newValueMap = copy.copy(valueMap)
-                newGameMap = copy.copy(gameMap)
                 input_var = ''
                 if (k % 2 == 1 and computer == 1) or (k % 2 == 0 and computer == 2):
                     if k > 1:
                         start_time = time.time()
                         computer_party = party
-                        treenode = Treenode(depth, newValueMap, newGameMap, k, validator, party, computer_party, width)
+                        treenode = Treenode(depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, k, validator, party, computer_party, width)
                         if pruning == 1:
                             targetWeight = alphabeta(treenode, depth, -9999999, 9999999, maximizing)
                         else:
@@ -227,10 +227,10 @@ def main():
         print("Current Game field")
         correctPrinterMap(gameMap)  # change to correctPrinterMapL for letter output
         # print(validator.coordinateToRotation)
-        appraiser.appraise(move, valueMap, gameMap)
+        appraiser.appraise(move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap)
 
         print("Current Weight")
-        print(appraiser.getScore(valueMap, party))
+        print(appraiser.getScore(valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party))
         # print("Red map")
         # # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
         # correctPrinter(appraiser.getRedMap(valueMap))

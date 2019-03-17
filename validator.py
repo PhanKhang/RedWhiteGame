@@ -165,7 +165,6 @@ class Validator:
                         if gameMap[i][j] in self.ring and gameMap[i + 1][j] in self.ring and \
                                 gameMap[i + 2][j] in self.ring and gameMap[i + 3][j] in self.ring:
                             return "circle wins"
-
                     if j <= 4:
                         if gameMap[i][j] in self.red and gameMap[i][j + 1] in self.red and \
                                 gameMap[i][j + 2] in self.red and gameMap[i][j + 3] in self.red:
