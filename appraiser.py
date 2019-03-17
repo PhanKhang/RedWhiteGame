@@ -149,8 +149,8 @@ class Appraiser:
                     win = True
                 if rate > 0:
                     for k in range(4):
-                        if valueMap[j][i - step + k] < price[rate]+100 and gameMap[j][i - step + k] != 0:#here
-                            valueMap[j][i - step + k] = price[rate]+100
+                        if valueMap[j][i - step + k] < price[rate]+1 and gameMap[j][i - step + k] != 0: #here
+                            valueMap[j][i - step + k] = price[rate]+1
             if j - step >= 0:
                 rate = self.isVerticalWindowFree(i, j - step, colorOrDot, gameMap)
                 if rate >= 4:
@@ -243,20 +243,38 @@ class Appraiser:
                     sumRing += ringWeight
                     sumDot += dotWeight
 
+        # if party == 0:
+        #     if goalState == "winC":
+        #         return max(sumRing, sumDot) - 10*max(sumRed, sumWhite)
+        #     elif goalState == "winD" or goalState == "winDC":
+        #         return 10*max(sumRing, sumDot) - max(sumRed, sumWhite)
+        #     else:
+        #         return max(sumRing, sumDot) - max(sumRed, sumWhite)
+        # if party == 1:
+        #     if goalState == "winD":
+        #         return 10*max(sumRing, sumDot) - max(sumRed, sumWhite)
+        #     elif goalState == "winC" or goalState == "winDC":
+        #         return max(sumRing, sumDot) - 10*max(sumRed, sumWhite)
+        #     else:
+        #         return max(sumRing, sumDot) - max(sumRed, sumWhite)
+
+
         if party == 0:
             if goalState == "winC":
-                return max(sumRing, sumDot) - 10*max(sumRed, sumWhite)
+                return (sumRing + sumDot) - 10 * (sumRed + sumWhite)
             elif goalState == "winD" or goalState == "winDC":
-                return 10*max(sumRing, sumDot) - max(sumRed, sumWhite)
+                return 10*(sumRing + sumDot) - (sumRed + sumWhite)
             else:
-                return max(sumRing, sumDot) - max(sumRed, sumWhite)
+                return (sumRing + sumDot) - (sumRed + sumWhite)
         if party == 1:
             if goalState == "winD":
-                return 10*max(sumRing, sumDot) - max(sumRed, sumWhite)
+                return 10*(sumRing + sumDot) - (sumRed + sumWhite)
             elif goalState == "winC" or goalState == "winDC":
-                return max(sumRing, sumDot) - 10*max(sumRed, sumWhite)
+                return (sumRing + sumDot) - 10*(sumRed + sumWhite)
             else:
-                return max(sumRing, sumDot) - max(sumRed, sumWhite)
+                return (sumRing + sumDot) - (sumRed + sumWhite)
+
+
 
         # return (sumRing + sumDot) - (sumRed + sumWhite)
 
