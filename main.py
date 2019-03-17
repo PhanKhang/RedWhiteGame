@@ -197,7 +197,7 @@ def main():
                     if k > 1:
                         start_time = time.time()
                         computer_party = party
-                        treenode = Treenode(depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, k, validator, party, computer_party, width)
+                        treenode = Treenode(depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, k, validator, party, width, "go")
                         if pruning == 1:
                             targetWeight = alphabeta(treenode, depth, -9999999, 9999999, maximizing)
                         else:
@@ -231,21 +231,21 @@ def main():
 
         print("Current Weight")
         print(appraiser.getScore(valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party))
-        print("Red map")
-        # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
-        correctPrinter(valueMapRed)
-
-        print("White map")
-        # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
-        correctPrinter(valueMapWhite)
-
-        print("Ring map")
-        # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
-        correctPrinter(valueMapRing)
-
-        print("Dot map")
-        # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
-        correctPrinter(valueMapDot)
+        # print("Red ma]p")
+        # # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
+        # correctPrinter(valueMapRed)
+        #
+        # print("White map")
+        # # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
+        # correctPrinter(valueMapWhite)
+        #
+        # print("Ring map")
+        # # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
+        # correctPrinter(valueMapRing)
+        #
+        # print("Dot map")
+        # # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
+        # correctPrinter(valueMapDot)
 
         result = validator.victoryCheck(party, gameMap)
 

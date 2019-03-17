@@ -182,15 +182,15 @@ class Appraiser:
                         ringWeight *= 10
                         dotWeight *= 10
 
-                    if i > 0:
-                        if valueMapRed[j][i-1] != 0 and valueMapRed[j][i] == 0:
-                            sumRed -= 1
-                        if valueMapWhite[j][i-1] != 0 and valueMapWhite[j][i] == 0:
-                            sumWhite -= 1
-                        if valueMapRing[j][i-1] != 0 and valueMapRing[j][i] == 0:
-                            sumRing -= 1
-                        if valueMapDot[j][i-1] != 0 and valueMapDot[j][i] == 0:
-                            sumDot -= 1
+                    # if i > 0:
+                    #     if valueMapRed[j][i-1] != 0 and valueMapRed[j][i] == 0:
+                    #         sumRed -= 1
+                    #     if valueMapWhite[j][i-1] != 0 and valueMapWhite[j][i] == 0:
+                    #         sumWhite -= 1
+                    #     if valueMapRing[j][i-1] != 0 and valueMapRing[j][i] == 0:
+                    #         sumRing -= 1
+                    #     if valueMapDot[j][i-1] != 0 and valueMapDot[j][i] == 0:
+                    #         sumDot -= 1
 
                     sumRed += redWeight
                     sumWhite += whiteWeight
@@ -212,15 +212,15 @@ class Appraiser:
                         whiteWeight *= 10
                         redWeight *= 10
 
-                    if i > 0:
-                        if valueMapRed[j][i-1] != 0 and valueMapRed[j][i] == 0:
-                            sumRed -= 1
-                        if valueMapWhite[j][i-1] != 0 and valueMapWhite[j][i] == 0:
-                            sumWhite -= 1
-                        if valueMapRing[j][i-1] != 0 and valueMapRing[j][i] == 0:
-                            sumRing -= 1
-                        if valueMapDot[j][i-1] != 0 and valueMapDot[j][i] == 0:
-                            sumDot -= 1
+                    # if i > 0:
+                    #     if valueMapRed[j][i-1] != 0 and valueMapRed[j][i] == 0:
+                    #         sumRed -= 1
+                    #     if valueMapWhite[j][i-1] != 0 and valueMapWhite[j][i] == 0:
+                    #         sumWhite -= 1
+                    #     if valueMapRing[j][i-1] != 0 and valueMapRing[j][i] == 0:
+                    #         sumRing -= 1
+                    #     if valueMapDot[j][i-1] != 0 and valueMapDot[j][i] == 0:
+                    #         sumDot -= 1
 
                     sumRed += redWeight
                     sumWhite += whiteWeight

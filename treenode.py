@@ -25,7 +25,7 @@ class Candidate:
 
 
 class Treenode:
-    def __init__(self, depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, moveNum, validator, party, computer, width):
+    def __init__(self, depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, moveNum, validator, party, width, goalState):
         self.depth = depth
         self.gameMap = gameMap
 
@@ -40,8 +40,7 @@ class Treenode:
         self.party = party
         self.rawMove = ''
         self.coef = 0.8
-        self.computer = computer
-        self.goalState = "go"
+        self.goalState = goalState
         self.width = width
         self.weight = 0
 
@@ -221,16 +220,31 @@ class Treenode:
             newValidator = copy.copy(self.validator)
 
             Nonvalidatedplacer().place(move, newValidator, newGameMap)
-            Appraiser().appraise(move, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot, newGameMap)
+            result = Appraiser().appraise(move, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot, newGameMap)
+
+
+            goalState = "go"
+            if result:
+                print("I won")
+                goalState = "win"
+
             newparty = 0
             if self.party == 0:
                 newparty = 1
-            childNode = Treenode(self.depth - 1, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot, newGameMap, self.moveNum + 1, newValidator, newparty,
-                                 self.computer, self.width)
+            childNode = Treenode(self.depth - 1, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot, newGameMap, self.moveNum + 1, newValidator, newparty, self.width, goalState)
             childNode.rawMove = moveString
             self.children.append(childNode)
 
     def getMove(self, weight):
+        move = ""
+        count = 0
         for node in self.children:
+            print(node.rawMove + "____"+ str(node.weight))
             if node.weight == weight:
-                return node.rawMove
+                move = node.rawMove
+                # print(move)
+                count += 1
+                # return node.rawMove
+        print("_______"+str(weight)+"_______")
+        print(count)
+        return move
