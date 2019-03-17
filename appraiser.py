@@ -16,6 +16,7 @@ class Appraiser:
     # appraise how how card will affect gameMap
     def appraise(self, move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot , gameMap):
         remove = False
+        win = False
         if move.type == 1:
             remove = True
 
@@ -181,11 +182,11 @@ class Appraiser:
                         ringWeight *= 10
                         dotWeight *= 10
 
-                    if i < 7:
-                        if valueMapRing[j][i] != 0 and valueMapRing[j][i+1] == 0:
-                            sumRing -= 3
-                        if valueMapDot[j][i] != 0 and valueMapDot[j][i+1] == 0:
-                            sumDot -= 3
+                    # if i < 7:
+                    #     if valueMapRing[j][i] != 0 and valueMapRing[j][i+1] == 0:
+                    #         sumRing -= 3
+                    #     if valueMapDot[j][i] != 0 and valueMapDot[j][i+1] == 0:
+                    #         sumDot -= 3
 
                     sumRed += redWeight
                     sumWhite += whiteWeight
@@ -207,11 +208,11 @@ class Appraiser:
                         whiteWeight *= 10
                         redWeight *= 10
 
-                    if i < 7:
-                        if valueMapRed[j][i] != 0 and valueMapRed[j][i+1] == 0:
-                            sumRed -= 3
-                        if valueMapWhite[j][i] != 0 and valueMapWhite[j][i+1] == 0:
-                            sumWhite -= 3
+                    # if i < 7:
+                    #     if valueMapRed[j][i] != 0 and valueMapRed[j][i+1] == 0:
+                    #         sumRed -= 3
+                    #     if valueMapWhite[j][i] != 0 and valueMapWhite[j][i+1] == 0:
+                    #         sumWhite -= 3
 
 
                     sumRed += redWeight
