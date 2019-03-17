@@ -241,19 +241,19 @@ class Treenode:
                 for i in range(8):
                     if self.valueMapRing[j][i] > maxVal:
                         maxVal = self.valueMapRing[j][i]
-                        self.lroot = self.validator.numbToLetter.get(i)
+                        self.lroot = self.validator.numbToLetter.get(i+1)
                     if self.valueMapDot[j][i] > maxVal:
-                        maxVal = self.valueMapRing[j][i]
-                        self.lroot = self.validator.numbToLetter.get(i)
+                        maxVal = self.valueMapDot[j][i]
+                        self.lroot = self.validator.numbToLetter.get(i+1)
         if self.party == 1:
             for j in range(12):
                 for i in range(8):
                     if self.valueMapRed[j][i] > maxVal:
-                        maxVal = self.valueMapRing[j][i]
-                        self.lroot = self.validator.numbToLetter.get(i)
+                        maxVal = self.valueMapRed[j][i]
+                        self.lroot = self.validator.numbToLetter.get(i+1)
                     if self.valueMapWhite[j][i] > maxVal:
-                        maxVal = self.valueMapRing[j][i]
-                        self.lroot = self.validator.numbToLetter.get(i)
+                        maxVal = self.valueMapWhite[j][i]
+                        self.lroot = self.validator.numbToLetter.get(i+1)
 
     def distance(self, treenode):
         nroot = ord(self.lroot)
