@@ -43,6 +43,7 @@ class Treenode:
         self.goalState = goalState
         self.width = width
         self.weight = 0
+        self.lroot = ''
 
         # self.goalState = self.validator.victoryCheck(party, gameMap)
         # if self.goalState == 'color wins' and party == 0:
@@ -235,9 +236,40 @@ class Treenode:
             childNode.rawMove = moveString
             self.children.append(childNode)
 
+
+    def setLroot(self):
+        maxVal = 0
+        if self.party == 0:
+            for j in range(12):
+                for i in range(8):
+                    if self.valueMapRing[j][i] > maxVal:
+                        maxVal = self.valueMapRing[j][i]
+                        self.lroot = self.validator.numbToLetter.get(i)
+                    if self.valueMapDot[j][i] > maxVal:
+                        maxVal = self.valueMapRing[j][i]
+                        self.lroot = self.validator.numbToLetter.get(i)
+        if self.party == 1:
+            for j in range(12):
+                for i in range(8):
+                    if self.valueMapRed[j][i] > maxVal:
+                        maxVal = self.valueMapRing[j][i]
+                        self.lroot = self.validator.numbToLetter.get(i)
+                    if self.valueMapWhite[j][i] > maxVal:
+                        maxVal = self.valueMapRing[j][i]
+                        self.lroot = self.validator.numbToLetter.get(i)
+
+    def distance(self, treenode):
+        nroot = ord(self.lroot)
+        nnum = ord(treenode.rawMove[-3:-2])
+        return abs(nroot-nnum)
+
+
+
     def getMove(self, weight):
         move = ""
         count = 0
+        self.setLroot()
+        self.children.sort(key=self.distance, reverse=False)
         for node in self.children:
             print(node.rawMove + "____"+ str(node.weight))
             if node.weight == weight:
