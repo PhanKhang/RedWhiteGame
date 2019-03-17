@@ -258,6 +258,11 @@ class Appraiser:
                     ringWeight = valueMapRing[j][i]
                     dotWeight = valueMapDot[j][i]
 
+                    if redWeight >= price[3]:
+                        redWeight *= 1.5
+                    if whiteWeight >= price[3]:
+                        whiteWeight *= 1.5
+
 
                     sumRed += redWeight
                     sumWhite += whiteWeight
@@ -270,6 +275,11 @@ class Appraiser:
                     whiteWeight = valueMapWhite[j][i]
                     ringWeight = valueMapRing[j][i]
                     dotWeight = valueMapDot[j][i]
+
+                    if dotWeight >= price[3]:
+                        dotWeight *= 1.5
+                    if dotWeight >= price[3]:
+                        dotWeight *= 1.5
 
                     sumRed += redWeight
                     sumWhite += whiteWeight
