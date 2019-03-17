@@ -231,21 +231,21 @@ def main():
 
         print("Current Weight")
         print(appraiser.getScore(valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party))
-        # print("Red map")
-        # # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
-        # correctPrinter(appraiser.getRedMap(valueMap))
-        #
-        # print("White map")
-        # # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
-        # correctPrinter(appraiser.getWhiteMap(valueMap))
-        #
-        # print("Ring map")
-        # # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
-        # correctPrinter(appraiser.getRingMap(valueMap))
-        #
-        # print("Dot map")
-        # # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
-        # correctPrinter(appraiser.getDotMap(valueMap))
+        print("Red map")
+        # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
+        correctPrinter(valueMapRed)
+
+        print("White map")
+        # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
+        correctPrinter(valueMapWhite)
+
+        print("Ring map")
+        # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
+        correctPrinter(valueMapRing)
+
+        print("Dot map")
+        # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
+        correctPrinter(valueMapDot)
 
         result = validator.victoryCheck(party, gameMap)
 
