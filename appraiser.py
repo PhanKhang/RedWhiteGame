@@ -16,7 +16,8 @@ class Appraiser:
     # appraise how how card will affect gameMap
     def appraise(self, move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot , gameMap, party):
         remove = False
-        win = False
+        winC = False
+        winD = False
         if move.type == 1:
             remove = True
 
@@ -32,42 +33,51 @@ class Appraiser:
 
         if gameMap[j][i] in self.red:
             if self.appraiseMove(i, j, valueMapRed, gameMap, self.red):
-                win = True
+                winC = True
         if gameMap[j][i] in self.white:
             if self.appraiseMove(i, j, valueMapWhite, gameMap, self.white):
-                win = True
+                winC = True
         if gameMap[j][i] in self.dot:
             if self.appraiseMove(i, j, valueMapDot, gameMap, self.dot):
-                win = True
+                winD = True
         if gameMap[j][i] in self.ring:
             if self.appraiseMove(i, j, valueMapRing, gameMap, self.ring):
-                win = True
+                winD = True
 
         if gameMap[j1][i1] in self.red:
             if self.appraiseMove(i1, j1, valueMapRed, gameMap, self.red):
-                win = True
+                winC = True
         if gameMap[j1][i1] in self.white:
             if self.appraiseMove(i1, j1, valueMapWhite, gameMap, self.white):
-                win = True
+                winC = True
         if gameMap[j1][i1] in self.dot:
             if self.appraiseMove(i1, j1, valueMapDot, gameMap, self.dot):
-                win = True
+                winD = True
         if gameMap[j1][i1] in self.ring:
             if self.appraiseMove(i1, j1, valueMapRing, gameMap, self.ring):
-                win = True
+                winD = True
 
-        if party == 0:
-            self.applyMatrix(valueMapDot, i, j)
-            self.applyMatrix(valueMapRing, i, j)
-            self.applyMatrix(valueMapDot, i1, j1)
-            self.applyMatrix(valueMapRing, i1, j1)
+        # if party == 0:
+        #     self.applyMatrix(valueMapDot, i, j)
+        #     self.applyMatrix(valueMapRing, i, j)
+        #     self.applyMatrix(valueMapDot, i1, j1)
+        #     self.applyMatrix(valueMapRing, i1, j1)
+        # else:
+        #     self.applyMatrix(valueMapWhite, i, j)
+        #     self.applyMatrix(valueMapRed, i, j)
+        #     self.applyMatrix(valueMapWhite, i1, j1)
+        #     self.applyMatrix(valueMapRed, i1, j1)
+
+        if winD and winC:
+            return "winDC"
+        elif winD:
+            return "winD"
+        elif winC:
+            return "winC"
         else:
-            self.applyMatrix(valueMapWhite, i, j)
-            self.applyMatrix(valueMapRed, i, j)
-            self.applyMatrix(valueMapWhite, i1, j1)
-            self.applyMatrix(valueMapRed, i1, j1)
+            return "go"
 
-        return win
+
 
         # if move.type == 1:
         #     valueMap[move.sourceCoordinate1Num - 1][move.sourceCoordinate1Let - 1].occupied = 0
@@ -139,8 +149,8 @@ class Appraiser:
                     win = True
                 if rate > 0:
                     for k in range(4):
-                        if valueMap[j][i - step + k] < price[rate] and gameMap[j][i - step + k] != 0:
-                            valueMap[j][i - step + k] = price[rate]
+                        if valueMap[j][i - step + k] < price[rate]+100 and gameMap[j][i - step + k] != 0:#here
+                            valueMap[j][i - step + k] = price[rate]+100
             if j - step >= 0:
                 rate = self.isVerticalWindowFree(i, j - step, colorOrDot, gameMap)
                 if rate >= 4:
@@ -171,7 +181,7 @@ class Appraiser:
 
     # check and apply the weight on the window of 4 elements if there is possibility of creating 4 in a row
     # total fields check is 7
-    def getScore(self, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party):
+    def getScore(self, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party, goalState):
         sumRed = 0
         sumWhite = 0
         sumRing = 0
@@ -233,7 +243,21 @@ class Appraiser:
                     sumRing += ringWeight
                     sumDot += dotWeight
 
-        return max(sumRing, sumDot) - max(sumRed, sumWhite)
+        if party == 0:
+            if goalState == "winC":
+                return max(sumRing, sumDot) - 10*max(sumRed, sumWhite)
+            elif goalState == "winD" or goalState == "winDC":
+                return 10*max(sumRing, sumDot) - max(sumRed, sumWhite)
+            else:
+                return max(sumRing, sumDot) - max(sumRed, sumWhite)
+        if party == 1:
+            if goalState == "winD":
+                return 10*max(sumRing, sumDot) - max(sumRed, sumWhite)
+            elif goalState == "winC" or goalState == "winDC":
+                return max(sumRing, sumDot) - 10*max(sumRed, sumWhite)
+            else:
+                return max(sumRing, sumDot) - max(sumRed, sumWhite)
+
         # return (sumRing + sumDot) - (sumRed + sumWhite)
 
     def applyMatrix(self, valueMap, i,j):

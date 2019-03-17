@@ -229,8 +229,8 @@ def main():
         # print(validator.coordinateToRotation)
         appraiser.appraise(move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, party)
 
-        print("Current Weight")
-        print(appraiser.getScore(valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party))
+        # print("Current Weight")
+        # print(appraiser.getScore(valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party))
         # print("Red ma]p")
         # # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
         # correctPrinter(valueMapRed)

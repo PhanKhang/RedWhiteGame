@@ -52,7 +52,7 @@ class Treenode:
         #     self.weight *= 10
 
     def getOwnWeight(self):
-        self.weight = Appraiser().getScore(self.valueMapRed, self.valueMapWhite, self.valueMapRing, self.valueMapDot, self.party)
+        self.weight = Appraiser().getScore(self.valueMapRed, self.valueMapWhite, self.valueMapRing, self.valueMapDot, self.party, self.goalState)
         return self.weight
 
     def populateChildren(self):
@@ -220,19 +220,15 @@ class Treenode:
             newvalueMapDot = copy.copy(self.valueMapDot)
             newValidator = copy.copy(self.validator)
 
-            Nonvalidatedplacer().place(move, newValidator, newGameMap)
-            result = Appraiser().appraise(move, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot, newGameMap,
-                                          self.party)
-
-
-            goalState = "go"
-            if result:
-                print("I won")
-                goalState = "win"
-
             newparty = 0
             if self.party == 0:
                 newparty = 1
+
+            Nonvalidatedplacer().place(move, newValidator, newGameMap)
+            goalState = Appraiser().appraise(move, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot, newGameMap,
+                                          newparty)
+
+
             childNode = Treenode(self.depth - 1, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot, newGameMap, self.moveNum + 1, newValidator, newparty, self.width, goalState)
             childNode.rawMove = moveString
             self.children.append(childNode)
