@@ -5,7 +5,6 @@ from validator import Validator
 from appraiser import Appraiser
 from placer import Placer
 from treenode import Treenode
-import copy
 import time
 import random
 
@@ -15,6 +14,7 @@ valueMapRed = numpy.zeros((12, 8))
 valueMapWhite = numpy.zeros((12, 8))
 valueMapDot = numpy.zeros((12, 8))
 valueMapRing = numpy.zeros((12, 8))
+coordinateToRotation = {}
 
 # krasnyCherny - 1
 # beluyKolco - 2
@@ -196,7 +196,7 @@ def main():
                 if (k % 2 == 1 and computer == 1) or (k % 2 == 0 and computer == 2):
                     if k > 1:
                         start_time = time.time()
-                        treenode = Treenode(depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, k, validator, party, width, "go")
+                        treenode = Treenode(depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, k, validator, party, width, "go", coordinateToRotation)
                         if pruning == 1:
                             targetWeight = alphabeta(treenode, depth, -9999999, 9999999, maximizing)
                         else:
@@ -216,16 +216,16 @@ def main():
                     movok = True
                 except:
                     print("unable to parse the move, try again")
-            if k <= 24 and move.type == 0:
-                legal = placer.place(move, validator, gameMap)
-            elif k > 24 and move.type == 1:
-                legal = placer.place(move, validator, gameMap)
+            if k <= 4 and move.type == 0:
+                legal = placer.place(move, validator, gameMap, coordinateToRotation)
+            elif k > 4 and move.type == 1:
+                legal = placer.place(move, validator, gameMap, coordinateToRotation)
             if not legal:
                 print("illegal move, try again")
 
         print("Current Game field")
         correctPrinterMap(gameMap)  # change to correctPrinterMapL for letter output
-        # print(validator.coordinateToRotation)
+        print(coordinateToRotation)
         appraiser.appraise(move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, party)
 
         # print("Current Weight")

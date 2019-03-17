@@ -1,8 +1,6 @@
 import numpy
 class Validator:
     def __init__(self):
-        self.coordinateToRotation = {}
-
         self.letterToNumb = {
             "A": 1,
             "B": 2,
@@ -18,8 +16,8 @@ class Validator:
 
     lastMove = None
 
-    def getListOfItems(self):
-        return self.coordinateToRotation
+    # def getListOfItems(self):
+    #     return coordinateToRotation
 
     # parse the move and check if the card can be placed
     def placeValidator(self, move, gameMap):
@@ -29,6 +27,12 @@ class Validator:
         if self.placeValidatorCoord(i, j, rotation, gameMap):
             self.lastMove = move
             return True
+
+    def validateMove(self, move, gameMap, coordinateToRotation):
+        if move.type == 0:
+            return self.placeValidator(move, gameMap)
+        else:
+            return self.recycleValidatorWithCardRemoval(move, gameMap, coordinateToRotation)
 
     # Checks:
     # 1) if card within the board's boundaries
@@ -44,14 +48,15 @@ class Validator:
                         if gameMap[j - 1][i] != 0 and gameMap[j - 1][i + 1] != 0:  # there is support
                             return True
                         else:
-                            print("No support: " + str(i) + ' ' + str(j) + ' ' + str(rotation))
-                            print(numpy.flipud(gameMap))
+                            # print("No support: " + str(i) + ' ' + str(j) + ' ' + str(rotation))
+                            # print(numpy.flipud(gameMap))
                             return False
                 else:
-                    print("Not free")
+                    # print("Not free" + str(i) + ' ' + str(j) + ' ' + str(rotation))
+                    # print(numpy.flipud(gameMap))
                     return False
             else:
-                print("Out of border")
+                # print("Out of border")
                 return False
         else:
             if 0 <= i <= 7 and 0 <= j <= 11 and 0 <= j + 1 <= 11:
@@ -62,13 +67,15 @@ class Validator:
                         if gameMap[j - 1][i] != 0:
                             return True
                         else:
-                            print("No support: " + str(i) + ' ' + str(j) + ' ' + str(rotation))
+                            # print("No support: " + str(i) + ' ' + str(j) + ' ' + str(rotation))
+                            # print(numpy.flipud(gameMap))
                             return False
                 else:
-                    print("Not free")
+                    # print("Not free" + str(i) + ' ' + str(j) + ' ' + str(rotation))
+                    # print(numpy.flipud(gameMap))
                     return False
             else:
-                print("Out of border")
+                # print("Out of border")
                 return False
 
     # Checks if horizontal card is not piled.
@@ -98,8 +105,8 @@ class Validator:
     # Checks recycle move:
     # 1) checks card integrity by coordinates
     # 2) checks if there is no other cards above the given one
-    def getCard(self, i, j):
-        rotation = self.coordinateToRotation.get(self.numbToLetter.get(i + 1) + str(j + 1), 0)
+    def getCard(self, i, j, coordinateToRotation):
+        rotation = coordinateToRotation.get(self.numbToLetter.get(j + 1) + str(i + 1), 0)
         if rotation != 0:
             if int(rotation) % 2 == 0:
                 return str(i+1)+":"+str(j)
@@ -108,8 +115,7 @@ class Validator:
         else:
             return "none"
 
-
-    def recycleValidator(self, move, gameMap):
+    def recycleValidator(self, move, gameMap, coordinateToRotation):
         if self.isNotLastMove(move):
             i1 = move.sourceCoordinate1Let - 1
             j1 = int(move.sourceCoordinate1Num) - 1
@@ -117,14 +123,18 @@ class Validator:
             i2 = move.sourceCoordinate2Let - 1
             j2 = int(move.sourceCoordinate2Num) - 1
 
-            # get the sored rotation of the card to validate the card integrity holds
-            rotation = self.coordinateToRotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 0)
-            if rotation == 0:
-                rotation = self.coordinateToRotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
-                print(rotation)
-            if rotation == 0:
-                print(rotation)
+            if gameMap[j1][i1] == 0 or gameMap[j2][i2] == 0:
+                print("Tried on empty")
                 return False
+
+            # get the sored rotation of the card to validate the card integrity holds
+            rotation = coordinateToRotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 0)
+            if rotation == 0:
+                rotation = coordinateToRotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
+            if rotation == 0:
+                print("not found")
+                return False
+
             # find if 2 coordinates are of the same card
             if int(rotation) % 2 == 0:
                 if i1 == i2 and abs(j1 - j2) == 1 and self.lookUpValidatorVertical(i2, j2, gameMap):
@@ -138,6 +148,76 @@ class Validator:
                             and rotation == move.rotation:
                         return False
                     return True
+        print("Was the last move: " + str(self.lastMove.targetCoordinateNum) + " " + str(self.lastMove.targetCoordinateLet) + " "
+              + str(self.lastMove.rotation))
+        return False
+
+    def recycleValidatorWithCardRemoval(self, move, gameMap, coordinateToRotation):
+        if self.isNotLastMove(move):
+            i1 = move.sourceCoordinate1Let - 1
+            j1 = int(move.sourceCoordinate1Num) - 1
+
+            i2 = move.sourceCoordinate2Let - 1
+            j2 = int(move.sourceCoordinate2Num) - 1
+
+            # get the sored rotation of the card to validate the card integrity holds
+            rotation = coordinateToRotation.get(self.numbToLetter.get(i1 + 1) + str(j1 + 1), 0)
+            if rotation == 0:
+                rotation = coordinateToRotation.get(self.numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
+            if rotation == 0:
+                return False
+
+            # find if 2 coordinates are of the same card
+            if int(rotation) % 2 == 0:
+                if i1 == i2 and abs(j1 - j2) == 1 and self.lookUpValidatorVertical(i2, j2, gameMap):
+                    if i1 == (move.targetCoordinateLet-1) and j1 == (move.targetCoordinateNum-1) \
+                            and rotation == move.rotation:
+                        return False
+                    old_val1 = gameMap[j1][i1]
+                    old_val2 = gameMap[j2][i2]
+
+                    gameMap[j1][i1] = 0
+                    gameMap[j2][i2] = 0
+
+                    i = move.targetCoordinateLet - 1
+                    j = int(move.targetCoordinateNum) - 1
+                    rotation = int(move.rotation)
+
+                    if self.placeValidatorCoord(i, j, rotation, gameMap):
+                        gameMap[j1][i1] = old_val1
+                        gameMap[j2][i2] = old_val2
+                        return True
+                    else:
+                        gameMap[j1][i1] = old_val1
+                        gameMap[j2][i2] = old_val2
+                        return False
+                # return True
+            else:
+                if abs(i1 - i2) == 1 and j1 == j2 and self.lookUpValidatorHorizontal(i1, j1, i2, j2, gameMap):
+                    if i1 == (move.targetCoordinateLet-1) and j1 == (move.targetCoordinateNum-1) \
+                            and rotation == move.rotation:
+                        return False
+                    old_val1 = gameMap[j1][i1]
+                    old_val2 = gameMap[j2][i2]
+
+                    gameMap[j1][i1] = 0
+                    gameMap[j2][i2] = 0
+
+                    i = move.targetCoordinateLet - 1
+                    j = int(move.targetCoordinateNum) - 1
+                    rotation = int(move.rotation)
+
+                    if self.placeValidatorCoord(i, j, rotation, gameMap):
+                        gameMap[j1][i1] = old_val1
+                        gameMap[j2][i2] = old_val2
+                        return True
+                    else:
+                        gameMap[j1][i1] = old_val1
+                        gameMap[j2][i2] = old_val2
+                        return False
+                    # return True
+        print("Was the last move: "+ str(move.targetCoordinateNum) + " " + str(move.targetCoordinateLet) + " "
+              + str(move.rotation))
         return False
 
     # correspondence of value to card
@@ -148,7 +228,7 @@ class Validator:
 
     # Checks if there is a row of 4 cells of the same type on the game map. Horizontal, vertical and both diagonals.
     def victoryCheck(self, player, gameMap):
-        if player == 1:
+        if player == 0:
             for i in range(12):
                 for j in range(8):
                     if i <= 8:
@@ -165,6 +245,7 @@ class Validator:
                         if gameMap[i][j] in self.ring and gameMap[i + 1][j] in self.ring and \
                                 gameMap[i + 2][j] in self.ring and gameMap[i + 3][j] in self.ring:
                             return "circle wins"
+
                     if j <= 4:
                         if gameMap[i][j] in self.red and gameMap[i][j + 1] in self.red and \
                                 gameMap[i][j + 2] in self.red and gameMap[i][j + 3] in self.red:

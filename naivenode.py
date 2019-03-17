@@ -70,7 +70,7 @@ class Naivenode:
     def toPick(self, i, j):  # vertical pick
         if (0 < i < 11 and self.gameMap[i][j] != 0 and self.gameMap[i - 1][j] != 0 and self.gameMap[i + 1][j] == 0) or (
                 i == 11 and self.gameMap[i][j] != 0 and self.gameMap[i - 1][j] != 0):
-            secondCardPart = self.validator.getCard(i - 1, j, self.coordinateToRotation)
+            secondCardPart = self.validator.getCard(i - 1, j, )
             if secondCardPart != 'none':
                 i2 = secondCardPart.split(":")[0]
                 j2 = secondCardPart.split(":")[1]
@@ -81,7 +81,7 @@ class Naivenode:
         if (0 <= j < 7 and 0 <= i < 11 and self.gameMap[i][j] != 0 and self.gameMap[i][j + 1] != 0 and self.gameMap[i + 1][
             j] == 0 and self.gameMap[i + 1][j + 1] == 0) or (j < 7 and i == 11 and self.gameMap[i][j] != 0
                                                         and self.gameMap[i][j + 1] != 0):
-            secondCardPart = self.validator.getCard(i, j, self.coordinateToRotation)
+            secondCardPart = self.validator.getCard(i, j, )
             if secondCardPart != 'none':
                 i2 = secondCardPart.split(":")[0]
                 j2 = secondCardPart.split(":")[1]

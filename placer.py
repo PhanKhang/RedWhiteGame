@@ -47,13 +47,13 @@ class Placer:
         pass
 
     # give what is in the first half of the card according to rotation if not found return 0
-    def place(self, move, validator, gameMap):
+    def place (self, move, validator, gameMap, coordinateToRotation):
         if move.type == 0:
             if validator.placeValidator(move, gameMap):
                 i = move.targetCoordinateLet - 1
                 j = int(move.targetCoordinateNum) - 1
                 rotation = int(move.rotation)
-                validator.coordinateToRotation[numbToLetter.get(i + 1) + str(j + 1)] = rotation;
+                coordinateToRotation[numbToLetter.get(i + 1) + str(j + 1)] = rotation
                 gameMap[j][i] = firstCell(rotation)
                 if rotation % 2 != 0 and rotation != 0:
                     gameMap[j][i + 1] = secondCell(rotation)
@@ -63,7 +63,7 @@ class Placer:
             else:
                 return False
         else:
-            if validator.recycleValidator(move, gameMap):
+            if validator.recycleValidator(move, gameMap, coordinateToRotation):
                 i1 = move.sourceCoordinate1Let - 1
                 j1 = move.sourceCoordinate1Num - 1
 
@@ -81,18 +81,17 @@ class Placer:
                 rotation = int(move.rotation)
                 if validator.placeValidator(move, gameMap):
                     # remove the value from dictionary of moves
-                    if validator.coordinateToRotation.pop(numbToLetter.get(i1 + 1) + str(j1 + 1), 0) == 0:
-                        validator.coordinateToRotation.pop(numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
+                    if coordinateToRotation.pop(numbToLetter.get(i1 + 1) + str(j1 + 1), 0) == 0:
+                        coordinateToRotation.pop(numbToLetter.get(i2 + 1) + str(j2 + 1), 0)
 
-                    validator.coordinateToRotation[numbToLetter.get(i + 1) + str(j + 1)] = rotation
-                    gameMap[j][i] = firstCell(rotation)
+                    coordinateToRotation[numbToLetter.get(i + 1) + str(j + 1)] = rotation
                     if rotation % 2 != 0:
+                        gameMap[j][i] = firstCell(rotation)
                         gameMap[j][i + 1] = secondCell(rotation)
                     else:
+                        gameMap[j][i] = firstCell(rotation)
                         gameMap[j + 1][i] = secondCell(rotation)
 
-                    # if game_map[j1][i1] == old_val1 and game_map[j2][i2] == old_val2:
-                    #     return False
                     return True
                 else:
                     gameMap[j1][i1] = old_val1

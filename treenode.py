@@ -25,7 +25,7 @@ class Candidate:
 
 
 class Treenode:
-    def __init__(self, depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, moveNum, validator, party, width, goalState):
+    def __init__(self, depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, moveNum, validator, party, width, goalState, coordinateToRotation):
         self.depth = depth
         self.gameMap = gameMap
 
@@ -44,6 +44,7 @@ class Treenode:
         self.width = width
         self.weight = 0
         self.lroot = ''
+        self.coordinateToRotation = coordinateToRotation
 
         # self.goalState = self.validator.victoryCheck(party, gameMap)
         # if self.goalState == 'color wins' and party == 0:
@@ -140,10 +141,10 @@ class Treenode:
                               #(self.getCandidateScore(i, j, position, self.party))))
         return subCandidates
 
-    def toPick(self, i, j):
+    def toPick(self, i, j, coordinateToRotation):
         if (0 < i < 11 and self.gameMap[i][j] != 0 and self.gameMap[i - 1][j] != 0 and self.gameMap[i + 1][j] == 0) or (
                 i == 11 and self.gameMap[i][j] != 0 and self.gameMap[i - 1][j] != 0):
-            secondCardPart = self.validator.getCard(i - 1, j)
+            secondCardPart = self.validator.getCard(i - 1, j, coordinateToRotation)
             if secondCardPart != 'none':
                 i2 = secondCardPart.split(":")[0]
                 j2 = secondCardPart.split(":")[1]
@@ -155,7 +156,7 @@ class Treenode:
             j] == 0 and
             self.gameMap[i + 1][j + 1] == 0) or (
                 j < 7 and i == 11 and self.gameMap[i][j] != 0 and self.gameMap[i][j + 1] != 0):
-            secondCardPart = self.validator.getCard(i, j)
+            secondCardPart = self.validator.getCard(i, j, coordinateToRotation)
             if secondCardPart != 'none':
                 i2 = secondCardPart.split(":")[0]
                 j2 = secondCardPart.split(":")[1]
@@ -169,7 +170,7 @@ class Treenode:
         candidates = []
         putCandidates = []
         pickCandidates = []
-        if self.moveNum <= 24:
+        if self.moveNum <= 4:
             size = 0
             for i in range(12):
                 for j in range(8):
@@ -188,7 +189,7 @@ class Treenode:
             size = 0
             for i in range(12):
                 for j in range(8):
-                    pickCandidate = self.toPick(i, j)
+                    pickCandidate = self.toPick(i, j, self.coordinateToRotation)
                     if pickCandidate != 'none':
                         pickCandidates.append(pickCandidate)
                         size += 1
@@ -219,20 +220,21 @@ class Treenode:
             newvalueMapRing = copy.copy(self.valueMapRing)
             newvalueMapDot = copy.copy(self.valueMapDot)
             newValidator = copy.copy(self.validator)
+            newcoordinateToRotation = copy.copy(self.coordinateToRotation)
 
             newparty = 0
             if self.party == 0:
                 newparty = 1
 
-            Nonvalidatedplacer().place(move, newValidator, newGameMap)
-            goalState = Appraiser().appraise(move, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot, newGameMap,
-                                          newparty)
+            Nonvalidatedplacer().place(move, newValidator, newGameMap, newcoordinateToRotation)
+            goalState = Appraiser().appraise(move, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot,
+                                             newGameMap, newparty)
 
-
-            childNode = Treenode(self.depth - 1, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot, newGameMap, self.moveNum + 1, newValidator, newparty, self.width, goalState)
+            childNode = Treenode(self.depth - 1, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot,
+                                 newGameMap, self.moveNum + 1, newValidator, newparty, self.width, goalState,
+                                 newcoordinateToRotation)
             childNode.rawMove = moveString
             self.children.append(childNode)
-
 
     def setLroot(self):
         maxVal = 0
