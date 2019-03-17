@@ -227,7 +227,7 @@ def main():
         print("Current Game field")
         correctPrinterMap(gameMap)  # change to correctPrinterMapL for letter output
         # print(validator.coordinateToRotation)
-        appraiser.appraise(move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap)
+        appraiser.appraise(move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, party)
 
         print("Current Weight")
         print(appraiser.getScore(valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party))

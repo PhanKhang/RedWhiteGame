@@ -1,6 +1,6 @@
 import numpy
 # price = [21, 34, 55, 89, 144]
-price = [1, 2, 3, 5, 8]
+price = [2, 3, 5, 8, 13, 21]
 
 class Appraiser:
     def __init__(self):
@@ -14,7 +14,7 @@ class Appraiser:
     targetList = []
 
     # appraise how how card will affect gameMap
-    def appraise(self, move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot , gameMap):
+    def appraise(self, move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot , gameMap, party):
         remove = False
         win = False
         if move.type == 1:
@@ -55,6 +55,17 @@ class Appraiser:
         if gameMap[j1][i1] in self.ring:
             if self.appraiseMove(i1, j1, valueMapRing, gameMap, self.ring):
                 win = True
+
+        if party == 0:
+            self.applyMatrix(valueMapDot, i, j)
+            self.applyMatrix(valueMapRing, i, j)
+            self.applyMatrix(valueMapDot, i1, j1)
+            self.applyMatrix(valueMapRing, i1, j1)
+        else:
+            self.applyMatrix(valueMapWhite, i, j)
+            self.applyMatrix(valueMapRed, i, j)
+            self.applyMatrix(valueMapWhite, i1, j1)
+            self.applyMatrix(valueMapRed, i1, j1)
 
         return win
 
@@ -124,7 +135,7 @@ class Appraiser:
         for step in range(4):
             if i - step >= 0:
                 rate = self.isHorizontalWindowFree(i - step, j, colorOrDot, gameMap)
-                if rate == 4:
+                if rate >= 4:
                     win = True
                 if rate > 0:
                     for k in range(4):
@@ -132,7 +143,7 @@ class Appraiser:
                             valueMap[j][i - step + k] = price[rate]
             if j - step >= 0:
                 rate = self.isVerticalWindowFree(i, j - step, colorOrDot, gameMap)
-                if rate == 4:
+                if rate >= 4:
                     win = True
                 if rate > 0:
                     for k in range(4):
@@ -140,7 +151,7 @@ class Appraiser:
                             valueMap[j - step + k][i] = price[rate]
             if i - step >= 0 and j + step < 12:
                 rate = self.isDownDiagonalWindowFree(i - step, j + step, colorOrDot, gameMap)
-                if rate == 4:
+                if rate >= 4:
                     win = True
                 if rate > 0:
                     for k in range(4):
@@ -149,7 +160,7 @@ class Appraiser:
                             valueMap[j + step - k][i - step + k] = price[rate]
             if j - step >= 0 and i - step >= 0:
                 rate = self.isUpDiagonalWindowFree(i - step, j - step, colorOrDot, gameMap)
-                if rate == 4:
+                if rate >= 4:
                     win = True
                 if rate > 0:
                     for k in range(4):
@@ -178,9 +189,10 @@ class Appraiser:
                     #     ringWeight *= 10
                     #     dotWeight *= 10
 
-                    if ringWeight >= price[4] or dotWeight >= price[4]:
-                        ringWeight *= 10
-                        dotWeight *= 10
+                    # if ringWeight >= price[4]:
+                    #     ringWeight *= 10
+                    # if dotWeight >= price[4]:
+                    #     dotWeight *= 10
 
                     # if i < 7:
                     #     if valueMapRing[j][i] != 0 and valueMapRing[j][i+1] == 0:
@@ -204,9 +216,11 @@ class Appraiser:
                     #     whiteWeight *= 10
                     #     redWeight *= 10
 
-                    if redWeight >= price[4] or whiteWeight >= price[4]:
-                        whiteWeight *= 10
-                        redWeight *= 10
+
+                    # if whiteWeight >= price[4]:
+                    #     whiteWeight *= 10
+                    # if redWeight >= price[4]:
+                    #     redWeight *= 10
 
                     # if i < 7:
                     #     if valueMapRed[j][i] != 0 and valueMapRed[j][i+1] == 0:
@@ -214,33 +228,40 @@ class Appraiser:
                     #     if valueMapWhite[j][i] != 0 and valueMapWhite[j][i+1] == 0:
                     #         sumWhite -= 3
 
-
                     sumRed += redWeight
                     sumWhite += whiteWeight
                     sumRing += ringWeight
                     sumDot += dotWeight
 
         return max(sumRing, sumDot) - max(sumRed, sumWhite)
-
+        # return (sumRing + sumDot) - (sumRed + sumWhite)
 
     def applyMatrix(self, valueMap, i,j):
-        if valueMap[j + 1][i] > 0 and j < 11:
-            valueMap[j + 1][i] += 1
+        if j < 11:
+            if valueMap[j + 1][i] > 0:
+                valueMap[j + 1][i] += 1
 
-        if valueMap[j][i + 1] > 0 and i < 7:
-            valueMap[j][i + 1] += 1
+        if i < 7:
+            if valueMap[j][i + 1] > 0:
+                valueMap[j][i + 1] += 1
 
-        if valueMap[j + 1][i + 1] > 0 and j < 11 and i < 7:
-            valueMap[j + 1][i + 1] += 1
+        if j < 11 and i < 7:
+            if valueMap[j + 1][i + 1] > 0:
+                valueMap[j + 1][i + 1] += 1
 
-        if valueMap[j - 1][i] > 0 and j >= 0:
-            valueMap[j - 1][i] += 1
+        if j >= 0:
+            if valueMap[j - 1][i] > 0:
+                valueMap[j - 1][i] += 1
+        if i >= 0:
+            if valueMap[j][i - 1] > 0:
+                valueMap[j][i - 1] += 1
+        if i >= 0:
+            if valueMap[j - 1][i - 1] > 0:
+                valueMap[j - 1][i - 1] += 1
+        if j >= 0 and i < 7:
+            if valueMap[j - 1][i + 1] > 0 :
+                valueMap[j - 1][i + 1] += 1
 
-        if valueMap[j][i - 1].redWeight > 0 and i >= 0:
-            valueMap[j][i - 1].redWeight += 1
-
-        if valueMap[j - 1][i + 1].redWeight > 0 and j >= 0 and i < 7:
-            valueMap[j - 1][i + 1].redWeight += 1
-
-        if valueMap[j + 1][i - 1] > 0 and j < 11 and i >= 0:
-            valueMap[j + 1][i - 1] += 1
+        if j < 11 and i >= 0:
+            if valueMap[j + 1][i - 1] > 0:
+                valueMap[j + 1][i - 1] += 1

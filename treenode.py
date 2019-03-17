@@ -221,7 +221,8 @@ class Treenode:
             newValidator = copy.copy(self.validator)
 
             Nonvalidatedplacer().place(move, newValidator, newGameMap)
-            result = Appraiser().appraise(move, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot, newGameMap)
+            result = Appraiser().appraise(move, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot, newGameMap,
+                                          self.party)
 
 
             goalState = "go"
@@ -271,12 +272,12 @@ class Treenode:
         self.setLroot()
         self.children.sort(key=self.distance, reverse=False)
         for node in self.children:
-            print(node.rawMove + "____"+ str(node.weight))
+            # print(node.rawMove + "____"+ str(node.weight))
             if node.weight == weight:
-                move = node.rawMove
+                # move = node.rawMove
                 # print(move)
-                count += 1
-                # return node.rawMove
-        print("_______"+str(weight)+"_______")
-        print(count)
-        return move
+                # count += 1
+                return node.rawMove
+        # print("_______"+str(weight)+"_______")
+        # print(count)
+        # return move
