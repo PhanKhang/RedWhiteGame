@@ -322,60 +322,53 @@ class Appraiser:
         sumDot = 0
 
         if party == 0:
-            for i in range(8):
-                for j in range(12):
+            for j in range(12):
+                for i in range(8):
                     redWeight = valueMapRed[j][i]
                     whiteWeight = valueMapWhite[j][i]
                     ringWeight = valueMapRing[j][i]
                     dotWeight = valueMapDot[j][i]
 
-                    if ringWeight >= price[3] or dotWeight >= price[3]:
-                        ringWeight *= 10
-                        dotWeight *= 10
+                    # if ringWeight >= price[3] or dotWeight >= price[3]:
+                    #     ringWeight *= 10
+                    #     dotWeight *= 10
 
                     if ringWeight >= price[4] or dotWeight >= price[4]:
                         ringWeight *= 10
                         dotWeight *= 10
 
-                    if i > 0:
-                        if valueMapRed[j][i-1] != 0 and valueMapRed[j][i] == 0:
-                            sumRed -= 1
-                        if valueMapWhite[j][i-1] != 0 and valueMapWhite[j][i] == 0:
-                            sumWhite -= 1
-                        if valueMapRing[j][i-1] != 0 and valueMapRing[j][i] == 0:
-                            sumRing -= 1
-                        if valueMapDot[j][i-1] != 0 and valueMapDot[j][i] == 0:
-                            sumDot -= 1
+                    if i < 7:
+                        if valueMapRing[j][i] != 0 and valueMapRing[j][i+1] == 0:
+                            sumRing -= 3
+                        if valueMapDot[j][i] != 0 and valueMapDot[j][i+1] == 0:
+                            sumDot -= 3
 
                     sumRed += redWeight
                     sumWhite += whiteWeight
                     sumRing += ringWeight
                     sumDot += dotWeight
         else:
-            for i in range(8):
-                for j in range(12):
+            for j in range(12):
+                for i in range(8):
                     redWeight = valueMapRed[j][i]
                     whiteWeight = valueMapWhite[j][i]
                     ringWeight = valueMapRing[j][i]
                     dotWeight = valueMapDot[j][i]
-
-                    if redWeight >= price[3] or whiteWeight >= price[3]:
-                        whiteWeight *= 10
-                        redWeight *= 10
+                    #
+                    # if redWeight >= price[3] or whiteWeight >= price[3]:
+                    #     whiteWeight *= 10
+                    #     redWeight *= 10
 
                     if redWeight >= price[4] or whiteWeight >= price[4]:
                         whiteWeight *= 10
                         redWeight *= 10
 
-                    if i > 0:
-                        if valueMapRed[j][i-1] != 0 and valueMapRed[j][i] == 0:
-                            sumRed -= 1
-                        if valueMapWhite[j][i-1] != 0 and valueMapWhite[j][i] == 0:
-                            sumWhite -= 1
-                        if valueMapRing[j][i-1] != 0 and valueMapRing[j][i] == 0:
-                            sumRing -= 1
-                        if valueMapDot[j][i-1] != 0 and valueMapDot[j][i] == 0:
-                            sumDot -= 1
+                    if i < 7:
+                        if valueMapRed[j][i] != 0 and valueMapRed[j][i+1] == 0:
+                            sumRed -= 3
+                        if valueMapWhite[j][i] != 0 and valueMapWhite[j][i+1] == 0:
+                            sumWhite -= 3
+
 
                     sumRed += redWeight
                     sumWhite += whiteWeight

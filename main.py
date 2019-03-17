@@ -155,7 +155,7 @@ def main():
     pruning = 1
     # trace = int(input("Generate trace? 1 for yes 0 for no: "))
     # depth = int(input("Set tree depth: "))
-    depth = 2
+    depth = 3
     # width = int(input("Set tree width: "))
     width = 0
     computer = int(input("Which player should be computer 1 or 2?: "))
