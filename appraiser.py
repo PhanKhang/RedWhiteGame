@@ -18,64 +18,113 @@ class Appraiser:
         winC = False
         winD = False
         if move.type == 1:
-            print("triggered")
+
+            i = move.targetCoordinateLet - 1
+            j = move.targetCoordinateNum - 1
+            i1 = i
+            j1 = j
+
+            if move.rotation % 2 != 0:
+                i1 += 1
+            else:
+                j1 += 1
+
+            if gameMap[j][i] in self.red:
+                if self.appraiseMove(i, j, valueMapRed, gameMap, self.red):
+                    winC = True
+            if gameMap[j][i] in self.white:
+                if self.appraiseMove(i, j, valueMapWhite, gameMap, self.white):
+                    winC = True
+            if gameMap[j][i] in self.dot:
+                if self.appraiseMove(i, j, valueMapDot, gameMap, self.dot):
+                    winD = True
+            if gameMap[j][i] in self.ring:
+                if self.appraiseMove(i, j, valueMapRing, gameMap, self.ring):
+                    winD = True
+
+            if gameMap[j1][i1] in self.red:
+                if self.appraiseMove(i1, j1, valueMapRed, gameMap, self.red):
+                    winC = True
+            if gameMap[j1][i1] in self.white:
+                if self.appraiseMove(i1, j1, valueMapWhite, gameMap, self.white):
+                    winC = True
+            if gameMap[j1][i1] in self.dot:
+                if self.appraiseMove(i1, j1, valueMapDot, gameMap, self.dot):
+                    winD = True
+            if gameMap[j1][i1] in self.ring:
+                if self.appraiseMove(i1, j1, valueMapRing, gameMap, self.ring):
+                    winD = True
+
             ir = move.sourceCoordinate1Let - 1
             jr = move.sourceCoordinate1Num - 1
             ir1 = move.sourceCoordinate2Let - 1
             jr1 = move.sourceCoordinate2Num - 1
-            if gameMap[jr][ir] in self.red:
-                self.appraiseRecycleMove(ir, jr, valueMapRed, gameMap, self.red)
-            if gameMap[jr][ir] in self.white:
-                self.appraiseRecycleMove(ir, jr, valueMapWhite, gameMap, self.white)
-            if gameMap[jr][ir] in self.dot:
-                self.appraiseRecycleMove(ir, jr, valueMapDot, gameMap, self.dot)
-            if gameMap[jr][ir] in self.ring:
-                self.appraiseRecycleMove(ir, jr, valueMapRing, gameMap, self.ring)
 
-            if gameMap[jr1][ir1] in self.red:
-                self.appraiseRecycleMove(ir1, jr1, valueMapRed, gameMap, self.red)
-            if gameMap[jr1][ir1] in self.white:
-                self.appraiseRecycleMove(ir1, jr1, valueMapWhite, gameMap, self.white)
-            if gameMap[jr1][ir1] in self.dot:
-                self.appraiseRecycleMove(ir1, jr1, valueMapDot, gameMap, self.dot)
-            if gameMap[jr1][ir1] in self.ring:
-                self.appraiseRecycleMove(ir1, jr1, valueMapRing, gameMap, self.ring)
+            self.appraiseRecycleMove(ir, jr, valueMapRed, gameMap, self.red)
+            self.appraiseRecycleMove(ir, jr, valueMapWhite, gameMap, self.white)
+            self.appraiseRecycleMove(ir, jr, valueMapDot, gameMap, self.dot)
+            self.appraiseRecycleMove(ir, jr, valueMapRing, gameMap, self.ring)
 
-        i = move.targetCoordinateLet - 1
-        j = move.targetCoordinateNum - 1
-        i1 = i
-        j1 = j
+            self.appraiseRecycleMove(ir1, jr1, valueMapRed, gameMap, self.red)
+            self.appraiseRecycleMove(ir1, jr1, valueMapWhite, gameMap, self.white)
+            self.appraiseRecycleMove(ir1, jr1, valueMapDot, gameMap, self.dot)
+            self.appraiseRecycleMove(ir1, jr1, valueMapRing, gameMap, self.ring)
 
-        if move.rotation % 2 != 0:
-            i1 += 1
+
+
+            if winD and winC:
+                return "winDC"
+            elif winD:
+                return "winD"
+            elif winC:
+                return "winC"
+            else:
+                return "go"
         else:
-            j1 += 1
+            i = move.targetCoordinateLet - 1
+            j = move.targetCoordinateNum - 1
+            i1 = i
+            j1 = j
 
-        if gameMap[j][i] in self.red:
-            if self.appraiseMove(i, j, valueMapRed, gameMap, self.red):
-                winC = True
-        if gameMap[j][i] in self.white:
-            if self.appraiseMove(i, j, valueMapWhite, gameMap, self.white):
-                winC = True
-        if gameMap[j][i] in self.dot:
-            if self.appraiseMove(i, j, valueMapDot, gameMap, self.dot):
-                winD = True
-        if gameMap[j][i] in self.ring:
-            if self.appraiseMove(i, j, valueMapRing, gameMap, self.ring):
-                winD = True
+            if move.rotation % 2 != 0:
+                i1 += 1
+            else:
+                j1 += 1
 
-        if gameMap[j1][i1] in self.red:
-            if self.appraiseMove(i1, j1, valueMapRed, gameMap, self.red):
-                winC = True
-        if gameMap[j1][i1] in self.white:
-            if self.appraiseMove(i1, j1, valueMapWhite, gameMap, self.white):
-                winC = True
-        if gameMap[j1][i1] in self.dot:
-            if self.appraiseMove(i1, j1, valueMapDot, gameMap, self.dot):
-                winD = True
-        if gameMap[j1][i1] in self.ring:
-            if self.appraiseMove(i1, j1, valueMapRing, gameMap, self.ring):
-                winD = True
+            if gameMap[j][i] in self.red:
+                if self.appraiseMove(i, j, valueMapRed, gameMap, self.red):
+                    winC = True
+            if gameMap[j][i] in self.white:
+                if self.appraiseMove(i, j, valueMapWhite, gameMap, self.white):
+                    winC = True
+            if gameMap[j][i] in self.dot:
+                if self.appraiseMove(i, j, valueMapDot, gameMap, self.dot):
+                    winD = True
+            if gameMap[j][i] in self.ring:
+                if self.appraiseMove(i, j, valueMapRing, gameMap, self.ring):
+                    winD = True
+
+            if gameMap[j1][i1] in self.red:
+                if self.appraiseMove(i1, j1, valueMapRed, gameMap, self.red):
+                    winC = True
+            if gameMap[j1][i1] in self.white:
+                if self.appraiseMove(i1, j1, valueMapWhite, gameMap, self.white):
+                    winC = True
+            if gameMap[j1][i1] in self.dot:
+                if self.appraiseMove(i1, j1, valueMapDot, gameMap, self.dot):
+                    winD = True
+            if gameMap[j1][i1] in self.ring:
+                if self.appraiseMove(i1, j1, valueMapRing, gameMap, self.ring):
+                    winD = True
+
+            if winD and winC:
+                return "winDC"
+            elif winD:
+                return "winD"
+            elif winC:
+                return "winC"
+            else:
+                return "go"
 
         # if party == 0:
         #     self.applyMatrix(valueMapDot, i, j)
@@ -88,14 +137,7 @@ class Appraiser:
         #     self.applyMatrix(valueMapWhite, i1, j1)
         #     self.applyMatrix(valueMapRed, i1, j1)
 
-        if winD and winC:
-            return "winDC"
-        elif winD:
-            return "winD"
-        elif winC:
-            return "winC"
-        else:
-            return "go"
+
 
         # if move.type == 1:
         #     valueMap[move.sourceCoordinate1Num - 1][move.sourceCoordinate1Let - 1].occupied = 0
