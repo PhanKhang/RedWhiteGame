@@ -217,9 +217,9 @@ def main():
                     movok = True
                 except:
                     print("unable to parse the move, try again")
-            if k <= 4 and move.type == 0:
+            if k <= 24 and move.type == 0:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
-            elif k > 4 and move.type == 1:
+            elif k > 24 and move.type == 1:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
             if not legal:
                 print("illegal move, try again")
@@ -232,21 +232,21 @@ def main():
 
         # print("Current Weight")
         # print(appraiser.getScore(valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party))
-        print("Red ma]p")
-        # print(valueMapRed)
-        correctPrinter(valueMapRed)
+        # print("Red ma]p")
+        # # print(valueMapRed)
+        # correctPrinter(valueMapRed)
+        # #
+        # print("White map")
+        # # # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
+        # correctPrinter(valueMapWhite)
+        # #
+        # print("Ring map")
+        # # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
+        # correctPrinter(valueMapRing)
         #
-        print("White map")
-        # # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
-        correctPrinter(valueMapWhite)
-        #
-        print("Ring map")
-        # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
-        correctPrinter(valueMapRing)
-
-        print("Dot map")
-        # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
-        correctPrinter(valueMapDot)
+        # print("Dot map")
+        # # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
+        # correctPrinter(valueMapDot)
 
         result = validator.victoryCheck(party, gameMap)
 

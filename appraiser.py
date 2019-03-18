@@ -1,6 +1,8 @@
 import numpy
+
 # price = [21, 34, 55, 89, 144]
 price = [2, 3, 5, 8, 13, 21]
+
 
 class Appraiser:
     def __init__(self):
@@ -14,7 +16,7 @@ class Appraiser:
     targetList = []
 
     # appraise how how card will affect gameMap
-    def appraise(self, move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot , gameMap, party):
+    def appraise(self, move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, party):
         winC = False
         winD = False
         if move.type == 1:
@@ -69,8 +71,6 @@ class Appraiser:
             self.appraiseRecycleMove(ir1, jr1, valueMapWhite, gameMap, self.white)
             self.appraiseRecycleMove(ir1, jr1, valueMapDot, gameMap, self.dot)
             self.appraiseRecycleMove(ir1, jr1, valueMapRing, gameMap, self.ring)
-
-
 
             if winD and winC:
                 return "winDC"
@@ -136,8 +136,6 @@ class Appraiser:
         #     self.applyMatrix(valueMapRed, i, j)
         #     self.applyMatrix(valueMapWhite, i1, j1)
         #     self.applyMatrix(valueMapRed, i1, j1)
-
-
 
         # if move.type == 1:
         #     valueMap[move.sourceCoordinate1Num - 1][move.sourceCoordinate1Let - 1].occupied = 0
@@ -209,8 +207,8 @@ class Appraiser:
                     win = True
                 if rate > 0:
                     for k in range(4):
-                        if valueMap[j][i - step + k] < price[rate]+1 and gameMap[j][i - step + k] != 0: #here
-                            valueMap[j][i - step + k] = price[rate]+1
+                        if valueMap[j][i - step + k] < price[rate] + 1 and gameMap[j][i - step + k] != 0:  # here
+                            valueMap[j][i - step + k] = price[rate] + 1
             if j - step >= 0:
                 rate = self.isVerticalWindowFree(i, j - step, colorOrDot, gameMap)
                 if rate >= 4:
@@ -246,8 +244,8 @@ class Appraiser:
                 rate = self.isHorizontalWindowFree(i - step, j, colorOrDot, gameMap)
                 if rate > 0:
                     for k in range(4):
-                        if valueMap[j][i - step + k] > price[rate]+1 and gameMap[j][i - step + k] != 0: #here
-                            valueMap[j][i - step + k] = price[rate]+1
+                        if valueMap[j][i - step + k] > price[rate] + 1 and gameMap[j][i - step + k] != 0:  # here
+                            valueMap[j][i - step + k] = price[rate] + 1
             if j - step >= 0:
                 rate = self.isVerticalWindowFree(i, j - step, colorOrDot, gameMap)
                 if rate > 0:
@@ -269,7 +267,6 @@ class Appraiser:
                                 and gameMap[j - step + k][i - step + k] != 0:
                             valueMap[j - step + k][i - step + k] = price[rate]
 
-
     # check and apply the weight on the window of 4 elements if there is possibility of creating 4 in a row
     # total fields check is 7
     def getScore(self, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party, goalState):
@@ -290,7 +287,6 @@ class Appraiser:
                         redWeight *= 1.5
                     if whiteWeight >= price[3]:
                         whiteWeight *= 1.5
-
 
                     sumRed += redWeight
                     sumWhite += whiteWeight
@@ -333,18 +329,18 @@ class Appraiser:
             if goalState == "winC":
                 return (sumRing + sumDot) - 10 * (sumRed + sumWhite)
             elif goalState == "winD" or goalState == "winDC":
-                return 10*(sumRing + sumDot) - (sumRed + sumWhite)
+                return 10 * (sumRing + sumDot) - (sumRed + sumWhite)
             else:
                 return (sumRing + sumDot) - (sumRed + sumWhite)
         if party == 1:
             if goalState == "winD":
-                return 10*(sumRing + sumDot) - (sumRed + sumWhite)
+                return 10 * (sumRing + sumDot) - (sumRed + sumWhite)
             elif goalState == "winC" or goalState == "winDC":
-                return (sumRing + sumDot) - 10*(sumRed + sumWhite)
+                return (sumRing + sumDot) - 10 * (sumRed + sumWhite)
             else:
                 return (sumRing + sumDot) - (sumRed + sumWhite)
 
-    def applyMatrix(self, valueMap, i,j):
+    def applyMatrix(self, valueMap, i, j):
         if j < 11:
             if valueMap[j + 1][i] > 0:
                 valueMap[j + 1][i] += 1
@@ -367,7 +363,7 @@ class Appraiser:
             if valueMap[j - 1][i - 1] > 0:
                 valueMap[j - 1][i - 1] += 1
         if j >= 0 and i < 7:
-            if valueMap[j - 1][i + 1] > 0 :
+            if valueMap[j - 1][i + 1] > 0:
                 valueMap[j - 1][i + 1] += 1
 
         if j < 11 and i >= 0:
