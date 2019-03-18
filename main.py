@@ -216,9 +216,9 @@ def main():
                     movok = True
                 except:
                     print("unable to parse the move, try again")
-            if k <= 24 and move.type == 0:
+            if k <= 3 and move.type == 0:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
-            elif k > 24 and move.type == 1:
+            elif k > 3 and move.type == 1:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
             if not legal:
                 print("illegal move, try again")
