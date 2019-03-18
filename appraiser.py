@@ -18,6 +18,7 @@ class Appraiser:
         winC = False
         winD = False
         if move.type == 1:
+            print("triggered")
             ir = move.sourceCoordinate1Let - 1
             jr = move.sourceCoordinate1Num - 1
             ir1 = move.sourceCoordinate2Let - 1
@@ -25,29 +26,22 @@ class Appraiser:
             if gameMap[jr][ir] in self.red:
                 self.appraiseRecycleMove(ir, jr, valueMapRed, gameMap, self.red)
             if gameMap[jr][ir] in self.white:
-                if self.appraiseRecycleMove(ir, jr, valueMapWhite, gameMap, self.white):
-                    winC = True
+                self.appraiseRecycleMove(ir, jr, valueMapWhite, gameMap, self.white)
             if gameMap[jr][ir] in self.dot:
-                if self.appraiseRecycleMove(ir, jr, valueMapDot, gameMap, self.dot):
-                    winD = True
+                self.appraiseRecycleMove(ir, jr, valueMapDot, gameMap, self.dot)
             if gameMap[jr][ir] in self.ring:
-                if self.appraiseRecycleMove(ir, jr, valueMapRing, gameMap, self.ring):
-                    winD = True
+                self.appraiseRecycleMove(ir, jr, valueMapRing, gameMap, self.ring)
 
             if gameMap[jr1][ir1] in self.red:
-                if self.appraiseRecycleMove(ir1, jr1, valueMapRed, gameMap, self.red):
-                    winC = True
+                self.appraiseRecycleMove(ir1, jr1, valueMapRed, gameMap, self.red)
             if gameMap[jr1][ir1] in self.white:
-                if self.appraiseRecycleMove(ir1, jr1, valueMapWhite, gameMap, self.white):
-                    winC = True
+                self.appraiseRecycleMove(ir1, jr1, valueMapWhite, gameMap, self.white)
             if gameMap[jr1][ir1] in self.dot:
-                if self.appraiseRecycleMove(ir1, jr1, valueMapDot, gameMap, self.dot):
-                    winD = True
+                self.appraiseRecycleMove(ir1, jr1, valueMapDot, gameMap, self.dot)
             if gameMap[jr1][ir1] in self.ring:
-                if self.appraiseRecycleMove(ir1, jr1, valueMapRing, gameMap, self.ring):
-                    winD = True
+                self.appraiseRecycleMove(ir1, jr1, valueMapRing, gameMap, self.ring)
 
-        i = int(move.targetCoordinateLet) - 1
+        i = move.targetCoordinateLet - 1
         j = move.targetCoordinateNum - 1
         i1 = i
         j1 = j
@@ -204,28 +198,22 @@ class Appraiser:
         return win
 
     def appraiseRecycleMove(self, i, j, valueMap, gameMap, colorOrDot):
-        win = False
+        valueMap[j][i] = 0
         for step in range(4):
             if i - step >= 0:
                 rate = self.isHorizontalWindowFree(i - step, j, colorOrDot, gameMap)
-                if rate >= 4:
-                    win = True
                 if rate > 0:
                     for k in range(4):
                         if valueMap[j][i - step + k] > price[rate]+1 and gameMap[j][i - step + k] != 0: #here
                             valueMap[j][i - step + k] = price[rate]+1
             if j - step >= 0:
                 rate = self.isVerticalWindowFree(i, j - step, colorOrDot, gameMap)
-                if rate >= 4:
-                    win = True
                 if rate > 0:
                     for k in range(4):
                         if valueMap[j - step + k][i] > price[rate] and gameMap[j - step + k][i] != 0:
                             valueMap[j - step + k][i] = price[rate]
             if i - step >= 0 and j + step < 12:
                 rate = self.isDownDiagonalWindowFree(i - step, j + step, colorOrDot, gameMap)
-                if rate >= 4:
-                    win = True
                 if rate > 0:
                     for k in range(4):
                         if valueMap[j + step - k][i - step + k] > price[rate] \
@@ -233,14 +221,12 @@ class Appraiser:
                             valueMap[j + step - k][i - step + k] = price[rate]
             if j - step >= 0 and i - step >= 0:
                 rate = self.isUpDiagonalWindowFree(i - step, j - step, colorOrDot, gameMap)
-                if rate >= 4:
-                    win = True
                 if rate > 0:
                     for k in range(4):
                         if valueMap[j - step + k][i - step + k] > price[rate] \
                                 and gameMap[j - step + k][i - step + k] != 0:
                             valueMap[j - step + k][i - step + k] = price[rate]
-        return win
+
 
     # check and apply the weight on the window of 4 elements if there is possibility of creating 4 in a row
     # total fields check is 7
@@ -315,10 +301,6 @@ class Appraiser:
                 return (sumRing + sumDot) - 10*(sumRed + sumWhite)
             else:
                 return (sumRing + sumDot) - (sumRed + sumWhite)
-
-
-
-        # return (sumRing + sumDot) - (sumRed + sumWhite)
 
     def applyMatrix(self, valueMap, i,j):
         if j < 11:

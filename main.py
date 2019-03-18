@@ -208,6 +208,7 @@ def main():
                     else:
                         input_var = "0 " + str(random.randint(1, 8)) + " " + validator.numbToLetter.get(
                             random.randint(4, 5)) + " " + str(1)
+                        print("computer move: " + input_var)
                 else:
                     input_var = input()
 
@@ -216,9 +217,9 @@ def main():
                     movok = True
                 except:
                     print("unable to parse the move, try again")
-            if k <= 3 and move.type == 0:
+            if k <= 4 and move.type == 0:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
-            elif k > 3 and move.type == 1:
+            elif k > 4 and move.type == 1:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
             if not legal:
                 print("illegal move, try again")
@@ -231,21 +232,21 @@ def main():
 
         # print("Current Weight")
         # print(appraiser.getScore(valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party))
-        # print("Red ma]p")
-        # # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
-        # correctPrinter(valueMapRed)
+        print("Red ma]p")
+        # print(valueMapRed)
+        correctPrinter(valueMapRed)
         #
-        # print("White map")
+        print("White map")
         # # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
-        # correctPrinter(valueMapWhite)
+        correctPrinter(valueMapWhite)
         #
-        # print("Ring map")
-        # # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
-        # correctPrinter(valueMapRing)
-        #
-        # print("Dot map")
-        # # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
-        # correctPrinter(valueMapDot)
+        print("Ring map")
+        # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
+        correctPrinter(valueMapRing)
+
+        print("Dot map")
+        # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
+        correctPrinter(valueMapDot)
 
         result = validator.victoryCheck(party, gameMap)
 
