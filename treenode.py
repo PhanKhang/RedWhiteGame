@@ -125,16 +125,16 @@ class Treenode:
                         - (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) * self.coef
         return score
 
-    def toPut(self, i, j):
+    def toPut(self, i, j, gameMap):
         subCandidates = []
-        if (i == 0 and self.gameMap[i][j] == 0) or (i < 11 and self.gameMap[i][j] == 0 and self.gameMap[i - 1][j] != 0):
+        if (i == 0 and gameMap[i][j] == 0) or (i < 11 and gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
             for position in [2, 6, 4, 8]:
                 subCandidates.append(
                     Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1), 0))
                               #(self.getCandidateScore(i, j, position, self.party))))
-        if (i == 0 and j < 7 and self.gameMap[i][j] == 0 and self.gameMap[i][j + 1] == 0) or (
-                j < 7 and self.gameMap[i][j] == 0 and self.gameMap[i][j + 1] == 0 and self.gameMap[i - 1][j] != 0 and
-                self.gameMap[i - 1][j + 1] != 0):
+        if (i == 0 and j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
+                j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] != 0 and
+                gameMap[i - 1][j + 1] != 0):
             for position in [1, 3, 5, 7]:
                 subCandidates.append(
                     Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1), 0))
@@ -170,11 +170,11 @@ class Treenode:
         candidates = []
         putCandidates = []
         pickCandidates = []
-        if self.moveNum <= 4:
+        if self.moveNum <= 24:
             size = 0
             for i in range(12):
                 for j in range(8):
-                    putCandidate = self.toPut(i, j)
+                    putCandidate = self.toPut(i, j, self.gameMap)
                     if putCandidate != 'none':
                         putCandidates += putCandidate
                         size += 1

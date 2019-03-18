@@ -471,3 +471,297 @@ class Appraiser:
 
         if valueMap[j + 1][i - 1] > 0 and j < 11 and i >= 0:
             valueMap[j + 1][i - 1] += 1
+
+
+
+//////////////////////////////////////////////////////////////////////////
+from validator import Validator
+from move import Move
+from placer import Placer
+from appraiser import Appraiser
+import copy
+from nonvalidatedplacer import Nonvalidatedplacer
+import numpy
+
+numbToLetter = {
+    0: "A",
+    1: "B",
+    2: "C",
+    3: "D",
+    4: "E",
+    5: "F",
+    6: "G",
+    7: "H"
+}
+
+
+class Candidate:
+    def __init__(self, move):
+        self.move = move
+
+
+class Treenode:
+    def __init__(self, depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, moveNum, validator, party, width, goalState, coordinateToRotation):
+        self.depth = depth
+        self.gameMap = gameMap
+
+        self.valueMapRed = valueMapRed
+        self.valueMapRing = valueMapRing
+        self.valueMapDot = valueMapDot
+        self.valueMapWhite = valueMapWhite
+
+        self.children = []
+        self.moveNum = moveNum
+        self.validator = validator
+        self.party = party
+        self.rawMove = ''
+        self.coef = 0.8
+        self.goalState = goalState
+        self.width = width
+        self.weight = 0
+        self.lroot = ''
+        self.coordinateToRotation = coordinateToRotation
+
+        self.candidates = []
+
+        # self.goalState = self.validator.victoryCheck(party, gameMap)
+        # if self.goalState == 'color wins' and party == 0:
+        #     self.weight *= 10
+        # elif self.goalState == 'dots wins' and party == 1:
+        #     self.weight *= 10
+
+    def getOwnWeight(self):
+        self.weight = Appraiser().getScore(self.valueMapRed, self.valueMapWhite, self.valueMapRing, self.valueMapDot, self.party, self.goalState)
+        return self.weight
+
+    def populateChildren(self):
+        self.candidates = self.getCandidates()
+        for candidate in self.candidates:
+            self.childcreator(candidate.move)
+
+    def getRecycleCandidateScore(self, i1, j1, i2, j2, party):
+        score = 0
+        if party == 0:
+            score = max(self.valueMapRed[i1][j1] + self.valueMapWhite[i2][j2],
+                        self.valueMapWhite[i1][j1] + self.valueMapRed[i2][j2])
+        elif party == 1:
+            score = max(self.valueMapDot[i1][j1] + self.valueMapRing[i2][j2],
+                        self.valueMapRing[i1][j1] + self.valueMapDot[i2][j2])
+        return score
+
+    def getCandidateScore(self, i, j, position, party):
+        score = 0
+        if party == 0:
+            if position in [1]:
+                score = (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) \
+                        - (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) * self.coef
+            elif position in [2]:
+                score = (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) \
+                        - (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) * self.coef
+            elif position in [3]:
+                score = (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) \
+                        - (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) * self.coef
+            elif position in [4]:
+                score = (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) \
+                        - (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) * self.coef
+            elif position in [5]:
+                score = (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) \
+                        - (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) * self.coef
+            elif position in [6]:
+                score = (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) \
+                        - (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) * self.coef
+            elif position in [7]:
+                score = (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) \
+                        - (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) * self.coef
+            elif position in [8]:
+                score = (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) \
+                        - (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) * self.coef
+        elif party == 1:
+            if position in [1]:
+                score = (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) \
+                        - (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) * self.coef
+            elif position in [2]:
+                score = (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) \
+                        - (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) * self.coef
+            elif position in [3]:
+                score = (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) \
+                        - (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) * self.coef
+            elif position in [4]:
+                score = (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) \
+                        - (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) * self.coef
+            elif position in [5]:
+                score = (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) \
+                        - (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) * self.coef
+            elif position in [6]:
+                score = (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) \
+                        - (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) * self.coef
+            elif position in [7]:
+                score = (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) \
+                        - (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) * self.coef
+            elif position in [8]:
+                score = (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) \
+                        - (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) * self.coef
+        return score
+
+    def toPut(self, i, j, gameMap):
+        subCandidates = []
+        if (i == 0 and gameMap[i][j] == 0) or (i < 11 and gameMap[i][j] == 0 and gameMap[i - 1][j] != 0):
+            for position in [2, 6, 4, 8]:
+                subCandidates.append(
+                    Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1)))
+        if (i == 0 and j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) \
+                or (j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0
+                    and gameMap[i - 1][j] != 0 and gameMap[i - 1][j + 1] != 0):
+            for position in [1, 3, 5, 7]:
+                subCandidates.append(
+                    Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1)))
+        return subCandidates
+
+    def toPick(self, i, j):  # vertical pick
+        if (0 < i < 11 and self.gameMap[i][j] != 0 and self.gameMap[i - 1][j] != 0 and self.gameMap[i + 1][j] == 0) or (
+                i == 11 and self.gameMap[i][j] != 0 and self.gameMap[i - 1][j] != 0):
+            secondCardPart = self.validator.getCard(i - 1, j, self.coordinateToRotation)
+            if secondCardPart != 'none':
+                i2 = secondCardPart.split(":")[0]
+                j2 = secondCardPart.split(":")[1]
+                if (i == int(i2) and j == int(j2)):
+                    return Candidate(
+                        str(numbToLetter.get(int(j))) + ' ' + str(i) + ' ' + str(numbToLetter.get(int(j2))) + ' '
+                        + str(int(i2) + 1))
+        if (0 <= j < 7 and 0 <= i < 11 and self.gameMap[i][j] != 0 and self.gameMap[i][j + 1] != 0 and
+            self.gameMap[i + 1][
+                j] == 0 and self.gameMap[i + 1][j + 1] == 0) or (j < 7 and i == 11 and self.gameMap[i][j] != 0
+                                                                 and self.gameMap[i][j + 1] != 0):
+            secondCardPart = self.validator.getCard(i, j, self.coordinateToRotation)
+            if secondCardPart != 'none':
+                i2 = secondCardPart.split(":")[0]
+                j2 = secondCardPart.split(":")[1]
+                if (i == int(i2)) and (j + 1 == int(j2)):
+                    return Candidate(str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1) + ' ' + str(
+                        numbToLetter.get(int(j2))) + ' ' + str(int(i2) + 1))
+        return 'none'
+
+    def getPutCandidates(self, gameMap):
+        size = 0
+        putCandidates = []
+        for i in range(12):
+            for j in range(8):
+                putCandidate = self.toPut(i, j, gameMap)
+                if putCandidate != 'none':
+                    putCandidates += putCandidate
+                    size += 1
+                # if size == 14:
+                #     break
+        return putCandidates
+
+    def getCandidates(self):
+        candidates = []
+        pickCandidates = []
+        putCandidates = []
+
+        if self.moveNum <= 24:
+            putCandidates = self.getPutCandidates(self.gameMap)
+            for putCandidate in putCandidates:
+                move = '0 ' + putCandidate.move
+                candidates.append(Candidate(move))
+        else:
+            size = 0
+            for i in range(12):
+                for j in range(8):
+                    pickCandidate = self.toPick(i, j)
+                    if pickCandidate != 'none':
+                        i1 = int(pickCandidate.move.split(" ")[1])
+                        j1 = int(self.validator.letterToNumb.get(pickCandidate.move.split(" ")[0]))
+                        if not (
+                                j1 == self.validator.lastMove.targetCoordinateLet and i1 == self.validator.lastMove.targetCoordinateNum):
+                            pickCandidates.append(pickCandidate)
+                            size += 1
+                    if size == 7:
+                        break
+            for pickCandidate in pickCandidates:
+                pickGameMap = copy.copy(self.gameMap)
+                i1 = int(pickCandidate.move.split(" ")[1])
+                j1 = int(self.validator.letterToNumb.get(pickCandidate.move.split(" ")[0]))
+                i2 = int(pickCandidate.move.split(" ")[3])
+                j2 = int(self.validator.letterToNumb.get(pickCandidate.move.split(" ")[2]))
+                pickGameMap[i1 - 1][j1 - 1] = 0
+                pickGameMap[i2 - 1][j2 - 1] = 0
+                pickPutCandidates = self.getPutCandidates(pickGameMap)
+                for putCandidate in pickPutCandidates:
+                    if not (int(self.coordinateToRotation.get(numbToLetter.get(j1 - 1) + str(i1))) == int(
+                            putCandidate.move.split(" ")[0]) and pickCandidate.move.split(" ")[0] ==
+                            putCandidate.move.split(" ")[1] and pickCandidate.move.split(" ")[1] ==
+                            putCandidate.move.split(" ")[2]):
+                        move = pickCandidate.move + ' ' + putCandidate.move
+                        candidates.append(Candidate(move))
+        return candidates
+
+    def childcreator(self, moveString):
+        move = Move(moveString)
+        # print(moveString)
+        if self.validator.placeValidator(move, self.gameMap):
+            newGameMap = copy.copy(self.gameMap)
+            newvalueMapRed = copy.copy(self.valueMapRed)
+            newvalueMapWhite = copy.copy(self.valueMapWhite)
+            newvalueMapRing = copy.copy(self.valueMapRing)
+            newvalueMapDot = copy.copy(self.valueMapDot)
+            newValidator = copy.copy(self.validator)
+            newcoordinateToRotation = copy.copy(self.coordinateToRotation)
+
+            newparty = 0
+            if self.party == 0:
+                newparty = 1
+
+            Nonvalidatedplacer().place(move, newValidator, newGameMap, newcoordinateToRotation)
+            goalState = Appraiser().appraise(move, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot,
+                                             newGameMap, newparty)
+
+            childNode = Treenode(self.depth - 1, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot,
+                                 newGameMap, self.moveNum + 1, newValidator, newparty, self.width, goalState,
+                                 newcoordinateToRotation)
+            childNode.rawMove = moveString
+            self.children.append(childNode)
+
+    def setLroot(self):
+        maxVal = 0
+        if self.party == 0:
+            for j in range(12):
+                for i in range(8):
+                    if self.valueMapRing[j][i] > maxVal:
+                        maxVal = self.valueMapRing[j][i]
+                        self.lroot = self.validator.numbToLetter.get(i+1)
+                    if self.valueMapDot[j][i] > maxVal:
+                        maxVal = self.valueMapDot[j][i]
+                        self.lroot = self.validator.numbToLetter.get(i+1)
+        if self.party == 1:
+            for j in range(12):
+                for i in range(8):
+                    if self.valueMapRed[j][i] > maxVal:
+                        maxVal = self.valueMapRed[j][i]
+                        self.lroot = self.validator.numbToLetter.get(i+1)
+                    if self.valueMapWhite[j][i] > maxVal:
+                        maxVal = self.valueMapWhite[j][i]
+                        self.lroot = self.validator.numbToLetter.get(i+1)
+
+    def distance(self, treenode):
+        nroot = ord(self.lroot)
+        nnum = ord(treenode.rawMove[-3:-2])
+        return abs(nroot-nnum)
+
+
+
+    def getMove(self, weight):
+        move = ""
+        count = 0
+        self.setLroot()
+        self.children.sort(key=self.distance, reverse=False)
+        for node in self.children:
+            # print(node.rawMove + "____"+ str(node.weight))
+            if node.weight == weight:
+                # move = node.rawMove
+                # print(move)
+                # count += 1
+                return node.rawMove
+        # print("_______"+str(weight)+"_______")
+        # print(count)
+        # return move

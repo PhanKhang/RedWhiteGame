@@ -216,9 +216,9 @@ def main():
                     movok = True
                 except:
                     print("unable to parse the move, try again")
-            if k <= 4 and move.type == 0:
+            if k <= 24 and move.type == 0:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
-            elif k > 4 and move.type == 1:
+            elif k > 24 and move.type == 1:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
             if not legal:
                 print("illegal move, try again")
@@ -226,6 +226,7 @@ def main():
         print("Current Game field")
         correctPrinterMap(gameMap)  # change to correctPrinterMapL for letter output
         print(coordinateToRotation)
+        # print(coordinateToRotation[-1])
         appraiser.appraise(move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, party)
 
         # print("Current Weight")
