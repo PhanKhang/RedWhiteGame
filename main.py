@@ -205,7 +205,7 @@ def main():
                 if (k % 2 == 1 and computer == 1) or (k % 2 == 0 and computer == 2):
                     if k > 1:
                         start_time = time.time()
-                        treenode = Treenode(depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, k, validator, party, width, "go", coordinateToRotation, 0, 0, 0, 0)
+                        treenode = Treenode(depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, k, validator, party, width, "go", coordinateToRotation)
                         if pruning == 1:
                             targetWeight = alphabeta(treenode, depth, -9999999, 9999999, maximizing)
                         else:

@@ -34,29 +34,29 @@ class Appraiser:
                 j1 += 1
 
             if gameMap[j][i] in self.red:
-                if self.appraiseMove(i, j, valueMapRed, gameMap, self.red, node.sRed):
+                if self.appraiseMove(i, j, valueMapRed, gameMap, self.red, node):
                     winC = True
             if gameMap[j][i] in self.white:
-                if self.appraiseMove(i, j, valueMapWhite, gameMap, self.white, node.sWhite):
+                if self.appraiseMove(i, j, valueMapWhite, gameMap, self.white, node):
                     winC = True
             if gameMap[j][i] in self.dot:
-                if self.appraiseMove(i, j, valueMapDot, gameMap, self.dot, node.sDot):
+                if self.appraiseMove(i, j, valueMapDot, gameMap, self.dot, node):
                     winD = True
             if gameMap[j][i] in self.ring:
-                if self.appraiseMove(i, j, valueMapRing, gameMap, self.ring, node.sRing):
+                if self.appraiseMove(i, j, valueMapRing, gameMap, self.ring, node):
                     winD = True
 
             if gameMap[j1][i1] in self.red:
-                if self.appraiseMove(i1, j1, valueMapRed, gameMap, self.red, node.sRed):
+                if self.appraiseMove(i1, j1, valueMapRed, gameMap, self.red, node):
                     winC = True
             if gameMap[j1][i1] in self.white:
-                if self.appraiseMove(i1, j1, valueMapWhite, gameMap, self.white, node.sWhite):
+                if self.appraiseMove(i1, j1, valueMapWhite, gameMap, self.white, node):
                     winC = True
             if gameMap[j1][i1] in self.dot:
-                if self.appraiseMove(i1, j1, valueMapDot, gameMap, self.dot, node.sDot):
+                if self.appraiseMove(i1, j1, valueMapDot, gameMap, self.dot, node):
                     winD = True
             if gameMap[j1][i1] in self.ring:
-                if self.appraiseMove(i1, j1, valueMapRing, gameMap, self.ring, node.sRing):
+                if self.appraiseMove(i1, j1, valueMapRing, gameMap, self.ring, node):
                     winD = True
 
             ir = move.sourceCoordinate1Let - 1
@@ -93,30 +93,31 @@ class Appraiser:
             else:
                 j1 += 1
 
+
             if gameMap[j][i] in self.red:
-                if self.appraiseMove(i, j, valueMapRed, gameMap, self.red, node.sRed):
+                if self.appraiseMove(i, j, valueMapRed, gameMap, self.red, node):
                     winC = True
             if gameMap[j][i] in self.white:
-                if self.appraiseMove(i, j, valueMapWhite, gameMap, self.white, node.sWhite):
+                if self.appraiseMove(i, j, valueMapWhite, gameMap, self.white, node):
                     winC = True
             if gameMap[j][i] in self.dot:
-                if self.appraiseMove(i, j, valueMapDot, gameMap, self.dot, node.sDot):
+                if self.appraiseMove(i, j, valueMapDot, gameMap, self.dot, node):
                     winD = True
             if gameMap[j][i] in self.ring:
-                if self.appraiseMove(i, j, valueMapRing, gameMap, self.ring, node.sRing):
+                if self.appraiseMove(i, j, valueMapRing, gameMap, self.ring, node):
                     winD = True
 
             if gameMap[j1][i1] in self.red:
-                if self.appraiseMove(i1, j1, valueMapRed, gameMap, self.red, node.sRed):
+                if self.appraiseMove(i1, j1, valueMapRed, gameMap, self.red, node):
                     winC = True
             if gameMap[j1][i1] in self.white:
-                if self.appraiseMove(i1, j1, valueMapWhite, gameMap, self.white, node.sWhite):
+                if self.appraiseMove(i1, j1, valueMapWhite, gameMap, self.white, node):
                     winC = True
             if gameMap[j1][i1] in self.dot:
-                if self.appraiseMove(i1, j1, valueMapDot, gameMap, self.dot, node.sDot):
+                if self.appraiseMove(i1, j1, valueMapDot, gameMap, self.dot, node):
                     winD = True
             if gameMap[j1][i1] in self.ring:
-                if self.appraiseMove(i1, j1, valueMapRing, gameMap, self.ring, node.sRing):
+                if self.appraiseMove(i1, j1, valueMapRing, gameMap, self.ring, node):
                     winD = True
 
             if winD and winC:
@@ -200,7 +201,7 @@ class Appraiser:
                 return 0
         return rate
 
-    def appraiseMove(self, i, j, valueMap, gameMap, colorOrDot, score):
+    def appraiseMove(self, i, j, valueMap, gameMap, colorOrDot, node):
         win = False
         for step in range(4):
             if i - step >= 0:
@@ -211,6 +212,7 @@ class Appraiser:
                     for k in range(4):
                         if valueMap[j][i - step + k] < price[rate] + 1 and gameMap[j][i - step + k] != 0:  # here
                             valueMap[j][i - step + k] = price[rate] + 1
+                            ## вот тут если цвет то node.scoreColor +=... иначе node.scoreDots += и т.д.
                             score += price[rate] + 1
             if j - step >= 0:
                 rate = self.isVerticalWindowFree(i, j - step, colorOrDot, gameMap)

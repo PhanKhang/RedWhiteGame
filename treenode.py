@@ -25,7 +25,7 @@ class Candidate:
 
 
 class Treenode:
-    def __init__(self, depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, moveNum, validator, party, width, goalState, coordinateToRotation, sR, sW, sD, sC):
+    def __init__(self, depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, moveNum, validator, party, width, goalState, coordinateToRotation):
         self.depth = depth
         self.gameMap = gameMap
 
@@ -45,10 +45,9 @@ class Treenode:
         self.weight = 0
         self.lroot = ''
         self.coordinateToRotation = coordinateToRotation
-        self.scoreR = sR
-        self.scoreW = sW
-        self.scoreD = sD
-        self.scoreC = sC
+        self.scoreColor = 0
+        self.scoreDots = 0
+
 
         # self.goalState = self.validator.victoryCheck(party, gameMap)
         # if self.goalState == 'color wins' and party == 0:
@@ -249,7 +248,7 @@ class Treenode:
 
             Nonvalidatedplacer().place(move, newValidator, newGameMap, newcoordinateToRotation)
             goalState = Appraiser().appraise(move, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot,
-                                             newGameMap, newparty,0,0,0,0)
+                                             newGameMap, newparty, self)
 
             childNode = Treenode(self.depth - 1, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot,
                                  newGameMap, self.moveNum + 1, newValidator, newparty, self.width, goalState,
