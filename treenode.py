@@ -1,10 +1,7 @@
-from validator import Validator
 from move import Move
-from placer import Placer
 from appraiser import Appraiser
 import copy
 from nonvalidatedplacer import Nonvalidatedplacer
-import numpy
 
 numbToLetter = {
     0: "A",
@@ -25,7 +22,8 @@ class Candidate:
 
 
 class Treenode:
-    def __init__(self, depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, moveNum, validator, party, width, goalState, coordinateToRotation):
+    def __init__(self, depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, moveNum, validator, party,
+                 width, goalState, coordinateToRotation):
         self.depth = depth
         self.gameMap = gameMap
 
@@ -48,7 +46,6 @@ class Treenode:
         self.scoreColor = 0
         self.scoreDots = 0
 
-
         # self.goalState = self.validator.victoryCheck(party, gameMap)
         # if self.goalState == 'color wins' and party == 0:
         #     self.weight *= 10
@@ -56,7 +53,8 @@ class Treenode:
         #     self.weight *= 10
 
     def getOwnWeight(self):
-        self.weight = Appraiser().getScore(self.valueMapRed, self.valueMapWhite, self.valueMapRing, self.valueMapDot, self.party, self.goalState)
+        self.weight = Appraiser().getScore(self.valueMapRed, self.valueMapWhite, self.valueMapRing, self.valueMapDot,
+                                           self.party, self.goalState)
         return self.weight
 
     def populateChildren(self):
@@ -143,27 +141,27 @@ class Treenode:
             for position in [2, 6, 4, 8]:
                 subCandidates.append(
                     Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1), 0))
-                              #(self.getCandidateScore(i, j, position, self.party))))
+                # (self.getCandidateScore(i, j, position, self.party))))
         if (i == 0 and j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0) or (
                 j < 7 and gameMap[i][j] == 0 and gameMap[i][j + 1] == 0 and gameMap[i - 1][j] != 0 and
                 gameMap[i - 1][j + 1] != 0):
             for position in [1, 3, 5, 7]:
                 subCandidates.append(
                     Candidate(str(position) + ' ' + str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1), 0))
-                              #(self.getCandidateScore(i, j, position, self.party))))
+                # (self.getCandidateScore(i, j, position, self.party))))
         return subCandidates
 
     def toPick(self, i, j, coordinateToRotation):
-        if (0 < i < 11 and self.gameMap[i][j] != 0 and self.gameMap[i - 1][j] != 0 and self.gameMap[i + 1][j] == 0) or (
+        if (11 > i > 0 != self.gameMap[i - 1][j] and self.gameMap[i][j] != 0 and self.gameMap[i + 1][j] == 0) or (
                 i == 11 and self.gameMap[i][j] != 0 and self.gameMap[i - 1][j] != 0):
             secondCardPart = self.validator.getCard(i - 1, j, coordinateToRotation)
             if secondCardPart != 'none':
                 i2 = secondCardPart.split(":")[0]
                 j2 = secondCardPart.split(":")[1]
-                if (i == int(i2) and j == int(j2)):
+                if i == int(i2) and j == int(j2):
                     return Candidate(
                         str(numbToLetter.get(int(j))) + ' ' + str(i) + ' ' + str(numbToLetter.get(int(j2))) + ' '
-                        + str(int(i2) + 1), 0)#self.getRecycleCandidateScore(i - 1, j, i2, j2, self.party))
+                        + str(int(i2) + 1), 0)  # self.getRecycleCandidateScore(i - 1, j, i2, j2, self.party))
         if (j < 7 and i < 11 and self.gameMap[i][j] != 0 and self.gameMap[i][j + 1] != 0 and self.gameMap[i + 1][
             j] == 0 and
             self.gameMap[i + 1][j + 1] == 0) or (
@@ -175,9 +173,8 @@ class Treenode:
                 if (i == int(i2)) and (j + 1 == int(j2)):
                     return Candidate(str(numbToLetter.get(int(j))) + ' ' + str(int(i) + 1) + ' ' + str(
                         numbToLetter.get(int(j2))) + ' ' + str(int(i2) + 1), 0)
-                                     #self.getRecycleCandidateScore(i, j, i2, j2, self.party))
+                    # self.getRecycleCandidateScore(i, j, i2, j2, self.party))
         return 'none'
-
 
     def getPutCandidates(self, gameMap):
         size = 0
@@ -192,10 +189,8 @@ class Treenode:
                     break
         return putCandidates
 
-
     def getCandidates(self):
         candidates = []
-        putCandidates = []
         pickCandidates = []
         if self.moveNum <= 6:
             putCandidates = self.getPutCandidates(self.gameMap)
@@ -210,7 +205,8 @@ class Treenode:
                     if pickCandidate != 'none':
                         i1 = int(pickCandidate.move.split(" ")[1])
                         j1 = int(self.validator.letterToNumb.get(pickCandidate.move.split(" ")[0]))
-                        if not (j1 == self.validator.lastMove.targetCoordinateLet and i1 == self.validator.lastMove.targetCoordinateNum):
+                        if not (
+                                j1 == self.validator.lastMove.targetCoordinateLet and i1 == self.validator.lastMove.targetCoordinateNum):
                             pickCandidates.append(pickCandidate)
                             size += 1
                     if size == 8:
@@ -232,8 +228,8 @@ class Treenode:
                         move = pickCandidate.move + ' ' + putCandidate.move
                         candidates.append(Candidate(move, 0))
 
-        #candidates.sort(key=lambda x: x.score, reverse=True)
-        #if self.width != 0 & len(candidates) > self.width:
+        # candidates.sort(key=lambda x: x.score, reverse=True)
+        # if self.width != 0 & len(candidates) > self.width:
         #   return candidates[:self.width]
         return candidates
 
@@ -253,15 +249,14 @@ class Treenode:
             if self.party == 0:
                 newparty = 1
 
-
-
             Nonvalidatedplacer().place(move, newValidator, newGameMap, newcoordinateToRotation)
-            goalState = Appraiser().appraise(move, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot,
-                                             newGameMap, newparty, self)
 
             childNode = Treenode(self.depth - 1, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot,
-                                 newGameMap, self.moveNum + 1, newValidator, newparty, self.width, goalState,
+                                 newGameMap, self.moveNum + 1, newValidator, newparty, self.width, 'go',
                                  newcoordinateToRotation)
+            childNode.goalState = Appraiser().appraise(move, newvalueMapRed, newvalueMapWhite, newvalueMapRing,
+                                                       newvalueMapDot,
+                                                       newGameMap, newparty, childNode)
             childNode.rawMove = moveString
             self.children.append(childNode)
 
@@ -272,26 +267,24 @@ class Treenode:
                 for i in range(8):
                     if self.valueMapRing[j][i] > maxVal:
                         maxVal = self.valueMapRing[j][i]
-                        self.lroot = self.validator.numbToLetter.get(i+1)
+                        self.lroot = self.validator.numbToLetter.get(i + 1)
                     if self.valueMapDot[j][i] > maxVal:
                         maxVal = self.valueMapDot[j][i]
-                        self.lroot = self.validator.numbToLetter.get(i+1)
+                        self.lroot = self.validator.numbToLetter.get(i + 1)
         if self.party == 1:
             for j in range(12):
                 for i in range(8):
                     if self.valueMapRed[j][i] > maxVal:
                         maxVal = self.valueMapRed[j][i]
-                        self.lroot = self.validator.numbToLetter.get(i+1)
+                        self.lroot = self.validator.numbToLetter.get(i + 1)
                     if self.valueMapWhite[j][i] > maxVal:
                         maxVal = self.valueMapWhite[j][i]
-                        self.lroot = self.validator.numbToLetter.get(i+1)
+                        self.lroot = self.validator.numbToLetter.get(i + 1)
 
     def distance(self, treenode):
         nroot = ord(self.lroot)
         nnum = ord(treenode.rawMove[-3:-2])
-        return abs(nroot-nnum)
-
-
+        return abs(nroot - nnum)
 
     def getMove(self, weight):
         move = ""

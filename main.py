@@ -202,6 +202,10 @@ def main():
                 input_var = ''
                 if (k % 2 == 1 and computer == 1) or (k % 2 == 0 and computer == 2):
                     if k > 1:
+                        if k >= 4:
+                            depth = 2
+                        if k >= 6:
+                            width = 8
                         start_time = time.time()
                         treenode = Treenode(depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, k, validator, party, width, "go", coordinateToRotation)
                         if pruning == 1:
@@ -212,6 +216,7 @@ def main():
                         input_var = treenode.getMove(targetWeight)
                         print("--- %s seconds ---" % (time.time() - start_time))
                         print("computer move: " + input_var)
+                        print("with depth "+str(depth) +" with width "+str(width))
                     else:
                         input_var = "0 " + str(random.randint(1, 8)) + " " + validator.numbToLetter.get(
                             random.randint(4, 5)) + " " + str(1)
@@ -240,21 +245,21 @@ def main():
 
         print("Current Weight")
         # print(appraiser.getScore(valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party))
-        print("Red map")
-        # print(valueMapRed)
-        correctPrinter(valueMapRed)
+        # print("Red map")
+        # # print(valueMapRed)
+        # correctPrinter(valueMapRed)
+        # #
+        # print("White map")
+        # # # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
+        # correctPrinter(valueMapWhite)
+        # #
+        # print("Ring map")
+        # # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
+        # correctPrinter(valueMapRing)
         #
-        print("White map")
-        # # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
-        correctPrinter(valueMapWhite)
-        #
-        print("Ring map")
-        # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
-        correctPrinter(valueMapRing)
-
-        print("Dot map")
-        # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
-        correctPrinter(valueMapDot)
+        # print("Dot map")
+        # # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
+        # correctPrinter(valueMapDot)
 
         result = validator.victoryCheck(party, gameMap)
 
