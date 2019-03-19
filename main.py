@@ -149,6 +149,15 @@ def alphabeta(node, depth, a, b, maxP):
         return node.weight
 
 
+class node:
+    def __init__(self):
+        pass
+
+    sRed = 0
+    sWhite = 0
+    sDot = 0
+    sRing = 0
+
 
 def main():
     # pruning = int(input("Activate alpha-beta pruning? 1 for yes 0 for no: "))
@@ -196,7 +205,7 @@ def main():
                 if (k % 2 == 1 and computer == 1) or (k % 2 == 0 and computer == 2):
                     if k > 1:
                         start_time = time.time()
-                        treenode = Treenode(depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, k, validator, party, width, "go", coordinateToRotation)
+                        treenode = Treenode(depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, k, validator, party, width, "go", coordinateToRotation, 0, 0, 0, 0)
                         if pruning == 1:
                             targetWeight = alphabeta(treenode, depth, -9999999, 9999999, maximizing)
                         else:
@@ -217,9 +226,9 @@ def main():
                     movok = True
                 except:
                     print("unable to parse the move, try again")
-            if k <= 24 and move.type == 0:
+            if k <= 6 and move.type == 0:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
-            elif k > 24 and move.type == 1:
+            elif k > 6 and move.type == 1:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
             if not legal:
                 print("illegal move, try again")
@@ -228,25 +237,27 @@ def main():
         correctPrinterMap(gameMap)  # change to correctPrinterMapL for letter output
         print(coordinateToRotation)
         # print(coordinateToRotation[-1])
-        appraiser.appraise(move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, party)
+        nnode = node()
+        appraiser.appraise(move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, party, nnode)
+        print(nnode.sRed)
 
-        # print("Current Weight")
+        print("Current Weight")
         # print(appraiser.getScore(valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party))
-        # print("Red ma]p")
-        # # print(valueMapRed)
-        # correctPrinter(valueMapRed)
-        # #
-        # print("White map")
-        # # # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
-        # correctPrinter(valueMapWhite)
-        # #
-        # print("Ring map")
-        # # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
-        # correctPrinter(valueMapRing)
+        print("Red map")
+        # print(valueMapRed)
+        correctPrinter(valueMapRed)
         #
-        # print("Dot map")
-        # # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
-        # correctPrinter(valueMapDot)
+        print("White map")
+        # # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
+        correctPrinter(valueMapWhite)
+        #
+        print("Ring map")
+        # print(appraiser.getAvailableMoves(appraiser.getRingMap(), tmp))
+        correctPrinter(valueMapRing)
+
+        print("Dot map")
+        # print(appraiser.getAvailableMoves(appraiser.getDotMap(), tmp))
+        correctPrinter(valueMapDot)
 
         result = validator.victoryCheck(party, gameMap)
 
