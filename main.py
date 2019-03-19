@@ -2,7 +2,7 @@
 import numpy
 from move import Move
 from validator import Validator
-from appraiser import Appraiser
+from oldAppraiser import Appraiser
 from placer import Placer
 from treenode import Treenode
 import time
@@ -153,10 +153,8 @@ class node:
     def __init__(self):
         pass
 
-    sRed = 0
-    sWhite = 0
-    sDot = 0
-    sRing = 0
+    scoreColor = 0
+    scoreDots = 0
 
 
 def main():
@@ -237,7 +235,7 @@ def main():
         correctPrinterMap(gameMap)  # change to correctPrinterMapL for letter output
         print(coordinateToRotation)
         # print(coordinateToRotation[-1])
-        # appraiser.appraise(move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, party, nnode)
+        appraiser.appraise(move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, party)
         # print(nnode.sRed)
 
         print("Current Weight")
