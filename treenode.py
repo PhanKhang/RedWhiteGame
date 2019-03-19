@@ -63,6 +63,15 @@ class Treenode:
         candidates = self.getCandidates()
         for candidate in candidates:
             self.childcreator(candidate.move)
+        self.belovedChildren()
+
+    def belovedChildren(self):
+        if self.party == 0:
+            self.children.sort(key=lambda x: x.scoreDots, reverse=True)
+        else:
+            self.children.sort(key=lambda x: x.scoreColor, reverse=True)
+        if self.width != 0 & len(self.children) > self.width:
+            self.children[:self.width]
 
     def getRecycleCandidateScore(self, i1, j1, i2, j2, party):
         score = 0
