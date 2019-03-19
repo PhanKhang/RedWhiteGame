@@ -205,7 +205,7 @@ def main():
                         if k >= 4:
                             depth = 2
                         if k >= 6:
-                            width = 8
+                            depth = 1
                         start_time = time.time()
                         treenode = Treenode(depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, k, validator, party, width, "go", coordinateToRotation)
                         if pruning == 1:
