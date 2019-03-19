@@ -34,45 +34,44 @@ class Appraiser:
                 j1 += 1
 
             if gameMap[j][i] in self.red:
-                if self.appraiseMove(i, j, valueMapRed, gameMap, self.red, node):
+                if self.appraiseMove(i, j, valueMapRed, gameMap, self.red, node, True):
                     winC = True
             if gameMap[j][i] in self.white:
-                if self.appraiseMove(i, j, valueMapWhite, gameMap, self.white, node):
+                if self.appraiseMove(i, j, valueMapWhite, gameMap, self.white, node, True):
                     winC = True
             if gameMap[j][i] in self.dot:
-                if self.appraiseMove(i, j, valueMapDot, gameMap, self.dot, node):
+                if self.appraiseMove(i, j, valueMapDot, gameMap, self.dot, node, False):
                     winD = True
             if gameMap[j][i] in self.ring:
-                if self.appraiseMove(i, j, valueMapRing, gameMap, self.ring, node):
+                if self.appraiseMove(i, j, valueMapRing, gameMap, self.ring, node, False):
                     winD = True
 
             if gameMap[j1][i1] in self.red:
-                if self.appraiseMove(i1, j1, valueMapRed, gameMap, self.red, node):
+                if self.appraiseMove(i1, j1, valueMapRed, gameMap, self.red, node, True):
                     winC = True
             if gameMap[j1][i1] in self.white:
-                if self.appraiseMove(i1, j1, valueMapWhite, gameMap, self.white, node):
+                if self.appraiseMove(i1, j1, valueMapWhite, gameMap, self.white, node, True):
                     winC = True
             if gameMap[j1][i1] in self.dot:
-                if self.appraiseMove(i1, j1, valueMapDot, gameMap, self.dot, node):
+                if self.appraiseMove(i1, j1, valueMapDot, gameMap, self.dot, node, False):
                     winD = True
             if gameMap[j1][i1] in self.ring:
-                if self.appraiseMove(i1, j1, valueMapRing, gameMap, self.ring, node):
+                if self.appraiseMove(i1, j1, valueMapRing, gameMap, self.ring, node, False):
                     winD = True
-
             ir = move.sourceCoordinate1Let - 1
             jr = move.sourceCoordinate1Num - 1
             ir1 = move.sourceCoordinate2Let - 1
             jr1 = move.sourceCoordinate2Num - 1
 
-            self.appraiseRecycleMove(ir, jr, valueMapRed, gameMap, self.red)
-            self.appraiseRecycleMove(ir, jr, valueMapWhite, gameMap, self.white)
-            self.appraiseRecycleMove(ir, jr, valueMapDot, gameMap, self.dot)
-            self.appraiseRecycleMove(ir, jr, valueMapRing, gameMap, self.ring)
+            self.appraiseRecycleMove(ir, jr, valueMapRed, gameMap, self.red, node, True)
+            self.appraiseRecycleMove(ir, jr, valueMapWhite, gameMap, self.white, node, True)
+            self.appraiseRecycleMove(ir, jr, valueMapDot, gameMap, self.dot, node, False)
+            self.appraiseRecycleMove(ir, jr, valueMapRing, gameMap, self.ring, node, False)
 
-            self.appraiseRecycleMove(ir1, jr1, valueMapRed, gameMap, self.red)
-            self.appraiseRecycleMove(ir1, jr1, valueMapWhite, gameMap, self.white)
-            self.appraiseRecycleMove(ir1, jr1, valueMapDot, gameMap, self.dot)
-            self.appraiseRecycleMove(ir1, jr1, valueMapRing, gameMap, self.ring)
+            self.appraiseRecycleMove(ir1, jr1, valueMapRed, gameMap, self.red, node, True)
+            self.appraiseRecycleMove(ir1, jr1, valueMapWhite, gameMap, self.white, node, False)
+            self.appraiseRecycleMove(ir1, jr1, valueMapDot, gameMap, self.dot, node, False)
+            self.appraiseRecycleMove(ir1, jr1, valueMapRing, gameMap, self.ring, node, False)
 
             if winD and winC:
                 return "winDC"
@@ -93,31 +92,30 @@ class Appraiser:
             else:
                 j1 += 1
 
-
             if gameMap[j][i] in self.red:
-                if self.appraiseMove(i, j, valueMapRed, gameMap, self.red, node):
+                if self.appraiseMove(i, j, valueMapRed, gameMap, self.red, node, True):
                     winC = True
             if gameMap[j][i] in self.white:
-                if self.appraiseMove(i, j, valueMapWhite, gameMap, self.white, node):
+                if self.appraiseMove(i, j, valueMapWhite, gameMap, self.white, node, True):
                     winC = True
             if gameMap[j][i] in self.dot:
-                if self.appraiseMove(i, j, valueMapDot, gameMap, self.dot, node):
+                if self.appraiseMove(i, j, valueMapDot, gameMap, self.dot, node, False):
                     winD = True
             if gameMap[j][i] in self.ring:
-                if self.appraiseMove(i, j, valueMapRing, gameMap, self.ring, node):
+                if self.appraiseMove(i, j, valueMapRing, gameMap, self.ring, node, False):
                     winD = True
 
             if gameMap[j1][i1] in self.red:
-                if self.appraiseMove(i1, j1, valueMapRed, gameMap, self.red, node):
+                if self.appraiseMove(i1, j1, valueMapRed, gameMap, self.red, node, True):
                     winC = True
             if gameMap[j1][i1] in self.white:
-                if self.appraiseMove(i1, j1, valueMapWhite, gameMap, self.white, node):
+                if self.appraiseMove(i1, j1, valueMapWhite, gameMap, self.white, node, True):
                     winC = True
             if gameMap[j1][i1] in self.dot:
-                if self.appraiseMove(i1, j1, valueMapDot, gameMap, self.dot, node):
+                if self.appraiseMove(i1, j1, valueMapDot, gameMap, self.dot, node, False):
                     winD = True
             if gameMap[j1][i1] in self.ring:
-                if self.appraiseMove(i1, j1, valueMapRing, gameMap, self.ring, node):
+                if self.appraiseMove(i1, j1, valueMapRing, gameMap, self.ring, node, False):
                     winD = True
 
             if winD and winC:
@@ -128,21 +126,6 @@ class Appraiser:
                 return "winC"
             else:
                 return "go"
-
-        # if party == 0:
-        #     self.applyMatrix(valueMapDot, i, j)
-        #     self.applyMatrix(valueMapRing, i, j)
-        #     self.applyMatrix(valueMapDot, i1, j1)
-        #     self.applyMatrix(valueMapRing, i1, j1)
-        # else:
-        #     self.applyMatrix(valueMapWhite, i, j)
-        #     self.applyMatrix(valueMapRed, i, j)
-        #     self.applyMatrix(valueMapWhite, i1, j1)
-        #     self.applyMatrix(valueMapRed, i1, j1)
-
-        # if move.type == 1:
-        #     valueMap[move.sourceCoordinate1Num - 1][move.sourceCoordinate1Let - 1].occupied = 0
-        #     valueMap[move.sourceCoordinate2Num - 1][move.sourceCoordinate2Let - 1].occupied = 0
 
     # look for next 4 fields to see if there is possibility of creating 4 in a row
     def isHorizontalWindowFree(self, i, j, self_color, gameMap):
@@ -201,7 +184,7 @@ class Appraiser:
                 return 0
         return rate
 
-    def appraiseMove(self, i, j, valueMap, gameMap, colorOrDot, node):
+    def appraiseMove(self, i, j, valueMap, gameMap, colorOrDot, score, isColor):
         win = False
         for step in range(4):
             if i - step >= 0:
@@ -212,8 +195,10 @@ class Appraiser:
                     for k in range(4):
                         if valueMap[j][i - step + k] < price[rate] + 1 and gameMap[j][i - step + k] != 0:  # here
                             valueMap[j][i - step + k] = price[rate] + 1
-                            ## вот тут если цвет то node.scoreColor +=... иначе node.scoreDots += и т.д.
-                            score += price[rate] + 1
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
             if j - step >= 0:
                 rate = self.isVerticalWindowFree(i, j - step, colorOrDot, gameMap)
                 if rate >= 4:
@@ -222,7 +207,10 @@ class Appraiser:
                     for k in range(4):
                         if valueMap[j - step + k][i] < price[rate] and gameMap[j - step + k][i] != 0:
                             valueMap[j - step + k][i] = price[rate]
-                            score += price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
             if i - step >= 0 and j + step < 12:
                 rate = self.isDownDiagonalWindowFree(i - step, j + step, colorOrDot, gameMap)
                 if rate >= 4:
@@ -232,7 +220,10 @@ class Appraiser:
                         if valueMap[j + step - k][i - step + k] < price[rate] \
                                 and gameMap[j + step - k][i - step + k] != 0:
                             valueMap[j + step - k][i - step + k] = price[rate]
-                            score += price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
             if j - step >= 0 and i - step >= 0:
                 rate = self.isUpDiagonalWindowFree(i - step, j - step, colorOrDot, gameMap)
                 if rate >= 4:
@@ -242,11 +233,17 @@ class Appraiser:
                         if valueMap[j - step + k][i - step + k] < price[rate] \
                                 and gameMap[j - step + k][i - step + k] != 0:
                             valueMap[j - step + k][i - step + k] = price[rate]
-                            score += price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
         return win
 
-    def appraiseRecycleMove(self, i, j, valueMap, gameMap, colorOrDot):
-        score = 0
+    def appraiseRecycleMove(self, i, j, valueMap, gameMap, colorOrDot, score, isColor):
+        if isColor:
+            score.scoreColor -= valueMap[j][i]
+        else:
+            score.scoreDots -= valueMap[j][i]
         valueMap[j][i] = 0
         for step in range(4):
             if i - step >= 0:
@@ -255,14 +252,20 @@ class Appraiser:
                     for k in range(4):
                         if valueMap[j][i - step + k] > price[rate] + 1 and gameMap[j][i - step + k] != 0:  # here
                             valueMap[j][i - step + k] = price[rate] + 1
-                            score -= price[rate] + 1
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
             if j - step >= 0:
                 rate = self.isVerticalWindowFree(i, j - step, colorOrDot, gameMap)
                 if rate > 0:
                     for k in range(4):
                         if valueMap[j - step + k][i] > price[rate] and gameMap[j - step + k][i] != 0:
                             valueMap[j - step + k][i] = price[rate]
-                            score -= price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
             if i - step >= 0 and j + step < 12:
                 rate = self.isDownDiagonalWindowFree(i - step, j + step, colorOrDot, gameMap)
                 if rate > 0:
@@ -270,7 +273,10 @@ class Appraiser:
                         if valueMap[j + step - k][i - step + k] > price[rate] \
                                 and gameMap[j + step - k][i - step + k] != 0:
                             valueMap[j + step - k][i - step + k] = price[rate]
-                            score -= price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
             if j - step >= 0 and i - step >= 0:
                 rate = self.isUpDiagonalWindowFree(i - step, j - step, colorOrDot, gameMap)
                 if rate > 0:
@@ -278,7 +284,10 @@ class Appraiser:
                         if valueMap[j - step + k][i - step + k] > price[rate] \
                                 and gameMap[j - step + k][i - step + k] != 0:
                             valueMap[j - step + k][i - step + k] = price[rate]
-                            score -= price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
 
     # check and apply the weight on the window of 4 elements if there is possibility of creating 4 in a row
     # total fields check is 7

@@ -237,9 +237,8 @@ def main():
         correctPrinterMap(gameMap)  # change to correctPrinterMapL for letter output
         print(coordinateToRotation)
         # print(coordinateToRotation[-1])
-        nnode = node()
-        appraiser.appraise(move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, party, nnode)
-        print(nnode.sRed)
+        # appraiser.appraise(move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, party, nnode)
+        # print(nnode.sRed)
 
         print("Current Weight")
         # print(appraiser.getScore(valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party))
