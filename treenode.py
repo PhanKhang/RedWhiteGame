@@ -34,6 +34,11 @@ class Treenode:
         self.rawMove = ''
         self.coef = 0.8
 
+        self.valueMapRed = numpy.zeros((12, 8))
+        self.valueMapWhite = numpy.zeros((12, 8))
+        self.valueMapDot = numpy.zeros((12, 8))
+        self.valueMapRing = numpy.zeros((12, 8))
+
 
 
         self.width = width
@@ -44,15 +49,14 @@ class Treenode:
         self.scoreDots = 0
 
         if self.depth > 0:
-            self.goalState = AppraiserNonValueMap().appraise(gameMap, self)
-            coef = 0.8
+            self.goalState = AppraiserNonValueMap().appraise(self.gameMap, self)
         else:
             self.goalState = "go"
 
-    valueMapRed = numpy.zeros((12, 8))
-    valueMapWhite = numpy.zeros((12, 8))
-    valueMapDot = numpy.zeros((12, 8))
-    valueMapRing = numpy.zeros((12, 8))
+    # valueMapRed = numpy.zeros((12, 8))
+    # valueMapWhite = numpy.zeros((12, 8))
+    # valueMapDot = numpy.zeros((12, 8))
+    # valueMapRing = numpy.zeros((12, 8))
 
         # self.goalState = self.validator.victoryCheck(party, gameMap)
         # if self.goalState == 'color wins' and party == 0:

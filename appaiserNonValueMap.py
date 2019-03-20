@@ -18,15 +18,14 @@ class AppraiserNonValueMap:
     # valueMapDot = numpy.zeros((12, 8))
     # valueMapRing = numpy.zeros((12, 8))
 
-    score = []
 
     # appraise how how card will affect gameMap
     def appraise(self, gameMap, node):
         winC = False
         winD = False
 
-        for i in range(8):
-            for j in range(12):
+        for j in range(12):
+            for i in range(8):
                 if gameMap[j][i] in self.red:
                     if self.appraiseMoveRed(i, j, gameMap, self.red, node, True):
                         winC = True
@@ -37,17 +36,17 @@ class AppraiserNonValueMap:
                     if self.appraiseMoveDot(i, j, gameMap, self.dot, node, False):
                         winD = True
                 if gameMap[j][i] in self.ring:
-                    if self.appraiseMoveDot(i, j, gameMap, self.ring, node, False):
+                    if self.appraiseMoveRing(i, j, gameMap, self.ring, node, False):
                         winD = True
 
-                if winD and winC:
-                    return "winDC"
-                elif winD:
-                    return "winD"
-                elif winC:
-                    return "winC"
-                else:
-                    return "go"
+        if winD and winC:
+            return "winDC"
+        elif winD:
+            return "winD"
+        elif winC:
+            return "winC"
+        else:
+            return "go"
 
     # look for next 4 fields to see if there is possibility of creating 4 in a row
     def isHorizontalWindowFree(self, i, j, self_color, gameMap):
@@ -163,6 +162,8 @@ class AppraiserNonValueMap:
 
     def appraiseMoveRed(self, i, j, gameMap, colorOrDot, score, isColor):
         win = False
+        colorOrDot = self.red
+
         for step in range(4):
             if i - step >= 0:
                 rate = self.isHorizontalWindowFree(i - step, j, colorOrDot, gameMap)
@@ -188,6 +189,7 @@ class AppraiserNonValueMap:
                                 score.scoreColor += price[rate] + 1
                             else:
                                 score.scoreDots += price[rate] + 1
+
             if i - step >= 0 and j + step < 12:
                 rate = self.isDownDiagonalWindowFree(i - step, j + step, colorOrDot, gameMap)
                 if rate >= 4:
@@ -335,8 +337,8 @@ class AppraiserNonValueMap:
                     win = True
                 if rate > 0:
                     for k in range(4):
-                        if score.valueMaRing[j][i - step + k] < price[rate] + 1 and gameMap[j][i - step + k] != 0:  # here
-                            score.valueMaRing[j][i - step + k] = price[rate] + 1
+                        if score.valueMapRing[j][i - step + k] < price[rate] + 1 and gameMap[j][i - step + k] != 0:  # here
+                            score.valueMapRing[j][i - step + k] = price[rate] + 1
                             if isColor:
                                 score.scoreColor += price[rate] + 1
                             else:
@@ -347,8 +349,8 @@ class AppraiserNonValueMap:
                     win = True
                 if rate > 0:
                     for k in range(4):
-                        if score.valueMaRing[j - step + k][i] < price[rate] and gameMap[j - step + k][i] != 0:
-                            score.valueMaRing[j - step + k][i] = price[rate]
+                        if score.valueMapRing[j - step + k][i] < price[rate] and gameMap[j - step + k][i] != 0:
+                            score.valueMapRing[j - step + k][i] = price[rate]
                             if isColor:
                                 score.scoreColor += price[rate] + 1
                             else:
@@ -359,9 +361,9 @@ class AppraiserNonValueMap:
                     win = True
                 if rate > 0:
                     for k in range(4):
-                        if score.valueMaRing[j + step - k][i - step + k] < price[rate] \
+                        if score.valueMapRing[j + step - k][i - step + k] < price[rate] \
                                 and gameMap[j + step - k][i - step + k] != 0:
-                            score.valueMaRing[j + step - k][i - step + k] = price[rate]
+                            score.valueMapRing[j + step - k][i - step + k] = price[rate]
                             if isColor:
                                 score.scoreColor += price[rate] + 1
                             else:
@@ -372,9 +374,9 @@ class AppraiserNonValueMap:
                     win = True
                 if rate > 0:
                     for k in range(4):
-                        if score.valueMaRing[j - step + k][i - step + k] < price[rate] \
+                        if score.valueMapRing[j - step + k][i - step + k] < price[rate] \
                                 and gameMap[j - step + k][i - step + k] != 0:
-                            score.valueMaRing[j - step + k][i - step + k] = price[rate]
+                            score.valueMapRing[j - step + k][i - step + k] = price[rate]
                             if isColor:
                                 score.scoreColor += price[rate] + 1
                             else:
