@@ -202,10 +202,10 @@ def main():
                 input_var = ''
                 if (k % 2 == 1 and computer == 1) or (k % 2 == 0 and computer == 2):
                     if k > 1:
-                        if k >= 4:
-                            depth = 3
-                        if k >= 6:
-                            depth = 3
+                        # if k >= 4:
+                        #     depth = 3
+                        # if k >= 6:
+                        #     depth = 3
                         start_time = time.time()
                         treenode = Treenode(depth, gameMap, k, validator, party, width, coordinateToRotation)
                         if pruning == 1:
@@ -229,9 +229,9 @@ def main():
                     movok = True
                 except:
                     print("unable to parse the move, try again")
-            if k <= 6 and move.type == 0:
+            if k <= 24 and move.type == 0:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
-            elif k > 6 and move.type == 1:
+            elif k > 24 and move.type == 1:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
             if not legal:
                 print("illegal move, try again")
