@@ -65,7 +65,7 @@ class Treenode:
         #     self.weight *= 10
 
     def getOwnWeight(self):
-        AppraiserNonValueMap().appraise(self.gameMap, self)
+        self.goalState = AppraiserNonValueMap().appraise(self.gameMap, self)
         self.weight = AppraiserNonValueMap().getScore(self.party, self.goalState, self)
         return self.weight
 
@@ -205,7 +205,7 @@ class Treenode:
     def getCandidates(self):
         candidates = []
         pickCandidates = []
-        if self.moveNum <= 6:
+        if self.moveNum <= 24:
             putCandidates = self.getPutCandidates(self.gameMap)
             for putCandidate in putCandidates:
                 move = '0 ' + putCandidate.move
