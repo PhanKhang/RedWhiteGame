@@ -13,10 +13,10 @@ class AppraiserNonValueMap:
     dot = [1, 4]
     ring = [2, 3]
 
-    valueMapRed = numpy.zeros((12, 8))
-    valueMapWhite = numpy.zeros((12, 8))
-    valueMapDot = numpy.zeros((12, 8))
-    valueMapRing = numpy.zeros((12, 8))
+    # valueMapRed = numpy.zeros((12, 8))
+    # valueMapWhite = numpy.zeros((12, 8))
+    # valueMapDot = numpy.zeros((12, 8))
+    # valueMapRing = numpy.zeros((12, 8))
 
     score = []
 
@@ -28,16 +28,16 @@ class AppraiserNonValueMap:
         for i in range(8):
             for j in range(12):
                 if gameMap[j][i] in self.red:
-                    if self.appraiseMove(i, j, self.valueMapRed, gameMap, self.red, node, True):
+                    if self.appraiseMove(i, j, node.valueMapRed, gameMap, self.red, node, True):
                         winC = True
                 if gameMap[j][i] in self.white:
-                    if self.appraiseMove(i, j, self.valueMapWhite, gameMap, self.white, node, True):
+                    if self.appraiseMove(i, j, node.valueMapWhite, gameMap, self.white, node, True):
                         winC = True
                 if gameMap[j][i] in self.dot:
-                    if self.appraiseMove(i, j, self.valueMapDot, gameMap, self.dot, node, False):
+                    if self.appraiseMove(i, j, node.valueMapDot, gameMap, self.dot, node, False):
                         winD = True
                 if gameMap[j][i] in self.ring:
-                    if self.appraiseMove(i, j, self.valueMapRing, gameMap, self.ring, node, False):
+                    if self.appraiseMove(i, j, node.valueMapRing, gameMap, self.ring, node, False):
                         winD = True
 
                 if winD and winC:
@@ -163,7 +163,7 @@ class AppraiserNonValueMap:
 
     # check and apply the weight on the window of 4 elements if there is possibility of creating 4 in a row
     # total fields check is 7
-    def getScore(self, party, goalState):
+    def getScore(self, party, goalState, node):
         sumRed = 0
         sumWhite = 0
         sumRing = 0
@@ -172,10 +172,10 @@ class AppraiserNonValueMap:
         if party == 0:
             for j in range(12):
                 for i in range(8):
-                    redWeight = self.valueMapRed[j][i]
-                    whiteWeight = self.valueMapWhite[j][i]
-                    ringWeight = self.valueMapRing[j][i]
-                    dotWeight = self.valueMapDot[j][i]
+                    redWeight = node.valueMapRed[j][i]
+                    whiteWeight = node.valueMapWhite[j][i]
+                    ringWeight = node.valueMapRing[j][i]
+                    dotWeight = node.valueMapDot[j][i]
 
                     if redWeight >= price[3]:
                         redWeight *= 1.5
@@ -189,10 +189,10 @@ class AppraiserNonValueMap:
         else:
             for j in range(12):
                 for i in range(8):
-                    redWeight = self.valueMapRed[j][i]
-                    whiteWeight = self.valueMapWhite[j][i]
-                    ringWeight = self.valueMapRing[j][i]
-                    dotWeight = self.valueMapDot[j][i]
+                    redWeight = node.valueMapRed[j][i]
+                    whiteWeight = node.valueMapWhite[j][i]
+                    ringWeight = node.valueMapRing[j][i]
+                    dotWeight = node.valueMapDot[j][i]
 
                     if dotWeight >= price[3]:
                         dotWeight *= 1.5

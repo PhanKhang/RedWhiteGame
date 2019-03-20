@@ -1,7 +1,9 @@
 from move import Move
-from appraiser import Appraiser
-import copy
+from appaiserNonValueMap import AppraiserNonValueMap
 from nonvalidatedplacer import Nonvalidatedplacer
+import copy
+import numpy
+
 
 numbToLetter = {
     0: "A",
@@ -22,29 +24,30 @@ class Candidate:
 
 
 class Treenode:
-    def __init__(self, depth, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, moveNum, validator, party,
-                 width, goalState, coordinateToRotation):
+    def __init__(self, depth, gameMap, moveNum, validator, party, width, coordinateToRotation):
         self.depth = depth
         self.gameMap = gameMap
-
-        self.valueMapRed = valueMapRed
-        self.valueMapRing = valueMapRing
-        self.valueMapDot = valueMapDot
-        self.valueMapWhite = valueMapWhite
-
         self.children = []
         self.moveNum = moveNum
         self.validator = validator
         self.party = party
         self.rawMove = ''
         self.coef = 0.8
-        self.goalState = goalState
+        if self.depth > 0:
+            self.goalState = AppraiserNonValueMap().appraise(gameMap, self)
+        else:
+            self.goalState = "go"
         self.width = width
         self.weight = 0
         self.lroot = ''
         self.coordinateToRotation = coordinateToRotation
         self.scoreColor = 0
         self.scoreDots = 0
+
+    valueMapRed = numpy.zeros((12, 8))
+    valueMapWhite = numpy.zeros((12, 8))
+    valueMapDot = numpy.zeros((12, 8))
+    valueMapRing = numpy.zeros((12, 8))
 
         # self.goalState = self.validator.victoryCheck(party, gameMap)
         # if self.goalState == 'color wins' and party == 0:
@@ -53,8 +56,8 @@ class Treenode:
         #     self.weight *= 10
 
     def getOwnWeight(self):
-        self.weight = Appraiser().getScore(self.valueMapRed, self.valueMapWhite, self.valueMapRing, self.valueMapDot,
-                                           self.party, self.goalState)
+        AppraiserNonValueMap().appraise(self.gameMap, self)
+        self.weight = AppraiserNonValueMap().getScore(self.party, self.goalState, self)
         return self.weight
 
     def populateChildren(self):
@@ -71,69 +74,69 @@ class Treenode:
         if self.width != 0 & len(self.children) > self.width:
             self.children[:self.width]
 
-    def getRecycleCandidateScore(self, i1, j1, i2, j2, party):
-        score = 0
-        if party == 0:
-            score = max(self.valueMapRed[i1][j1] + self.valueMapWhite[i2][j2],
-                        self.valueMapWhite[i1][j1] + self.valueMapRed[i2][j2])
-        elif party == 1:
-            score = max(self.valueMapDot[i1][j1] + self.valueMapRing[i2][j2],
-                        self.valueMapRing[i1][j1] + self.valueMapDot[i2][j2])
-        return score
-
-    def getCandidateScore(self, i, j, position, party):
-        score = 0
-        if party == 0:
-            if position in [1]:
-                score = (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) \
-                        - (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) * self.coef
-            elif position in [2]:
-                score = (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) \
-                        - (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) * self.coef
-            elif position in [3]:
-                score = (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) \
-                        - (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) * self.coef
-            elif position in [4]:
-                score = (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) \
-                        - (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) * self.coef
-            elif position in [5]:
-                score = (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) \
-                        - (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) * self.coef
-            elif position in [6]:
-                score = (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) \
-                        - (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) * self.coef
-            elif position in [7]:
-                score = (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) \
-                        - (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) * self.coef
-            elif position in [8]:
-                score = (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) \
-                        - (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) * self.coef
-        elif party == 1:
-            if position in [1]:
-                score = (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) \
-                        - (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) * self.coef
-            elif position in [2]:
-                score = (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) \
-                        - (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) * self.coef
-            elif position in [3]:
-                score = (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) \
-                        - (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) * self.coef
-            elif position in [4]:
-                score = (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) \
-                        - (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) * self.coef
-            elif position in [5]:
-                score = (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) \
-                        - (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) * self.coef
-            elif position in [6]:
-                score = (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) \
-                        - (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) * self.coef
-            elif position in [7]:
-                score = (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) \
-                        - (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) * self.coef
-            elif position in [8]:
-                score = (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) \
-                        - (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) * self.coef
-        return score
+    # def getRecycleCandidateScore(self, i1, j1, i2, j2, party):
+    #     score = 0
+    #     if party == 0:
+    #         score = max(self.valueMapRed[i1][j1] + self.valueMapWhite[i2][j2],
+    #                     self.valueMapWhite[i1][j1] + self.valueMapRed[i2][j2])
+    #     elif party == 1:
+    #         score = max(self.valueMapDot[i1][j1] + self.valueMapRing[i2][j2],
+    #                     self.valueMapRing[i1][j1] + self.valueMapDot[i2][j2])
+    #     return score
+    #
+    # def getCandidateScore(self, i, j, position, party):
+    #     score = 0
+    #     if party == 0:
+    #         if position in [1]:
+    #             score = (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) \
+    #                     - (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) * self.coef
+    #         elif position in [2]:
+    #             score = (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) \
+    #                     - (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) * self.coef
+    #         elif position in [3]:
+    #             score = (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) \
+    #                     - (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) * self.coef
+    #         elif position in [4]:
+    #             score = (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) \
+    #                     - (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) * self.coef
+    #         elif position in [5]:
+    #             score = (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) \
+    #                     - (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) * self.coef
+    #         elif position in [6]:
+    #             score = (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) \
+    #                     - (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) * self.coef
+    #         elif position in [7]:
+    #             score = (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) \
+    #                     - (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) * self.coef
+    #         elif position in [8]:
+    #             score = (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) \
+    #                     - (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) * self.coef
+    #     elif party == 1:
+    #         if position in [1]:
+    #             score = (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) \
+    #                     - (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) * self.coef
+    #         elif position in [2]:
+    #             score = (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) \
+    #                     - (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) * self.coef
+    #         elif position in [3]:
+    #             score = (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) \
+    #                     - (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) * self.coef
+    #         elif position in [4]:
+    #             score = (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) \
+    #                     - (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) * self.coef
+    #         elif position in [5]:
+    #             score = (self.valueMapRed[i][j] + self.valueMapWhite[i][j + 1]) \
+    #                     - (self.valueMapRing[i][j] + self.valueMapDot[i][j + 1]) * self.coef
+    #         elif position in [6]:
+    #             score = (self.valueMapWhite[i][j] + self.valueMapRed[i + 1][j]) \
+    #                     - (self.valueMapDot[i][j] + self.valueMapRing[i + 1][j]) * self.coef
+    #         elif position in [7]:
+    #             score = (self.valueMapWhite[i][j] + self.valueMapRed[i][j + 1]) \
+    #                     - (self.valueMapDot[i][j] + self.valueMapRing[i][j + 1]) * self.coef
+    #         elif position in [8]:
+    #             score = (self.valueMapRed[i][j] + self.valueMapWhite[i + 1][j]) \
+    #                     - (self.valueMapRing[i][j] + self.valueMapDot[i + 1][j]) * self.coef
+    #     return score
 
     def toPut(self, i, j, gameMap):
         subCandidates = []
@@ -238,10 +241,10 @@ class Treenode:
         # print(moveString)
         if self.validator.placeValidator(move, self.gameMap):
             newGameMap = copy.copy(self.gameMap)
-            newvalueMapRed = copy.copy(self.valueMapRed)
-            newvalueMapWhite = copy.copy(self.valueMapWhite)
-            newvalueMapRing = copy.copy(self.valueMapRing)
-            newvalueMapDot = copy.copy(self.valueMapDot)
+            # newvalueMapRed = copy.copy(self.valueMapRed)
+            # newvalueMapWhite = copy.copy(self.valueMapWhite)
+            # newvalueMapRing = copy.copy(self.valueMapRing)
+            # newvalueMapDot = copy.copy(self.valueMapDot)
             newValidator = copy.copy(self.validator)
             newcoordinateToRotation = copy.copy(self.coordinateToRotation)
 
@@ -251,12 +254,10 @@ class Treenode:
 
             Nonvalidatedplacer().place(move, newValidator, newGameMap, newcoordinateToRotation)
 
-            childNode = Treenode(self.depth - 1, newvalueMapRed, newvalueMapWhite, newvalueMapRing, newvalueMapDot,
-                                 newGameMap, self.moveNum + 1, newValidator, newparty, self.width, 'go',
+            childNode = Treenode(self.depth - 1,
+                                 newGameMap, self.moveNum + 1, newValidator, newparty, self.width,
                                  newcoordinateToRotation)
-            childNode.goalState = Appraiser().appraise(move, newvalueMapRed, newvalueMapWhite, newvalueMapRing,
-                                                       newvalueMapDot,
-                                                       newGameMap, newparty, childNode)
+
             childNode.rawMove = moveString
             self.children.append(childNode)
 
@@ -290,7 +291,7 @@ class Treenode:
         move = ""
         count = 0
         self.setLroot()
-        self.children.sort(key=self.distance, reverse=False)
+        # self.children.sort(key=self.distance, reverse=False)
         for node in self.children:
             # print(node.rawMove + "____"+ str(node.weight))
             if node.weight == weight:
