@@ -28,16 +28,16 @@ class AppraiserNonValueMap:
         for i in range(8):
             for j in range(12):
                 if gameMap[j][i] in self.red:
-                    if self.appraiseMove(i, j, node.valueMapRed, gameMap, self.red, node, True):
+                    if self.appraiseMoveRed(i, j, gameMap, self.red, node, True):
                         winC = True
                 if gameMap[j][i] in self.white:
-                    if self.appraiseMove(i, j, node.valueMapWhite, gameMap, self.white, node, True):
+                    if self.appraiseMoveWhite(i, j, gameMap, self.white, node, True):
                         winC = True
                 if gameMap[j][i] in self.dot:
-                    if self.appraiseMove(i, j, node.valueMapDot, gameMap, self.dot, node, False):
+                    if self.appraiseMoveDot(i, j, gameMap, self.dot, node, False):
                         winD = True
                 if gameMap[j][i] in self.ring:
-                    if self.appraiseMove(i, j, node.valueMapRing, gameMap, self.ring, node, False):
+                    if self.appraiseMoveDot(i, j, gameMap, self.ring, node, False):
                         winD = True
 
                 if winD and winC:
@@ -155,6 +155,226 @@ class AppraiserNonValueMap:
                         if valueMap[j - step + k][i - step + k] < price[rate] \
                                 and gameMap[j - step + k][i - step + k] != 0:
                             valueMap[j - step + k][i - step + k] = price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+        return win
+
+    def appraiseMoveRed(self, i, j, gameMap, colorOrDot, score, isColor):
+        win = False
+        for step in range(4):
+            if i - step >= 0:
+                rate = self.isHorizontalWindowFree(i - step, j, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMapRed[j][i - step + k] < price[rate] + 1 and gameMap[j][i - step + k] != 0:  # here
+                            score.valueMapRed[j][i - step + k] = price[rate] + 1
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+            if j - step >= 0:
+                rate = self.isVerticalWindowFree(i, j - step, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMapRed[j - step + k][i] < price[rate] and gameMap[j - step + k][i] != 0:
+                            score.valueMapRed[j - step + k][i] = price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+            if i - step >= 0 and j + step < 12:
+                rate = self.isDownDiagonalWindowFree(i - step, j + step, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMapRed[j + step - k][i - step + k] < price[rate] \
+                                and gameMap[j + step - k][i - step + k] != 0:
+                            score.valueMapRed[j + step - k][i - step + k] = price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+            if j - step >= 0 and i - step >= 0:
+                rate = self.isUpDiagonalWindowFree(i - step, j - step, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMapRed[j - step + k][i - step + k] < price[rate] \
+                                and gameMap[j - step + k][i - step + k] != 0:
+                            score.valueMapRed[j - step + k][i - step + k] = price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+        return win
+
+    def appraiseMoveWhite(self, i, j, gameMap, colorOrDot, score, isColor):
+        win = False
+        for step in range(4):
+            if i - step >= 0:
+                rate = self.isHorizontalWindowFree(i - step, j, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMapWhite[j][i - step + k] < price[rate] + 1 and gameMap[j][i - step + k] != 0:  # here
+                            score.valueMapWhite[j][i - step + k] = price[rate] + 1
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+            if j - step >= 0:
+                rate = self.isVerticalWindowFree(i, j - step, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMapWhite[j - step + k][i] < price[rate] and gameMap[j - step + k][i] != 0:
+                            score.valueMapWhite[j - step + k][i] = price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+            if i - step >= 0 and j + step < 12:
+                rate = self.isDownDiagonalWindowFree(i - step, j + step, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMapWhite[j + step - k][i - step + k] < price[rate] \
+                                and gameMap[j + step - k][i - step + k] != 0:
+                            score.valueMapWhite[j + step - k][i - step + k] = price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+            if j - step >= 0 and i - step >= 0:
+                rate = self.isUpDiagonalWindowFree(i - step, j - step, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMapWhite[j - step + k][i - step + k] < price[rate] \
+                                and gameMap[j - step + k][i - step + k] != 0:
+                            score.valueMapWhite[j - step + k][i - step + k] = price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+        return win
+
+    def appraiseMoveDot(self, i, j, gameMap, colorOrDot, score, isColor):
+        win = False
+        for step in range(4):
+            if i - step >= 0:
+                rate = self.isHorizontalWindowFree(i - step, j, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMapDot[j][i - step + k] < price[rate] + 1 and gameMap[j][i - step + k] != 0:  # here
+                            score.valueMapDot[j][i - step + k] = price[rate] + 1
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+            if j - step >= 0:
+                rate = self.isVerticalWindowFree(i, j - step, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMapDot[j - step + k][i] < price[rate] and gameMap[j - step + k][i] != 0:
+                            score.valueMapDot[j - step + k][i] = price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+            if i - step >= 0 and j + step < 12:
+                rate = self.isDownDiagonalWindowFree(i - step, j + step, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMapDot[j + step - k][i - step + k] < price[rate] \
+                                and gameMap[j + step - k][i - step + k] != 0:
+                            score.valueMapDot[j + step - k][i - step + k] = price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+            if j - step >= 0 and i - step >= 0:
+                rate = self.isUpDiagonalWindowFree(i - step, j - step, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMapDot[j - step + k][i - step + k] < price[rate] \
+                                and gameMap[j - step + k][i - step + k] != 0:
+                            score.valueMapDot[j - step + k][i - step + k] = price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+        return win
+
+    def appraiseMoveRing(self, i, j, gameMap, colorOrDot, score, isColor):
+        win = False
+        for step in range(4):
+            if i - step >= 0:
+                rate = self.isHorizontalWindowFree(i - step, j, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMaRing[j][i - step + k] < price[rate] + 1 and gameMap[j][i - step + k] != 0:  # here
+                            score.valueMaRing[j][i - step + k] = price[rate] + 1
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+            if j - step >= 0:
+                rate = self.isVerticalWindowFree(i, j - step, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMaRing[j - step + k][i] < price[rate] and gameMap[j - step + k][i] != 0:
+                            score.valueMaRing[j - step + k][i] = price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+            if i - step >= 0 and j + step < 12:
+                rate = self.isDownDiagonalWindowFree(i - step, j + step, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMaRing[j + step - k][i - step + k] < price[rate] \
+                                and gameMap[j + step - k][i - step + k] != 0:
+                            score.valueMaRing[j + step - k][i - step + k] = price[rate]
+                            if isColor:
+                                score.scoreColor += price[rate] + 1
+                            else:
+                                score.scoreDots += price[rate] + 1
+            if j - step >= 0 and i - step >= 0:
+                rate = self.isUpDiagonalWindowFree(i - step, j - step, colorOrDot, gameMap)
+                if rate >= 4:
+                    win = True
+                if rate > 0:
+                    for k in range(4):
+                        if score.valueMaRing[j - step + k][i - step + k] < price[rate] \
+                                and gameMap[j - step + k][i - step + k] != 0:
+                            score.valueMaRing[j - step + k][i - step + k] = price[rate]
                             if isColor:
                                 score.scoreColor += price[rate] + 1
                             else:
