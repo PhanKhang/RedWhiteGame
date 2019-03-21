@@ -78,11 +78,20 @@ class Treenode:
 
     def belovedChildren(self):
         if self.party == 0:
-            self.children.sort(key=lambda x: x.scoreDots-x.scoreColor, reverse=True)
+            self.children.sort(key=lambda x: x.scoreDots, reverse=True)
         else:
-            self.children.sort(key=lambda x: x.scoreColor-x.scoreDots, reverse=True)
+            self.children.sort(key=lambda x: x.scoreColor, reverse=True)
         if self.width != 0 and len(self.children) > self.width:
             self.children = self.children[:self.width]
+
+
+    # def belovedChildren(self):
+    #     if self.party == 0:
+    #         self.children.sort(key=lambda x: x.scoreDots-x.scoreColor, reverse=True)
+    #     else:
+    #         self.children.sort(key=lambda x: x.scoreColor-x.scoreDots, reverse=True)
+    #     if self.width != 0 and len(self.children) > self.width:
+    #         self.children = self.children[:self.width]
 
     # def getRecycleCandidateScore(self, i1, j1, i2, j2, party):
     #     score = 0
