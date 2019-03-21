@@ -2,7 +2,7 @@ import numpy
 
 # price = [21, 34, 55, 89, 144]
 price = [2, 3, 5, 8, 13, 21]
-
+multi = [21, 13, 8, 5]
 
 class AppraiserNonValueMap:
     def __init__(self):
@@ -443,15 +443,19 @@ class AppraiserNonValueMap:
 
         if party == 0:
             if goalState == "winC":
+                # return (sumRing + sumDot) - multi[node.depth] * (sumRed + sumWhite)
                 return (sumRing + sumDot) - 10 * (sumRed + sumWhite)
             elif goalState == "winD" or goalState == "winDC":
+                # return multi[node.depth] * (sumRing + sumDot) - (sumRed + sumWhite)
                 return 10 * (sumRing + sumDot) - (sumRed + sumWhite)
             else:
                 return (sumRing + sumDot) - (sumRed + sumWhite)
         if party == 1:
             if goalState == "winD":
+                # return multi[node.depth] * (sumRing + sumDot) - (sumRed + sumWhite)
                 return 10 * (sumRing + sumDot) - (sumRed + sumWhite)
             elif goalState == "winC" or goalState == "winDC":
+                # return (sumRing + sumDot) - multi[node.depth] * (sumRed + sumWhite)
                 return (sumRing + sumDot) - 10 * (sumRed + sumWhite)
             else:
                 return (sumRing + sumDot) - (sumRed + sumWhite)

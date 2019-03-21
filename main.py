@@ -161,10 +161,11 @@ def main():
     # pruning = int(input("Activate alpha-beta pruning? 1 for yes 0 for no: "))
     pruning = 1
     # trace = int(input("Generate trace? 1 for yes 0 for no: "))
-    depth = int(input("Set tree depth: "))
-    #depth = 2
-    width = int(input("Set tree width: "))
-    #width = 0
+    # depth = int(input("Set tree depth: "))
+    depth = 3
+    # width = int(input("Set tree width: "))
+    width = 16
+
     computer = int(input("Which player should be computer 1 or 2?: "))
     choice = int(input("Player 1  will be playing? 0 for dots and 1 a for colors: "))
     if choice == 0:
@@ -204,8 +205,9 @@ def main():
                     if k > 1:
                         # if k >= 4:
                         #     depth = 3
-                        # if k >= 6:
-                        #     depth = 3
+                        if k > 6:
+                            depth = 3
+                            width = 32
                         start_time = time.time()
                         treenode = Treenode(depth, gameMap, k, validator, party, width, coordinateToRotation)
                         if pruning == 1:
@@ -229,9 +231,9 @@ def main():
                     movok = True
                 except:
                     print("unable to parse the move, try again")
-            if k <= 24 and move.type == 0:
+            if k <= 6 and move.type == 0:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
-            elif k > 24 and move.type == 1:
+            elif k > 6 and move.type == 1:
                 legal = placer.place(move, validator, gameMap, coordinateToRotation)
             if not legal:
                 print("illegal move, try again")
