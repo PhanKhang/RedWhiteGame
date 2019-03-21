@@ -214,7 +214,7 @@ class Treenode:
     def getCandidates(self):
         candidates = []
         pickCandidates = []
-        if self.moveNum <= 6:
+        if self.moveNum <= 24:
             putCandidates = self.getPutCandidates(self.gameMap)
             for putCandidate in putCandidates:
                 move = '0 ' + putCandidate.move
