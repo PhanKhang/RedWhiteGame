@@ -206,8 +206,8 @@ class Treenode:
 
         #candidates.sort(key=lambda x: x.score, reverse=True)
         #if self.width != 0 & len(candidates) > self.width:
-        #   return candidates[:self.width]
-        return candidates
+        return candidates[:self.width]
+        # return candidates
 
     def childcreator(self, moveString):
         move = Move(moveString)

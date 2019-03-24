@@ -155,9 +155,9 @@ def main():
     pruning = 1
     # trace = int(input("Generate trace? 1 for yes 0 for no: "))
     # depth = int(input("Set tree depth: "))
-    depth = 2
+    depth = 4
     # width = int(input("Set tree width: "))
-    width = 0
+    width = 32
     computer = int(input("Which player should be computer 1 or 2?: "))
     choice = int(input("Player 1  will be playing? 0 for dots and 1 a for colors: "))
     if choice == 0:
