@@ -165,49 +165,62 @@ class Treenode:
                                      #self.getRecycleCandidateScore(i, j, i2, j2, self.party))
         return 'none'
 
+    def getPutCandidates(self, gameMap):
+        size = 0
+        putCandidates = []
+        for i in range(12):
+            for j in range(8):
+                putCandidate = self.toPut(i, j)
+                if putCandidate != 'none':
+                    putCandidates += putCandidate
+                    size += 1
+                if size == 15:
+                    break
+        return putCandidates
+
     def getCandidates(self):
         candidates = []
-        putCandidates = []
         pickCandidates = []
         if self.moveNum <= 24:
-            size = 0
-            for i in range(12):
-                for j in range(8):
-                    putCandidate = self.toPut(i, j)
-                    if putCandidate != 'none':
-                        putCandidates += putCandidate
-                        size += 1
-                    if size == 15:
-                        break
-
+            putCandidates = self.getPutCandidates(self.gameMap)
             for putCandidate in putCandidates:
                 move = '0 ' + putCandidate.move
-                #score = putCandidate.score
                 candidates.append(Candidate(move, 0))
         else:
             size = 0
             for i in range(12):
                 for j in range(8):
-                    pickCandidate = self.toPick(i, j)
+                    pickCandidate = self.toPick(i, j, self.coordinateToRotation)
                     if pickCandidate != 'none':
-                        pickCandidates.append(pickCandidate)
-                        size += 1
+                        i1 = int(pickCandidate.move.split(" ")[1])
+                        j1 = int(self.validator.letterToNumb.get(pickCandidate.move.split(" ")[0]))
+                        if not (
+                                j1 == self.validator.lastMove.targetCoordinateLet and i1 == self.validator.lastMove.targetCoordinateNum):
+                            pickCandidates.append(pickCandidate)
+                            size += 1
                     if size == 8:
                         break
             for pickCandidate in pickCandidates:
-                for putCandidate in putCandidates:
-                    if (putCandidate.move.split(" ")[1] != pickCandidate.move.split(" ")[0] and
-                        putCandidate.move.split(" ")[2] != pickCandidate.move.split(" ")[1]) \
-                            or (putCandidate.move.split(" ")[1] != pickCandidate.move.split(" ")[2] and
-                                putCandidate.move.split(" ")[2] != pickCandidate.move.split(" ")[3]):
+                pickGameMap = copy.copy(self.gameMap)
+                i1 = int(pickCandidate.move.split(" ")[1])
+                j1 = int(self.validator.letterToNumb.get(pickCandidate.move.split(" ")[0]))
+                i2 = int(pickCandidate.move.split(" ")[3])
+                j2 = int(self.validator.letterToNumb.get(pickCandidate.move.split(" ")[2]))
+                pickGameMap[i1 - 1][j1 - 1] = 0
+                pickGameMap[i2 - 1][j2 - 1] = 0
+                pickPutCandidates = self.getPutCandidates(pickGameMap)
+                for putCandidate in pickPutCandidates:
+                    if not (int(self.coordinateToRotation.get(numbToLetter.get(j1 - 1) + str(i1))) == int(
+                            putCandidate.move.split(" ")[0]) and pickCandidate.move.split(" ")[0] ==
+                            putCandidate.move.split(" ")[1] and pickCandidate.move.split(" ")[1] ==
+                            putCandidate.move.split(" ")[2]):
                         move = pickCandidate.move + ' ' + putCandidate.move
-                        #score = pickCandidate.score + putCandidate.score
-                        candidates.append(move, 0)
+                        candidates.append(Candidate(move, 0))
 
-        #candidates.sort(key=lambda x: x.score, reverse=True)
-        #if self.width != 0 & len(candidates) > self.width:
-        return candidates[:self.width]
-        # return candidates
+        # candidates.sort(key=lambda x: x.score, reverse=True)
+        # if self.width != 0 & len(candidates) > self.width:
+        #   return candidates[:self.width]
+        return candidates
 
     def childcreator(self, moveString):
         move = Move(moveString)
