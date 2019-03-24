@@ -233,7 +233,7 @@ def main():
         print(appraiser.getScore(valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party))
         # print("Red map")
         # # print(appraiser.getAvailableMoves(appraiser.getRedMap(), tmp))
-        # correctPrinter(appraiser.getRedMap(valueMap))
+        correctPrinter(valueMapRed)
         #
         # print("White map")
         # # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
