@@ -2,7 +2,6 @@ import numpy
 
 # price = [21, 34, 55, 89, 144]
 price = [2, 3, 5, 8, 13, 21]
-multi = [21, 13, 8, 5]
 multi = [8, 13, 21]
 
 class AppraiserNonValueMap:

@@ -162,9 +162,9 @@ def main():
     pruning = 1
     # trace = int(input("Generate trace? 1 for yes 0 for no: "))
     # depth = int(input("Set tree depth: "))
-    depth = 3
+    depth = 4
     # width = int(input("Set tree width: "))
-    width = 20
+    width = 8
 
     computer = int(input("Which player should be computer 1 or 2?: "))
     if computer == 1:
@@ -242,7 +242,7 @@ def main():
                 print("illegal move, try again")
 
         print("Current Game field")
-        correctPrinterMapL(gameMap)  # change to correctPrinterMapL for letter output
+        correctPrinterMap(gameMap)  # change to correctPrinterMapL for letter output
         print(coordinateToRotation)
         # print(coordinateToRotation[-1])
         # appraiser.appraise(move, valueMapRed, valueMapWhite, valueMapRing, valueMapDot, gameMap, party)
@@ -250,9 +250,9 @@ def main():
 
         # print("Current Weight")
         # print(appraiser.getScore(valueMapRed, valueMapWhite, valueMapRing, valueMapDot, party))
-        # print("Red map")
-        # # print(valueMapRed)
-        # correctPrinter(valueMapRed)
+        print("Red map")
+        # print(valueMapRed)
+
         # #
         # print("White map")
         # # # print(appraiser.getAvailableMoves(appraiser.getWhiteMap(), tmp))
